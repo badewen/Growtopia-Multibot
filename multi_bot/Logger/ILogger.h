@@ -9,11 +9,18 @@
 class ILogger
 {
 public:
+    enum class LogType {
+        Info,
+        Error,
+        Debug
+    };
+public:
     ILogger() = default;
 
     template<typename ...Args>
-    void Log(std::string format, Args&&... arg) {
-        LogFormattedRaw(
+    void Log(ILogger::LogType type, std::string format, Args&&... arg) {
+        LogFormatted(
+            type,
             fmt::format("[{:%Y-%m-%d %H:%M:%S.%e}] ", fmt::localtime(std::time(nullptr)) +
             fmt::format(format, ...arg)
         );
@@ -22,6 +29,7 @@ public:
     template<typename ...Args>
     void Info(std::string format, Args&&... arg) { 
         Log(
+            ILogger::LogType::Info,
             "[INFO] " +
             fmt::format(format, ...arg)
         );
@@ -29,6 +37,7 @@ public:
 
 protected:
     // handles the logging after getting formatted.
-    virtual void LogFormattedRaw(std::string formatted) = 0;
+    // the type is just a hint to the log type. the formatted string is ready to be printer without any further modification
+    virtual void LogFormatted(ILogger::LogType type, std::string formatted) = 0;
 };
 
