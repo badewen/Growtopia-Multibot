@@ -26,8 +26,10 @@ std::string Random::RandomHex(size_t length, bool upper) {
 std::string Random::RandomMac() {
     std::string ret;
 
-    for (size_t i = 0; i < 12; i++) {
-        ret += RandomHex(2, true) + ":";
+    ret += "02:";
+
+    for (size_t i = 0; i < 5; i++) {
+        ret += RandomHex(2, false) + ":";
     }
 
     // remove trailing colon

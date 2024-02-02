@@ -18,7 +18,7 @@
     <ClInclude Include="Bot\Bot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bot\Peer.h">
+    <ClInclude Include="Network\Client\Peer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils\TextParse.h">
@@ -30,12 +30,33 @@
     <ClInclude Include="Utils\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Network\Http\HttpClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet\Packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet\PacketTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Klv.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Hash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\EventManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Client\Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bot\Peer.cpp">
+    <ClCompile Include="Network\Client\Peer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\TextParse.cpp">
@@ -45,6 +66,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Http\HttpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet\Packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Client\Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

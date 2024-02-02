@@ -19,10 +19,16 @@ public:
 
     template<typename ...Args>
     void Log(ILogger::LogType type, std::string format, Args&&... arg) {
-        LogFormatted(
+        OutputLog(
             type,
-            fmt::format("[{:%Y-%m-%d %H:%M:%S.%e}] ", fmt::localtime(std::time(nullptr)) +
-            fmt::format(format, ...arg)
+            fmt::format(format, arg...)
+        );
+    }
+
+    void LogString(ILogger::LogType type, std::string msg) {
+        OutputLog(
+            type,
+            msg
         );
     }
 
@@ -30,14 +36,29 @@ public:
     void Info(std::string format, Args&&... arg) { 
         Log(
             ILogger::LogType::Info,
-            "[INFO] " +
-            fmt::format(format, ...arg)
+            fmt::format(format, arg...)
+        );
+    }
+
+    template<typename ...Args>
+    void Debug(std::string format, Args&&... arg) {
+        Log(
+            ILogger::LogType::Debug,
+            fmt::format(format, arg...)
+        );
+    }
+
+    template<typename ...Args>
+    void Error(std::string format, Args&&... arg) {
+        Log(
+            ILogger::LogType::Error,
+            fmt::format(format, arg...)
         );
     }
 
 protected:
     // handles the logging after getting formatted.
     // the type is just a hint to the log type. the formatted string is ready to be printer without any further modification
-    virtual void LogFormatted(ILogger::LogType type, std::string formatted) = 0;
+    virtual void OutputLog(ILogger::LogType type, std::string formatted) = 0;
 };
 
