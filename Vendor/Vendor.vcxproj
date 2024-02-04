@@ -124,6 +124,10 @@
     <Lib>
       <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>
+copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -145,6 +149,10 @@
     <Lib>
       <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
     </Lib>
+    <PostBuildEvent>
+      <Command>
+copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cpp-httplib\include\cpp-httplib\httplib.h" />
