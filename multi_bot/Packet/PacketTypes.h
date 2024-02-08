@@ -60,6 +60,32 @@ enum eTankPacketType : uint8_t {
     NET_GAME_PACKET_SEND_PLAYER_TRIBUTE_DATA
 };
 
+struct TankPacketFlag {
+    uint32_t bNone : 1;
+    uint32_t bUnk : 1;
+    uint32_t bResetVisualState : 1;
+    uint32_t bExtended : 1;
+    uint32_t bRotateLeft : 1;
+    uint32_t bOnSolid : 1;
+    uint32_t bOnFireDamage : 1;
+    uint32_t bOnJump : 1;
+    uint32_t bOnKilled : 1;
+    uint32_t bOnPunched : 1;
+    uint32_t bOnPlaced : 1;
+    uint32_t bOnTileAction : 1;
+    uint32_t bOnGotPunched : 1;
+    uint32_t bOnRespawned : 1;
+    uint32_t bOnCollectObject : 1;
+    uint32_t bOnTrampoline : 1;
+    uint32_t bOnDamage : 1;
+    uint32_t bOnSlide : 1;
+    uint32_t pad_1 : 3;
+    uint32_t bOnWallHang : 1;
+    uint32_t pad_2 : 3;
+    uint32_t bOnAcidDamage : 1;
+    uint32_t pad_3 : 6;
+};
+
 #pragma pack(push, 1)
 struct TankPacket {
     struct {
@@ -102,34 +128,7 @@ struct TankPacket {
             int32_t TilesLength;
         };
 
-        union {
-            uint32_t Value;
-            struct {
-                uint32_t bNone : 1;
-                uint32_t bUnk : 1;
-                uint32_t bResetVisualState : 1;
-                uint32_t bExtended : 1;
-                uint32_t bRotateLeft : 1;
-                uint32_t bOnSolid : 1;
-                uint32_t bOnFireDamage : 1;
-                uint32_t bOnJump : 1;
-                uint32_t bOnKilled : 1;
-                uint32_t bOnPunched : 1;
-                uint32_t bOnPlaced : 1;
-                uint32_t bOnTileAction : 1;
-                uint32_t bOnGotPunched : 1;
-                uint32_t bOnRespawned : 1;
-                uint32_t bOnCollectObject : 1;
-                uint32_t bOnTrampoline : 1;
-                uint32_t bOnDamage : 1;
-                uint32_t bOnSlide : 1;
-                uint32_t pad_1 : 3;
-                uint32_t bOnWallHang : 1;
-                uint32_t pad_2 : 3;
-                uint32_t bOnAcidDamage : 1;
-                uint32_t pad_3 : 6;
-            };
-        } Flags;
+        TankPacketFlag Flags;
 
         union {
             float FloatVariable = 0;
