@@ -240,7 +240,7 @@ void Bot::on_login() {
         login_data.Add("user", m_user_id);
         login_data.Add("UUIDToken", m_login_uuid_token);
         login_data.Add("token", m_login_token);
-        login_data.Add("doorID", m_login_door_id.empty() ? "0" : m_login_door_id);
+        login_data.Add("doorID", m_login_door_id);
         login_data.Set("lmode", "1");
     }
 
