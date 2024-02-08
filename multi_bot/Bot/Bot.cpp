@@ -14,6 +14,9 @@
 
 using namespace std::chrono_literals;
 
+// it is getting too long to handle the -1s in the ONSendServer
+#define DONT_CHANGE_VAR_IF(var, text, cond) var = text cond ? var : text
+
 void Bot::GenerateNewSpoof() {
     m_login_mac = Utils::Random::RandomMac();
     m_login_rid = Utils::Random::RandomHex(32, true);
@@ -82,8 +85,8 @@ void Bot::JoinWorld(std::string world)
 }
 
 void Bot::Move(float x, float y) {
-    m_pos_x += x * 32;
-    m_pos_y += y * 32;
+    m_local.PosX += x * 32 /* the block width in pixel */ ;
+    m_local.PosY += y * 32 /* the block height in pixel */ ;
 }
 
 void Bot::bot_thread() {
@@ -91,14 +94,14 @@ void Bot::bot_thread() {
 
     ENetEvent event{};
     while (m_is_running) {
-        if (m_last_pos_x == m_pos_x && m_last_pos_y == m_pos_y && m_is_bot_moving) {
+        if (m_local.LastPosX == m_local.PosX && m_local.LastPosY == m_local.PosY && m_is_bot_moving) {
             TankPacket tank_pkt{};
 
             tank_pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_STATE;
             tank_pkt.Header.IntX = -1;
             tank_pkt.Header.IntY = -1;
-            tank_pkt.Header.VectorX = m_pos_x;
-            tank_pkt.Header.VectorY = m_pos_y;
+            tank_pkt.Header.VectorX = m_local.PosX;
+            tank_pkt.Header.VectorY = m_local.PosY;
             tank_pkt.Header.VectorX2 = 0;
             tank_pkt.Header.VectorY2 = 0;
             tank_pkt.Header.Flags.bUnk = true;
@@ -107,30 +110,30 @@ void Bot::bot_thread() {
             SendPacket(tank_pkt);
             m_is_bot_moving = false;
         }
-        if (m_last_pos_x != m_pos_x || m_last_pos_y != m_pos_y) {
+        if (m_local.LastPosX != m_local.PosX || m_local.LastPosY != m_local.PosY) {
             TankPacket tank_pkt{};
 
             tank_pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_STATE;
-            tank_pkt.Header.VectorX = m_pos_x;
-            tank_pkt.Header.VectorY = m_pos_y;
+            tank_pkt.Header.VectorX = m_local.PosX;
+            tank_pkt.Header.VectorY = m_local.PosY;
             tank_pkt.Header.Flags.bUnk = true; // idk why but this is present on alot of packets
             tank_pkt.Header.IntX = -1;
             tank_pkt.Header.IntY = -1;
 
-            if (m_pos_x - m_last_pos_x < 0) {
+            if (m_local.PosX - m_local.LastPosX < 0) {
                 tank_pkt.Header.VectorX2 = -250;
                 tank_pkt.Header.Flags.bRotateLeft = true;
             }
-            else if (m_pos_x - m_last_pos_x > 0) {
+            else if (m_local.PosX - m_local.LastPosX > 0) {
                 tank_pkt.Header.VectorX2 = 250;
                 tank_pkt.Header.Flags.bRotateLeft = false;
             }
 
-            if (m_pos_y - m_last_pos_y < 0) {
+            if (m_local.PosY - m_local.LastPosY < 0) {
                 tank_pkt.Header.VectorY2 = -250;
                 tank_pkt.Header.Flags.bOnJump = true;
             }
-            else if (m_pos_y - m_last_pos_y > 0) {
+            else if (m_local.PosY - m_local.LastPosY > 0) {
                 tank_pkt.Header.VectorY2 = 250;
                 tank_pkt.Header.Flags.bOnJump = true;
             }
@@ -139,8 +142,8 @@ void Bot::bot_thread() {
 
             SendPacket(tank_pkt);
 
-            m_last_pos_x = m_pos_x;
-            m_last_pos_y = m_pos_y;
+            m_local.LastPosX = m_local.PosX;
+            m_local.LastPosY = m_local.PosY;
             m_is_bot_moving = true;
         }
         std::this_thread::sleep_for(250ms);
@@ -237,7 +240,7 @@ void Bot::on_login() {
         login_data.Add("user", m_user_id);
         login_data.Add("UUIDToken", m_login_uuid_token);
         login_data.Add("token", m_login_token);
-        login_data.Add("doorID", m_login_door_id);
+        login_data.Add("doorID", m_login_door_id.empty() ? "0" : m_login_door_id);
         login_data.Set("lmode", "1");
     }
 
@@ -256,6 +259,8 @@ void Bot::on_login_fail() {
 }
 
 void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
+    Utils::TextParse text_parse{ pkt, "\n" };
+
     switch (type)
     {
     case NET_MESSAGE_UNKNOWN:
@@ -272,11 +277,23 @@ void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
         }
         break;
     }
-    case NET_MESSAGE_GAME_PACKET:
-        break;
     case NET_MESSAGE_ERROR:
         break;
     case NET_MESSAGE_TRACK:
+        switch (Utils::Hash::fnv1a(text_parse.Get("eventName")))
+        {
+        case "worldexit"_fh: {
+            on_world_exit(pkt);
+            break;
+        }
+        case "300_WORLD_VISIT"_fh: {
+            on_world_visit(pkt);
+            break;
+        }
+        default:
+            break;
+        }
+
         break;
     case NET_MESSAGE_CLIENT_LOG_REQUEST:
         break;
@@ -300,7 +317,20 @@ void Bot::on_incoming_tank_packet(TankPacket pkt) {
         tank_pkt.Header.JumpCount = 0;
 
         SendPacket({ tank_pkt });
+
+        return;
     }
+    if (pkt.Header.Type == eTankPacketType::NET_GAME_PACKET_STATE) {
+        if (m_player_list.find(pkt.Header.NetId) != m_player_list.end()) {
+            m_player_list[pkt.Header.NetId].LastPosX = m_local.PosX;
+            m_player_list[pkt.Header.NetId].LastPosY = m_local.PosY;
+
+            m_player_list[pkt.Header.NetId].PosX = pkt.Header.PositionX;
+            m_player_list[pkt.Header.NetId].PosY = pkt.Header.PositionY;
+            m_player_list[pkt.Header.NetId].Flags = pkt.Header.Flags;
+        }
+    }
+
 }
 
 void Bot::on_incoming_varlist(VariantList varlist, TankPacket pkt) {
@@ -324,10 +354,19 @@ void Bot::on_incoming_varlist(VariantList varlist, TankPacket pkt) {
     }
     case "OnSetPos"_fh: {
         CL_Vec2f pos = varlist.Get(1).GetVector2();
-        m_pos_x = pos.x;
-        m_pos_y = pos.y;
+        m_local.PosX = pos.x;
+        m_local.PosY = pos.y;
         break;
     }
+    case "OnSpawn"_fh: {
+        on_spawn_avatar(varlist);
+        break;
+    }
+    case "OnRemove"_fh: {
+        m_player_list.erase(std::stoi(Utils::TextParse::StringTokenize(varlist.Get(1).GetString(), "|").at(1)));
+        break;
+    }
+
     default:
         break;
     }
@@ -341,11 +380,65 @@ void Bot::on_redirect(VariantList* varlist) {
     Disconnect();
 
     std::vector<std::string> redirect_server_data{ Utils::TextParse::StringTokenize(varlist->Get(4).GetString(), "|")};
-    m_login_door_id = redirect_server_data.at(1);
-    m_login_uuid_token = redirect_server_data.at(2);
-    m_login_token = std::to_string(varlist->Get(2).GetINT32());
+    DONT_CHANGE_VAR_IF(m_login_uuid_token, redirect_server_data.at(2), == "-1");
+    DONT_CHANGE_VAR_IF(m_login_token, std::to_string(varlist->Get(2).GetINT32()), == "-1");
+
+    m_login_door_id = redirect_server_data.at(1).empty() ? "0" : redirect_server_data.at(1);
     m_user_id = std::to_string(varlist->Get(3).GetINT32());
      
     m_server_ip = redirect_server_data.at(0);
     m_server_port = std::to_string(varlist->Get(1).GetINT32());
+}
+
+void Bot::on_spawn_avatar(VariantList varlist) {
+    Utils::TextParse text_parse{ varlist.Get(1).GetString(), "\n" };
+    int32_t netid = std::stoi(text_parse.Get("netID"));
+    int32_t userid = std::stoi(text_parse.Get("userID"));
+
+    int32_t width = std::stoi(text_parse.Get("colrect", 3));
+    int32_t height = std::stoi(text_parse.Get("colrect", 4));
+    float x = std::stof(text_parse.Get("posXY", 1));
+    float y = std::stof(text_parse.Get("posXY", 2));
+
+    std::string name = text_parse.Get("name");
+    std::string country = text_parse.Get("country");
+
+    if (text_parse.Get("type") == "local") {
+        m_local.NetID = netid;
+        m_local.UserID = userid;
+        m_local.WidthSize = width;
+        m_local.HeightSize = height;
+        m_local.Name = name;
+        m_local.CountryFlag = country;
+        m_local.PosX = x;
+        m_local.PosY = y;
+    }
+    else {
+        NetAvatar temp;
+        temp.NetID = netid;
+        temp.UserID = userid;
+        temp.WidthSize = width;
+        temp.HeightSize = height;
+        temp.Name = name;
+        temp.CountryFlag = country;
+        temp.PosX = x;
+        temp.PosY = y;
+        temp.IsInvis = std::stoi(text_parse.Get("invis"));
+
+        m_player_list.insert_or_assign(netid, temp);
+    }
+}
+
+void Bot::on_world_visit(std::string world_name) {
+    m_local.WorldName = world_name.substr(2);
+    m_is_in_world = true;
+    m_player_list.clear();
+    m_local = {};
+}
+
+void Bot::on_world_exit(std::string world_name) {
+    m_local.WorldName = world_name.substr(2);
+    m_is_in_world = false;
+    m_player_list.clear();
+    m_local = {};
 }

@@ -11,6 +11,7 @@
 #include "../Logger/ILogger.h"
 #include "../Packet/PacketTypes.h"
 #include "../Network/Client/Client.h"
+#include "NetAvatar.h"
 
 class Bot : public Client
 {
@@ -41,6 +42,9 @@ public:
 
     void AlwaysReconnect(bool reconnect) { m_always_reconnect = reconnect; }
 
+    std::unordered_map<int32_t, NetAvatar> GetPlayerList() { return m_player_list; }
+    const NetAvatar* GetLocal() { return &m_local; }
+
 private:
     void bot_thread();
 
@@ -51,6 +55,11 @@ private:
     void on_login();
     void on_login_fail();
     void on_redirect(VariantList* varlist);
+    void on_spawn_avatar(VariantList varlist);
+
+    // net message track
+    void on_world_visit(std::string world_name);
+    void on_world_exit(std::string world_name);
 
     void on_incoming_packet(ePacketType type, TextPacket pkt);
     void on_incoming_tank_packet(TankPacket pkt);
@@ -80,10 +89,11 @@ private:
 
     std::thread m_bot_thread;
 
-    float m_pos_x, m_pos_y;
-    float m_last_pos_x, m_last_pos_y;
+    NetAvatar m_local;
+    // netid, netavatar
+    std::unordered_map<int32_t, NetAvatar> m_player_list;
+
     bool m_is_bot_moving;
-    
 
     std::shared_ptr<ILogger> m_logger;
     HttpClient m_http_cl { "https://www.growtopia1.com" };
