@@ -1,5 +1,8 @@
 #include <memory>
 #include <chrono>
+
+// BULDING FOR LINUX?
+// https://github.com/casualsnek/linuxconio
 #include <conio.h>
 
 #include <spdlog/spdlog.h>
@@ -14,10 +17,14 @@
 
 using namespace std::chrono_literals;
 
+bool g_output_log = true;
+bool g_show_player_list = false;
+
 class loger : public ILogger
 {
 protected:
     void ILogger::OutputLog(ILogger::LogType type, std::string log) {
+        if (!g_output_log) { return; }
         switch (type)
         {
         case ILogger::LogType::Info: {
@@ -38,6 +45,15 @@ protected:
     }
 };
 
+
+// https://stackoverflow.com/questions/11472043/non-blocking-getch
+char non_block_getch() {
+    if (_kbhit()) {
+        return _getch();
+    }
+    return 0;
+}
+
 int main() {
     spdlog::set_level(spdlog::level::debug);
 
@@ -53,6 +69,7 @@ int main() {
     }
 
     bot.SetLoginGuest("MAC", "RID");
+    //bot.GenerateNewSpoof();
     //bot.SetLoginGrowID("GROWID", "PASS");
     bot.AlwaysReconnect(true);
 
@@ -67,8 +84,19 @@ int main() {
     std::this_thread::sleep_for(3000ms);
 
     while (true) {
-        
-        char pressed_key = _getch();
+        char pressed_key = non_block_getch();
+
+        if (g_show_player_list) {
+            // reduce screen flickering
+            std::stringstream output_str = {};
+            output_str << "\033[2J\033[;HPlayer name\tpos\n";
+            output_str << bot.GetLocal()->Name << "\t\t" << bot.GetLocal()->PosX << ", " << bot.GetLocal()->PosY << "\n";
+            for (auto player : bot.GetPlayerList()) {
+                output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\n";
+            }
+
+            std::cout << output_str.str();
+        }
 
         switch (pressed_key)
         {
@@ -89,18 +117,32 @@ int main() {
             break;
         }
         case 'J': {
-            bot.JoinWorld("tordawn312312");
+            // ubisoft nuked the tordawn312312 world :sad:
+            bot.JoinWorld("tordawn3123122");
             break;
         }
         case 'L': {
             bot.JoinWorld("EXIT");
             break;
         }
-        default:
+        case '1': {
+            g_output_log = true;
+            g_show_player_list = false;
+            printf("\033[2J");
+            printf("\033[;H");
+            break;
+        }
+
+        case '2': {
+            g_output_log = false;
+            g_show_player_list = true;
+            printf("\033[2J");
+            printf("\033[;H");
             break;
         }
 
         std::this_thread::sleep_for(100ms);
+        }
     }
 
     return 0;
