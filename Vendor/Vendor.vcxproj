@@ -335,9 +335,6 @@ copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y
     <ClInclude Include="openssl\include\openssl\x509v3err.h" />
     <ClInclude Include="openssl\include\openssl\x509_vfy.h" />
     <ClInclude Include="proton\include\proton\Variant.h" />
-    <ClInclude Include="sigslot\include\sigslot\adapter\boost.hpp" />
-    <ClInclude Include="sigslot\include\sigslot\adapter\qt.hpp" />
-    <ClInclude Include="sigslot\include\sigslot\signal.hpp" />
     <ClInclude Include="spdlog\include\spdlog\async.h" />
     <ClInclude Include="spdlog\include\spdlog\async_logger-inl.h" />
     <ClInclude Include="spdlog\include\spdlog\async_logger.h" />

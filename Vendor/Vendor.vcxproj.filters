@@ -852,15 +852,6 @@
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum_utility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sigslot\include\sigslot\adapter\boost.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sigslot\include\sigslot\adapter\qt.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sigslot\include\sigslot\signal.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ENet\include\callbacks.c">
