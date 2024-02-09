@@ -19,13 +19,13 @@ public:
         m_client_obj = std::make_unique<httplib::Client>( url );
     }
 
-    std::string Post(
+    httplib::Result Post(
         const std::string& url_path,
         const std::string& body,
         const httplib::Headers& header,
         const std::string& content_type
     );
-    std::string Get(const std::string& url_path, const httplib::Headers& header);
+    httplib::Result Get(const std::string& url_path, const httplib::Headers& header);
 
 private:
     std::string m_user_agent = "UbiServices_SDK_2022.Release.9_PC64_ansi_static";
