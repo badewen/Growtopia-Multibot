@@ -1,9 +1,9 @@
-#include "Client.h"
+#include "EnetClient.h"
 #include <chrono>
 
 using namespace std::chrono_literals;
 
-bool Client::CreateHost() {
+bool EnetClient::CreateHost() {
     if (m_enet_host) {
         enet_host_destroy(m_enet_host);
         m_enet_host = nullptr;
@@ -17,7 +17,7 @@ bool Client::CreateHost() {
     return m_enet_host;
 }
 
-bool Client::Connect(std::string ip, std::string port, bool use_new_packet) {
+bool EnetClient::Connect(std::string ip, std::string port, bool use_new_packet) {
     ENetAddress addr{};
 
     enet_address_set_host(&addr, ip.c_str());
@@ -35,23 +35,23 @@ bool Client::Connect(std::string ip, std::string port, bool use_new_packet) {
     return m_peer.GetRawPeer();
 }
 
-void Client::StartThread() {
+void EnetClient::StartThread() {
     m_is_running = true;
-    m_client_thread = std::move(std::thread{ &Client::client_thread, this });
+    m_client_thread = std::move(std::thread{ &EnetClient::client_thread, this });
 }
 
-void Client::StopThread() {
+void EnetClient::StopThread() {
     m_is_running = false;
     m_client_thread.join();
 }
 
-void Client::Disconnect() {
+void EnetClient::Disconnect() {
     if (m_peer.GetRawPeer()) {
         m_peer.Disconnect();
     }
 }
 
-void Client::client_thread() {
+void EnetClient::client_thread() {
     ENetEvent event{};
     while (m_is_running) {
         while (enet_host_service(m_enet_host, &event, 1) > 0) {

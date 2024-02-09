@@ -7,10 +7,10 @@
 #include "../../Logger/ILogger.h"
 #include "../../Packet/Packet.h"
 
-class Peer
+class EnetPeer
 {
 public:
-    Peer(ENetPeer* peer);
+    EnetPeer(ENetPeer* peer);
 
     inline ENetPeer* GetRawPeer() { return m_enet_peer; }
 

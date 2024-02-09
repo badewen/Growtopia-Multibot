@@ -4,20 +4,22 @@
 #include <thread>
 #include <memory>
 
+// need to be here smh
 #include "../Network/Http/HttpClient.h"
+
 #include <enet/enet.h>
 #include <proton/Variant.h>
 
 #include "../Logger/ILogger.h"
 #include "../Packet/PacketTypes.h"
-#include "../Network/Client/Client.h"
+#include "../Network/Enet/EnetClient.h"
 #include "NetAvatar.h"
 
-class Bot : public Client
+class Bot : public EnetClient
 {
 public:
     Bot(std::shared_ptr<ILogger> logger)
-        : Client::Client{ logger },
+        : EnetClient::EnetClient{ logger },
         m_logger{ logger }
     {
         GenerateNewSpoof();
@@ -66,36 +68,36 @@ private:
     void on_incoming_varlist(VariantList varlist, TankPacket pkt);
 
 private:
-    std::string m_login_mac, m_login_rid;
-    std::string m_login_wk, m_login_hash;
+    std::string m_login_mac{}, m_login_rid{};
+    std::string m_login_wk{}, m_login_hash{};
 
-    std::string m_login_meta;
-    std::string m_login_uuid_token;
-    std::string m_login_door_id;
-    std::string m_login_token;
+    std::string m_login_meta{};
+    std::string m_login_uuid_token{};
+    std::string m_login_door_id{};
+    std::string m_login_token{};
 
-    std::string m_login_growid, m_login_growid_pass;
+    std::string m_login_growid{}, m_login_growid_pass{};
 
     std::string m_game_version = "4.48";
     std::string m_game_proto_version = "203";
 
-    bool m_is_in_world, m_is_running, m_is_in_game;
-    bool m_is_redirected, m_reconnect, m_always_reconnect;
-    bool m_using_new_packet;
+    bool m_is_in_world = false, m_is_running = false, m_is_in_game = false;
+    bool m_is_redirected = false, m_reconnect = false, m_always_reconnect = false;
+    bool m_using_new_packet = false;
 
-    std::string m_server_ip, m_server_port;
+    std::string m_server_ip{}, m_server_port{};
 
-    std::string m_user_id;
+    std::string m_user_id{};
 
-    std::thread m_bot_thread;
+    std::thread m_bot_thread{};
 
-    NetAvatar m_local;
+    NetAvatar m_local{};
     // netid, netavatar
-    std::unordered_map<int32_t, NetAvatar> m_player_list;
+    std::unordered_map<int32_t, NetAvatar> m_player_list{};
 
-    bool m_is_bot_moving;
+    bool m_is_bot_moving = false;
 
-    std::shared_ptr<ILogger> m_logger;
+    std::shared_ptr<ILogger> m_logger{};
     HttpClient m_http_cl { "https://www.growtopia1.com" };
 };
 

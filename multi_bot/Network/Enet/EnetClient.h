@@ -6,12 +6,12 @@
 #include "../../Logger/ILogger.h"
 #include "../../Packet/Packet.h"
 
-#include "Peer.h"
+#include "EnetPeer.h"
 
-class Client
+class EnetClient
 {
 public:
-    Client(std::shared_ptr<ILogger> logger) :
+    EnetClient(std::shared_ptr<ILogger> logger) :
         m_logger{ logger }
     {}
 
@@ -39,11 +39,11 @@ private:
     void client_thread();
 
 private:
-    bool m_is_running;
+    bool m_is_running = false;
 
     std::thread m_client_thread{};
     std::shared_ptr<ILogger> m_logger;
-    ENetHost* m_enet_host;
-    Peer m_peer{ nullptr };
+    ENetHost* m_enet_host{ nullptr };
+    EnetPeer m_peer{ nullptr };
 };
 

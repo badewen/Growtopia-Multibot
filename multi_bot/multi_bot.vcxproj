@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="aSU|Win32">
+      <Configuration>aSU</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="aSU|x64">
+      <Configuration>aSU</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -15,6 +23,14 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelMinSize|Win32">
+      <Configuration>RelMinSize</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelMinSize|x64">
+      <Configuration>RelMinSize</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -52,6 +68,19 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='RelMinSize|Win32'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
+    <PlatformToolset>v143</PlatformToolset>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='aSU|Win32'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='aSU|x64'">
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -163,11 +192,20 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Vendor.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bot\Bot.h" />
     <ClInclude Include="Bot\NetAvatar.h" />
-    <ClInclude Include="Network\Client\Peer.h" />
-    <ClInclude Include="Network\Client\Client.h" />
+    <ClInclude Include="Network\Enet\EnetPeer.h" />
+    <ClInclude Include="Network\Enet\EnetClient.h" />
     <ClInclude Include="Network\Http\HttpClient.h" />
     <ClInclude Include="Logger\ILogger.h" />
     <ClInclude Include="Packet\Packet.h" />
@@ -180,8 +218,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp" />
-    <ClCompile Include="Network\Client\Peer.cpp" />
-    <ClCompile Include="Network\Client\Client.cpp" />
+    <ClCompile Include="Network\Enet\EnetPeer.cpp" />
+    <ClCompile Include="Network\Enet\EnetClient.cpp" />
     <ClCompile Include="Network\Http\HttpClient.cpp" />
     <ClCompile Include="Logger\ILogger.cpp" />
     <ClCompile Include="Packet\Packet.cpp" />

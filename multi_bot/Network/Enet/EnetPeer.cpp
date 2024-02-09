@@ -1,10 +1,10 @@
-#include "Peer.h"
+#include "EnetPeer.h"
 
-Peer::Peer(ENetPeer* peer) {
+EnetPeer::EnetPeer(ENetPeer* peer) {
     m_enet_peer = peer;
 }
 
-void Peer::SendPacket(Packet* pkt) {
+void EnetPeer::SendPacket(Packet* pkt) {
     if (!pkt) {
         return;
     }
