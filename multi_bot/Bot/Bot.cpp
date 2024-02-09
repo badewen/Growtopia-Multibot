@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include <proton/Variant.h>
+#include <magic_enum/magic_enum.hpp>
 
 #include "../Utils/Random.h"
 #include "../Utils/TextParse.h"
@@ -41,13 +42,17 @@ bool Bot::ConnectWithHttp() {
 retry:
 
     m_logger->Info("Getting server data...");
-    Utils::TextParse parse{ m_http_cl.Post("/growtopia/server_data.php", {}, {}, "application/x-www-form-urlencoded"), "\n" };
+    httplib::Result res = m_http_cl.Post("/growtopia/server_data.php", {}, {}, "application/x-www-form-urlencoded");
 
-    if (parse.Get("server").empty()) {
-        m_logger->Error("Failed to get server data. Retrying in 5 seconds");
+    if (res.error() != httplib::Error::Success) {
+        m_logger->Error("Failed to get server data. Retrying in 5 seconds. Err : {}",
+            magic_enum::enum_name<httplib::Error>(res.error())
+        );
         std::this_thread::sleep_for(5000ms);
         goto retry;
     }
+
+    Utils::TextParse parse{ res->body, "\n" };
 
     if (!Connect(parse.Get("server"), parse.Get("port"), parse.Get("meta"), true)) {
         m_logger->Error("Failed to connect to server. Reconnecting to server in 3 seconds");
@@ -61,18 +66,18 @@ bool Bot::Connect(std::string ip, std::string port, std::string meta, bool use_n
     m_login_meta = meta;
     m_using_new_packet = use_new_packet;
 
-    return Client::Connect(ip, port, use_new_packet);
+    return EnetClient::Connect(ip, port, use_new_packet);
 }
 
 void Bot::StartBotThread() {
     m_is_running = true;
-    Client::StartThread();
+    EnetClient::StartThread();
     m_bot_thread = std::move(std::thread{ &Bot::bot_thread, this });
 }
 
 void Bot::StopBotThread() {
     m_is_running = false; 
-    Client::StopThread();
+    EnetClient::StopThread();
     m_bot_thread.join();
 }
 
