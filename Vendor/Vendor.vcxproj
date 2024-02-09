@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="aSU|Win32">
+      <Configuration>aSU</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="aSU|x64">
+      <Configuration>aSU</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -15,6 +23,14 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelMinSize|Win32">
+      <Configuration>RelMinSize</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelMinSize|x64">
+      <Configuration>RelMinSize</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -51,6 +67,19 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='RelMinSize|Win32'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
+    <PlatformToolset>v143</PlatformToolset>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='aSU|Win32'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='aSU|x64'">
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -125,8 +154,7 @@
       <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>
-copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y</Command>
+      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -150,8 +178,19 @@ copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y
       <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>
-copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y</Command>
+      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)ENet/include;$(ProjectDir)openssl/include;$(ProjectDir)fmt/include;$(ProjectDir)spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -334,6 +373,8 @@ copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y
     <ClInclude Include="openssl\include\openssl\x509v3.h" />
     <ClInclude Include="openssl\include\openssl\x509v3err.h" />
     <ClInclude Include="openssl\include\openssl\x509_vfy.h" />
+    <ClInclude Include="openssl\include\openssl\__DECC_INCLUDE_EPILOGUE.H" />
+    <ClInclude Include="openssl\include\openssl\__DECC_INCLUDE_PROLOGUE.H" />
     <ClInclude Include="proton\include\proton\Variant.h" />
     <ClInclude Include="spdlog\include\spdlog\async.h" />
     <ClInclude Include="spdlog\include\spdlog\async_logger-inl.h" />
@@ -445,7 +486,6 @@ copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)" /y
     <ClCompile Include="ENet\include\protocol.c" />
     <ClCompile Include="ENet\include\unix.c" />
     <ClCompile Include="ENet\include\win32.c" />
-    <ClCompile Include="openssl\include\openssl\applink.c" />
     <ClCompile Include="proton\include\proton\Variant.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
