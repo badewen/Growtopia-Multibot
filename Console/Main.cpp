@@ -23,7 +23,7 @@ bool g_show_player_list = false;
 class loger : public ILogger
 {
 protected:
-    void ILogger::OutputLog(ILogger::LogType type, std::string log) {
+    void ILogger::output_log(ILogger::LogType type, std::string log) {
         if (!g_output_log) { return; }
         switch (type)
         {

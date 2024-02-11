@@ -19,14 +19,14 @@ public:
 
     template<typename ...Args>
     void Log(ILogger::LogType type, std::string format, Args&&... arg) {
-        OutputLog(
+        output_log(
             type,
             fmt::format(format, arg...)
         );
     }
 
     void LogString(ILogger::LogType type, std::string msg) {
-        OutputLog(
+        output_log(
             type,
             msg
         );
@@ -59,6 +59,6 @@ public:
 protected:
     // handles the logging after getting formatted.
     // the type is just a hint to the log type. the formatted string is ready to be printer without any further modification
-    virtual void OutputLog(ILogger::LogType type, std::string formatted) = 0;
+    virtual void output_log(ILogger::LogType type, std::string formatted) = 0;
 };
 
