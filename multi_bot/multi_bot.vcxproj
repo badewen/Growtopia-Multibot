@@ -207,7 +207,7 @@
     <ClInclude Include="Network\Enet\EnetPeer.h" />
     <ClInclude Include="Network\Enet\EnetClient.h" />
     <ClInclude Include="Network\Http\HttpClient.h" />
-    <ClInclude Include="Logger\ILogger.h" />
+    <ClInclude Include="Logger\ILogger.hpp" />
     <ClInclude Include="Packet\Packet.h" />
     <ClInclude Include="Packet\PacketTypes.h" />
     <ClInclude Include="Utils\EventManager.hpp" />
@@ -221,7 +221,7 @@
     <ClCompile Include="Network\Enet\EnetPeer.cpp" />
     <ClCompile Include="Network\Enet\EnetClient.cpp" />
     <ClCompile Include="Network\Http\HttpClient.cpp" />
-    <ClCompile Include="Logger\ILogger.cpp" />
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp" />
     <ClCompile Include="Packet\Packet.cpp" />
     <ClCompile Include="Utils\Random.cpp" />
     <ClCompile Include="Utils\TextParse.cpp" />

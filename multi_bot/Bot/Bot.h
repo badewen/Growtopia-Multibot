@@ -10,7 +10,7 @@
 #include <enet/enet.h>
 #include <proton/Variant.h>
 
-#include "../Logger/ILogger.h"
+#include "../Logger/ILogger.hpp"
 #include "../Packet/PacketTypes.h"
 #include "../Network/Enet/EnetClient.h"
 #include "NetAvatar.h"
@@ -63,7 +63,7 @@ private:
     void on_world_visit(std::string world_name);
     void on_world_exit(std::string world_name);
 
-    void on_incoming_packet(ePacketType type, TextPacket pkt);
+    void on_incoming_text_packet(ePacketType type, TextPacket pkt);
     void on_incoming_tank_packet(TankPacket pkt);
     void on_incoming_varlist(VariantList varlist, TankPacket pkt);
 

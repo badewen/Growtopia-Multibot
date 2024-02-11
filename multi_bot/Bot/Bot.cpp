@@ -183,7 +183,7 @@ void Bot::on_receive(ENetPacket* pkt) {
         break;
     }
     default:
-        on_incoming_packet(rec_packet.Type, *rec_packet.TextPkt);
+        on_incoming_text_packet(rec_packet.Type, *rec_packet.TextPkt);
         break;
     }
 }
@@ -263,7 +263,7 @@ void Bot::on_login_fail() {
     Disconnect();
 }
 
-void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
+void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
     Utils::TextParse text_parse{ pkt, "\n" };
 
     switch (type)
@@ -274,6 +274,8 @@ void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
         on_login();
         break;
     }
+    // it seems like the NET_MESSAGE_GENERIC_TEXT came from client and is not sent by the server.
+    // kept for "just in case" situation
     case NET_MESSAGE_GENERIC_TEXT:
         break;
     case NET_MESSAGE_GAME_MESSAGE: {
@@ -282,6 +284,7 @@ void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
         }
         break;
     }
+    // seems unused
     case NET_MESSAGE_ERROR:
         break;
     case NET_MESSAGE_TRACK:
@@ -300,9 +303,8 @@ void Bot::on_incoming_packet(ePacketType type, TextPacket pkt) {
         }
 
         break;
+    // this seems unused too
     case NET_MESSAGE_CLIENT_LOG_REQUEST:
-        break;
-    case NET_MESSAGE_CLIENT_LOG_RESPONSE:
         break;
     default:
         break;

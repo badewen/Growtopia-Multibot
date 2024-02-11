@@ -3,7 +3,7 @@
 #include <thread>
 
 #include <enet/enet.h>
-#include "../../Logger/ILogger.h"
+#include "../../Logger/ILogger.hpp"
 #include "../../Packet/Packet.h"
 
 #include "EnetPeer.h"

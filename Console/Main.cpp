@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 
 #include <Bot/Bot.h>
-#include <Logger/ILogger.h>
+#include <Logger/ILogger.hpp>
 #include <Network/Http/HttpClient.h>
 
 #include <Utils/TextParse.h>
@@ -68,7 +68,7 @@ int main() {
         spdlog::info("Failed to create host");
     }
 
-    bot.SetLoginGuest("MAC", "RID");
+    bot.SetLoginGuest("02:34:12:43:ff:43", "394810af830294817ffaabb34857193");
     //bot.GenerateNewSpoof();
     //bot.SetLoginGrowID("GROWID", "PASS");
     bot.AlwaysReconnect(true);
