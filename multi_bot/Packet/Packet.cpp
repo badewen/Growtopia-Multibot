@@ -65,7 +65,7 @@ std::string Packet::ToString() {
     if (Type == ePacketType::NET_MESSAGE_GAME_PACKET) {
         if (TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_CALL_FUNCTION) {
             VariantList varlist {};
-            varlist.SerializeFromMem(TankPkt->Value.data(), TankPkt->Value.size());
+            varlist.SerializeFromMem(TankPkt->Value.data(), static_cast<int>(TankPkt->Value.size()));
 
             return fmt::format("VariantList, netid: {} \n{}\n", TankPkt->Header.NetId, varlist.GetContentsAsDebugString());
         }
