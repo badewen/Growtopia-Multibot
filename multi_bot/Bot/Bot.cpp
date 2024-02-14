@@ -183,7 +183,7 @@ void Bot::on_receive(ENetPacket* pkt) {
     case ePacketType::NET_MESSAGE_GAME_PACKET: {
         if (rec_packet.TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_CALL_FUNCTION) {
             VariantList varlist {};
-            varlist.SerializeFromMem(rec_packet.TankPkt->Value.data(), rec_packet.TankPkt->Value.size());
+            varlist.SerializeFromMem(rec_packet.TankPkt->Value.data(), static_cast<int>(rec_packet.TankPkt->Value.size()));
             
             on_incoming_varlist(varlist, *rec_packet.TankPkt);
             break;
