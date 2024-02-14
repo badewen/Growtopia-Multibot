@@ -204,6 +204,22 @@
   <ItemGroup>
     <ClInclude Include="Bot\Bot.h" />
     <ClInclude Include="Bot\NetAvatar.h" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketStateHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PingRequestHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\ActionPacket\LogonFailHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\GenericTextHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldExitHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldVisitHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnReconnect.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnRemoveHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSendToServerHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSetPosHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSpawnHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSuperMainAccepHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\IPacketHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h" />
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerRegistry.h" />
+    <ClInclude Include="Bot\RedirectServerData.h" />
     <ClInclude Include="Network\Enet\EnetPeer.h" />
     <ClInclude Include="Network\Enet\EnetClient.h" />
     <ClInclude Include="Network\Http\HttpClient.h" />
@@ -218,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp" />
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp" />
     <ClCompile Include="Network\Enet\EnetPeer.cpp" />
     <ClCompile Include="Network\Enet\EnetClient.cpp" />
     <ClCompile Include="Network\Http\HttpClient.cpp" />

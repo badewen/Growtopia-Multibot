@@ -2,7 +2,7 @@
 
 using namespace Utils;
 
-std::vector<std::string> TextParse::StringTokenize(std::string text, std::string delim) {
+std::vector<std::string> TextParse::StringTokenize(const std::string text, const std::string delim) {
     std::vector<std::string> ret{};
     size_t cur_pos = 0;
     size_t found = text.length();

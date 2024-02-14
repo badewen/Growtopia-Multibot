@@ -8,13 +8,13 @@ namespace Utils
     class TextParse
     {
     public:
-        explicit TextParse(std::string text, std::string delim)
+        explicit TextParse(const std::string text, const std::string delim)
             : m_parsed_str{ std::move(StringTokenize(text, delim)) }
         {}
 
-        static inline TextParse Parse(std::string text, std::string delim) { return TextParse{ text, delim }; }
+        static inline TextParse Parse(const std::string text, const std::string delim) { return TextParse{ text, delim }; }
 
-        static std::vector<std::string> StringTokenize(std::string text, std::string delim);
+        static std::vector<std::string> StringTokenize(const std::string text, const std::string delim);
         static std::vector<std::string> StringTokenizeFormatted(std::string text, std::string delim);
         static std::string StringVectorToRaw(std::vector<std::string> vector, std::string seperator);
         

@@ -68,7 +68,7 @@ int main() {
         spdlog::info("Failed to create host");
     }
 
-    bot.SetLoginGuest("02:34:12:43:ff:43", "394810af830294817ffaabb34857193");
+    bot.SetLoginGuest("MAC", "RID");
     //bot.GenerateNewSpoof();
     //bot.SetLoginGrowID("GROWID", "PASS");
     bot.AlwaysReconnect(true);
@@ -89,9 +89,9 @@ int main() {
         if (g_show_player_list) {
             // reduce screen flickering
             std::stringstream output_str = {};
-            output_str << "\033[2J\033[;HPlayer name\tpos\n";
-            output_str << bot.GetLocal()->Name << "\t\t" << bot.GetLocal()->PosX << ", " << bot.GetLocal()->PosY << "\n";
-            for (auto player : bot.GetPlayerList()) {
+            output_str << "\033[2J\033[;HPlayer name\t\tpos\t\tlast pos\tCurrent World : " << bot.GetLocalPtr()->WorldName << "\n";
+            output_str << bot.GetLocalPtr()->Name << "\t\t" << bot.GetLocalPtr()->PosX << ", " << bot.GetLocalPtr()->PosY << "\t\t" << bot.GetLocalPtr()->LastPosX << ", " << bot.GetLocalPtr()->LastPosY << "\n";
+            for (auto player : *bot.GetPlayerListPtr()) {
                 output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\n";
             }
 

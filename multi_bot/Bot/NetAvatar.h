@@ -4,7 +4,8 @@
 
 #include "../Packet/PacketTypes.h"
 
-struct NetAvatar {
+struct NetAvatar
+{
     std::string Name, CountryFlag;
     float PosX, PosY;
     float LastPosX, LastPosY;

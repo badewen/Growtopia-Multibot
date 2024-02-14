@@ -54,6 +54,54 @@
     <ClInclude Include="Bot\NetAvatar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\IPacketHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\GenericTextHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\ActionPacket\LogonFailHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldExitHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldVisitHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PingRequestHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketStateHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSendToServerHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\RedirectServerData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnReconnect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSuperMainAccepHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSetPosHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSpawnHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnRemoveHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp">
@@ -63,9 +111,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\TextParse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Logger\ILogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utils\Random.cpp">
@@ -78,6 +123,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Network\Enet\EnetClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

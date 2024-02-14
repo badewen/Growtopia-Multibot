@@ -15,9 +15,6 @@
 
 using namespace std::chrono_literals;
 
-// it is getting too long to handle the -1s in the ONSendServer
-#define DONT_CHANGE_VAR_IF(var, text, cond) var = text cond ? var : text
-
 void Bot::GenerateNewSpoof() {
     m_login_mac = Utils::Random::RandomMac();
     m_login_rid = Utils::Random::RandomHex(32, true);
@@ -92,6 +89,18 @@ void Bot::JoinWorld(std::string world)
 void Bot::Move(float x, float y) {
     m_local.PosX += x * 32 /* the block width in pixel */ ;
     m_local.PosY += y * 32 /* the block height in pixel */ ;
+}
+
+void Bot::SetRedirectData(const RedirectServerData* server_data) {
+    if (!server_data->Token.empty()) {
+        m_redirect_server_data.Token = server_data->Token;
+    }
+    if (!server_data->UUIDToken.empty()) {
+        m_redirect_server_data.UUIDToken = server_data->UUIDToken;
+    }
+
+    m_redirect_server_data.DoorID = server_data->DoorID;
+    m_redirect_server_data.UserID = server_data->UserID;
 }
 
 void Bot::bot_thread() {
@@ -207,60 +216,8 @@ void Bot::on_disconnect() {
         m_reconnect = false;
     }
 
+    m_is_in_world = false;
     m_is_in_game = false;
-}
-
-void Bot::on_login() {
-    m_logger->Debug("building login data");
-    Utils::TextParse login_data{ "requestedName|MouseGar", "\n"};
-
-    if (!m_login_growid.empty()) {
-        login_data = Utils::TextParse("tankIDName|"+m_login_growid, "\n");
-        login_data.Add("tankIDPass", m_login_growid_pass);
-        login_data.Add("requestedName", "MouseGar");
-    }
-
-    login_data.Add("f", "1");
-    login_data.Add("protocol", m_game_proto_version);
-    login_data.Add("game_version", m_game_version);
-    login_data.Add("fz", "53717544");
-    login_data.Add("cbits", "1024");
-    login_data.Add("player_age", "19");
-    login_data.Add("GDPR", "1");
-    login_data.Add("category", "_-5000");
-    login_data.Add("totalPlaytime", "0");
-    login_data.Add("meta", m_login_meta);
-    login_data.Add("platformID", "0,1,1");
-    login_data.Add("deviceVersion", "0");
-    login_data.Add("country", "us");
-    login_data.Add("mac", m_login_mac);
-    login_data.Add("wk", m_login_wk);
-    login_data.Add("zf", "-1433566146");
-    login_data.Add("hash", m_login_hash);
-    login_data.Add("fhash", "-716928004");
-    login_data.Add("rid", m_login_rid);
-    login_data.Add("lmode", "0");
-
-    if (!m_user_id.empty()) {
-        login_data.Add("user", m_user_id);
-        login_data.Add("UUIDToken", m_login_uuid_token);
-        login_data.Add("token", m_login_token);
-        login_data.Add("doorID", m_login_door_id);
-        login_data.Set("lmode", "1");
-    }
-
-    login_data.Add("hash2", std::to_string(Utils::Hash::proton(fmt::format("{}RT", m_login_mac).c_str())));
-    login_data.Add("klv", Utils::generate_klv(std::stoi(m_game_proto_version), m_game_version, m_login_rid));
-
-    Packet login_pkt{ ePacketType::NET_MESSAGE_GENERIC_TEXT, login_data.GetTextRaw() };
-    SendPacket(login_pkt.CreateToENetPacket());
-    m_logger->Debug("Sent login data");
-}
-
-void Bot::on_login_fail() {
-    m_logger->Error("Login failed.");
-    m_reconnect = m_always_reconnect;
-    Disconnect();
 }
 
 void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
@@ -277,34 +234,22 @@ void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
     // it seems like the NET_MESSAGE_GENERIC_TEXT came from client and is not sent by the server.
     // kept for "just in case" situation
     case NET_MESSAGE_GENERIC_TEXT:
+        m_packet_handler_manager.HandleGenericTextPacket(&pkt);
         break;
     case NET_MESSAGE_GAME_MESSAGE: {
-        if (pkt == "action|logon_fail\n") {
-            on_login_fail();
-        }
+        m_packet_handler_manager.HandleActionPacket(&pkt);
         break;
     }
     // seems unused
     case NET_MESSAGE_ERROR:
+        m_packet_handler_manager.HandleErrorPacket(&pkt);
         break;
     case NET_MESSAGE_TRACK:
-        switch (Utils::Hash::fnv1a(text_parse.Get("eventName")))
-        {
-        case "worldexit"_fh: {
-            on_world_exit(pkt);
-            break;
-        }
-        case "300_WORLD_VISIT"_fh: {
-            on_world_visit(pkt);
-            break;
-        }
-        default:
-            break;
-        }
-
+        m_packet_handler_manager.HandleTrackPacket(&pkt);
         break;
-    // this seems unused too
+        // this seems unused too
     case NET_MESSAGE_CLIENT_LOG_REQUEST:
+        m_packet_handler_manager.HandleLogRequestPacket(&pkt);
         break;
     default:
         break;
@@ -312,140 +257,57 @@ void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
 }
 
 void Bot::on_incoming_tank_packet(TankPacket pkt) {
-    if (pkt.Header.Type == eTankPacketType::NET_GAME_PACKET_PING_REQUEST) {
-        TankPacket tank_pkt = {};
-
-        //https://github.com/ama7nen/enetproxy/blob/62079ce101a0794dbe958790873533cb71b4fb08/proxy/events.cpp#L18
-        tank_pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_PING_REPLY;
-        tank_pkt.Header.VectorX2 = 1000.f; // gravity
-        tank_pkt.Header.VectorY2 = 250.f; // move speed
-        tank_pkt.Header.VectorX = 64.f; // punch range
-        tank_pkt.Header.VectorY = 64.f; // build range
-        tank_pkt.Header.JumpCount = 0;
-
-        SendPacket({ tank_pkt });
-
-        return;
-    }
-    if (pkt.Header.Type == eTankPacketType::NET_GAME_PACKET_STATE) {
-        if (m_player_list.find(pkt.Header.NetId) != m_player_list.end()) {
-            m_player_list[pkt.Header.NetId].LastPosX = m_local.PosX;
-            m_player_list[pkt.Header.NetId].LastPosY = m_local.PosY;
-
-            m_player_list[pkt.Header.NetId].PosX = pkt.Header.PositionX;
-            m_player_list[pkt.Header.NetId].PosY = pkt.Header.PositionY;
-            m_player_list[pkt.Header.NetId].Flags = pkt.Header.Flags;
-        }
-    }
-
+    m_packet_handler_manager.HandleTankPacket(&pkt);
 }
 
 void Bot::on_incoming_varlist(VariantList varlist, TankPacket pkt) {
-    size_t hash = Utils::Hash::fnv1a(varlist.Get(0).GetString().c_str());
-
-    switch (hash)
-    {
-    case "OnSendToServer"_fh :{
-        on_redirect(&varlist);
-        break;
-    }
-    case "OnReconnect"_fh: {
-        m_reconnect = true;
-        Disconnect();
-        break;
-    }
-    case "OnSuperMainStartAcceptLogonHrdxs47254722215a"_fh: {
-        m_is_in_game = true;
-        SendPacket(Packet{ePacketType::NET_MESSAGE_GENERIC_TEXT ,"action|enter_game"});
-        break;
-    }
-    case "OnSetPos"_fh: {
-        CL_Vec2f pos = varlist.Get(1).GetVector2();
-        m_local.PosX = pos.x;
-        m_local.PosY = pos.y;
-        break;
-    }
-    case "OnSpawn"_fh: {
-        on_spawn_avatar(varlist);
-        break;
-    }
-    case "OnRemove"_fh: {
-        m_player_list.erase(std::stoi(Utils::TextParse::StringTokenize(varlist.Get(1).GetString(), "|").at(1)));
-        break;
-    }
-
-    default:
-        break;
-    }
+    m_packet_handler_manager.HandleVarlistPacket(&varlist, &pkt);
 }
 
-void Bot::on_redirect(VariantList* varlist) {
-    m_is_redirected = true;
+void Bot::on_login() {
+    m_logger->Debug("building login data");
+    Utils::TextParse login_data{ "requestedName|MouseGar", "\n"};
 
-    m_logger->Debug("Got server redirect");
-
-    Disconnect();
-
-    std::vector<std::string> redirect_server_data{ Utils::TextParse::StringTokenize(varlist->Get(4).GetString(), "|")};
-    DONT_CHANGE_VAR_IF(m_login_uuid_token, redirect_server_data.at(2), == "-1");
-    DONT_CHANGE_VAR_IF(m_login_token, std::to_string(varlist->Get(2).GetINT32()), == "-1");
-
-    m_login_door_id = redirect_server_data.at(1).empty() ? "0" : redirect_server_data.at(1);
-    m_user_id = std::to_string(varlist->Get(3).GetINT32());
-     
-    m_server_ip = redirect_server_data.at(0);
-    m_server_port = std::to_string(varlist->Get(1).GetINT32());
-}
-
-void Bot::on_spawn_avatar(VariantList varlist) {
-    Utils::TextParse text_parse{ varlist.Get(1).GetString(), "\n" };
-    int32_t netid = std::stoi(text_parse.Get("netID"));
-    int32_t userid = std::stoi(text_parse.Get("userID"));
-
-    int32_t width = std::stoi(text_parse.Get("colrect", 3));
-    int32_t height = std::stoi(text_parse.Get("colrect", 4));
-    float x = std::stof(text_parse.Get("posXY", 1));
-    float y = std::stof(text_parse.Get("posXY", 2));
-
-    std::string name = text_parse.Get("name");
-    std::string country = text_parse.Get("country");
-
-    if (text_parse.Get("type") == "local") {
-        m_local.NetID = netid;
-        m_local.UserID = userid;
-        m_local.WidthSize = width;
-        m_local.HeightSize = height;
-        m_local.Name = name;
-        m_local.CountryFlag = country;
-        m_local.PosX = x;
-        m_local.PosY = y;
+    if (!m_login_growid.empty()) {
+        login_data = Utils::TextParse("tankIDName|"+m_login_growid, "\n");
+        login_data.Add("tankIDPass", m_login_growid_pass);
+        login_data.Add("requestedName", "MouseGar");
     }
-    else {
-        NetAvatar temp;
-        temp.NetID = netid;
-        temp.UserID = userid;
-        temp.WidthSize = width;
-        temp.HeightSize = height;
-        temp.Name = name;
-        temp.CountryFlag = country;
-        temp.PosX = x;
-        temp.PosY = y;
-        temp.IsInvis = std::stoi(text_parse.Get("invis"));
 
-        m_player_list.insert_or_assign(netid, temp);
+    login_data.Add("f", "1");
+    login_data.Add("protocol", m_game_proto_version);
+    login_data.Add("game_version", m_game_version);
+    login_data.Add("fz", "37836328");
+    login_data.Add("cbits", "1056");
+    login_data.Add("player_age", "19");
+    login_data.Add("GDPR", "1");
+    login_data.Add("category", "_-5000");
+    login_data.Add("totalPlaytime", "0");
+    login_data.Add("meta", m_login_meta);
+    login_data.Add("platformID", "0,1,1");
+    login_data.Add("deviceVersion", "0");
+    login_data.Add("country", "us");
+    login_data.Add("mac", m_login_mac);
+    login_data.Add("wk", m_login_wk);
+    login_data.Add("zf", "-145153251");
+    login_data.Add("hash", m_login_hash);
+    login_data.Add("fhash", "-716928004");
+    login_data.Add("rid", m_login_rid);
+    login_data.Add("lmode", "0");
+
+    if (!m_redirect_server_data.UserID.empty()) {
+        login_data.Add("user", m_redirect_server_data.UserID);
+        login_data.Add("UUIDToken", m_redirect_server_data.UUIDToken);
+        login_data.Add("token", m_redirect_server_data.Token);
+        login_data.Add("doorID", m_redirect_server_data.DoorID);
+        login_data.Set("lmode", "1");
     }
+
+    login_data.Add("hash2", std::to_string(Utils::Hash::proton(fmt::format("{}RT", m_login_mac).c_str())));
+    login_data.Add("klv", Utils::generate_klv(std::stoi(m_game_proto_version), m_game_version, m_login_rid));
+
+    Packet login_pkt{ ePacketType::NET_MESSAGE_GENERIC_TEXT, login_data.GetTextRaw() };
+    SendPacket(login_pkt.CreateToENetPacket());
+    m_logger->Debug("Sent login data");
 }
 
-void Bot::on_world_visit(std::string world_name) {
-    m_local.WorldName = world_name.substr(2);
-    m_is_in_world = true;
-    m_player_list.clear();
-    m_local = {};
-}
-
-void Bot::on_world_exit(std::string world_name) {
-    m_local.WorldName = world_name.substr(2);
-    m_is_in_world = false;
-    m_player_list.clear();
-    m_local = {};
-}
