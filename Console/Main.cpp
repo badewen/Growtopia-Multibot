@@ -7,13 +7,13 @@
 
 #include <spdlog/spdlog.h>
 
-#include <Bot/Bot.h>
+#include <Bot/BotManager.h>
 #include <Logger/ILogger.hpp>
 #include <Network/Http/HttpClient.h>
 
 #include <Utils/TextParse.h>
 
-// this project is more of a place to test the bot.
+// this project is more of a place to test the curr_bot->
 
 using namespace std::chrono_literals;
 
@@ -62,22 +62,24 @@ int main() {
         spdlog::critical("An error occurred while initializing ENet.\n");
         return EXIT_FAILURE;
     }
-    Bot bot {std::move(std::make_unique<loger>())};
 
-    if (!bot.CreateHost()) {
+    BotManager bot_mgr {};
+    std::shared_ptr<Bot> curr_bot = bot_mgr.AddBot("test_bot", std::make_shared<loger>());
+
+    if (!curr_bot->CreateHost()) {
         spdlog::info("Failed to create host");
     }
 
-    bot.SetLoginGuest("MAC", "RID");
-    //bot.GenerateNewSpoof();
-    //bot.SetLoginGrowID("GROWID", "PASS");
-    bot.AlwaysReconnect(true);
+    curr_bot->SetLoginGuest("MAC", "RID");
+    //curr_bot->GenerateNewSpoof();
+    //curr_bot->SetLoginGrowID("GROWID", "PASS");
+    curr_bot->AlwaysReconnect(true);
 
-    bot.ConnectWithHttp();
+    curr_bot->ConnectWithHttp();
 
-    bot.StartBotThread();
+    curr_bot->StartBotThread();
 
-    while (!bot.IsInGame()) {
+    while (!curr_bot->IsInGame()) {
         std::this_thread::sleep_for(10ms);
     }
 
@@ -89,9 +91,9 @@ int main() {
         if (g_show_player_list) {
             // reduce screen flickering
             std::stringstream output_str = {};
-            output_str << "\033[2J\033[;HPlayer name\t\tpos\t\tlast pos\tCurrent World : " << bot.GetLocalPtr()->WorldName << "\n";
-            output_str << bot.GetLocalPtr()->Name << "\t\t" << bot.GetLocalPtr()->PosX << ", " << bot.GetLocalPtr()->PosY << "\t\t" << bot.GetLocalPtr()->LastPosX << ", " << bot.GetLocalPtr()->LastPosY << "\n";
-            for (auto player : *bot.GetPlayerListPtr()) {
+            output_str << "\033[2J\033[;HPlayer name\t\tpos\t\tlast pos\tCurrent World : " << curr_bot->GetLocalPtr()->WorldName << "\n";
+            output_str << curr_bot->GetLocalPtr()->Name << "\t\t" << curr_bot->GetLocalPtr()->PosX << ", " << curr_bot->GetLocalPtr()->PosY << "\t\t" << curr_bot->GetLocalPtr()->LastPosX << ", " << curr_bot->GetLocalPtr()->LastPosY << "\n";
+            for (auto player : *curr_bot->GetPlayerListPtr()) {
                 output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\n";
             }
 
@@ -101,43 +103,41 @@ int main() {
         switch (pressed_key)
         {
         case 'W': {
-            bot.Move(0, -1);
+            curr_bot->Move(0, -1);
             break;
         }
         case 'A': {
-            bot.Move(-1, 0);
+            curr_bot->Move(-1, 0);
             break;
         }
         case 'S': {
-            bot.Move(0, 1);
+            curr_bot->Move(0, 1);
             break;
         }
         case 'D': {
-            bot.Move(1, 0);
+            curr_bot->Move(1, 0);
             break;
         }
         case 'J': {
             // ubisoft nuked the tordawn312312 world :sad:
-            bot.JoinWorld("tordawn3123122");
+            curr_bot->JoinWorld("tordawn3123122");
             break;
         }
         case 'L': {
-            bot.JoinWorld("EXIT");
+            curr_bot->JoinWorld("EXIT");
             break;
         }
         case '1': {
             g_output_log = true;
             g_show_player_list = false;
-            printf("\033[2J");
-            printf("\033[;H");
+            printf("\033[2J\033[;H");
             break;
         }
 
         case '2': {
             g_output_log = false;
             g_show_player_list = true;
-            printf("\033[2J");
-            printf("\033[;H");
+            printf("\033[2J\033[;H");
             break;
         }
 

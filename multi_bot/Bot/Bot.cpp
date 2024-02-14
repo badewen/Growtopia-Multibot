@@ -145,17 +145,16 @@ void Bot::bot_thread() {
 
             if (m_local.PosY - m_local.LastPosY < 0) {
                 tank_pkt.Header.VectorY2 = -250;
-                tank_pkt.Header.Flags.bOnJump = true;
             }
             else if (m_local.PosY - m_local.LastPosY > 0) {
                 tank_pkt.Header.VectorY2 = 250;
-                tank_pkt.Header.Flags.bOnJump = true;
             }
 
             tank_pkt.Header.Flags.bOnSolid = true;
 
             SendPacket(tank_pkt);
 
+            m_local.Flags.bRotateLeft = tank_pkt.Header.Flags.bRotateLeft;
             m_local.LastPosX = m_local.PosX;
             m_local.LastPosY = m_local.PosY;
             m_is_bot_moving = true;

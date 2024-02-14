@@ -202,6 +202,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bot\BotManager.h" />
     <ClInclude Include="Bot\Bot.h" />
     <ClInclude Include="Bot\NetAvatar.h" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketStateHandler.hpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Utils\TextParse.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bot\BotManager.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
     <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp" />
     <ClCompile Include="Network\Enet\EnetPeer.cpp" />
