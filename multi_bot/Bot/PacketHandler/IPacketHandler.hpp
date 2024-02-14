@@ -16,6 +16,7 @@ public:
     {
     }
 
+    virtual void Handle() {}
     virtual void Handle(const TextPacket* pkt) {}
     virtual void Handle(const TankPacket* pkt) {}
     virtual void Handle(const VariantList* varlist, const TankPacket* pkt) {}

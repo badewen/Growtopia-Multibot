@@ -4,6 +4,7 @@
 #include "Handlers/TankPacket/PingRequestHandler.hpp"
 
 #include "Handlers/TextPacket/ActionPacket/LogonFailHandler.hpp"
+#include "Handlers/TextPacket/LogonPacket/LogonPacketHandler.h"
 
 #include "Handlers/TextPacket/TrackPacket/WorldVisitHandler.hpp"
 #include "Handlers/TextPacket/TrackPacket/WorldExitHandler.hpp"
@@ -33,6 +34,7 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
 
     // Generic Text
     m_generic_text_packet_handler = std::make_shared<GenericTextHandler>(bot_obj);
+    m_logon_packet_handler = std::make_shared<LogonPacketHandler>(bot_obj);
 
     // Variant list
     m_varlist_packet_handlers.emplace("OnReconnect", std::make_shared<OnReconnectHandler>(bot_obj));
@@ -42,6 +44,10 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     m_varlist_packet_handlers.emplace("OnSpawn", std::make_shared<OnSpawnHandler>(bot_obj));
     m_varlist_packet_handlers.emplace("OnSuperMainStartAcceptLogonHrdxs47254722215a", std::make_shared<OnSuperMainAcceptHandler>(bot_obj));
 
+}
+
+std::shared_ptr<IPacketHandler> PacketHandlerRegistry::GetLogonPacketHandler() {
+    return m_logon_packet_handler;
 }
 
 std::shared_ptr<IPacketHandler> PacketHandlerRegistry::GetGenericTextPacketHandler() {

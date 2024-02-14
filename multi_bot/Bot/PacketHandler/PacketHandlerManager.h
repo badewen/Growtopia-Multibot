@@ -8,6 +8,7 @@
 class PacketHandlerManager
 {
 public:
+    void HandleLogonPacket();
     void HandleGenericTextPacket(const TextPacket* pkt);
     void HandleActionPacket(const TextPacket* pkt);
     void HandleErrorPacket(const TextPacket* pkt);
