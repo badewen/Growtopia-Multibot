@@ -15,23 +15,23 @@
 using namespace std::chrono_literals;
 
 void Bot::GenerateNewSpoof() {
-    m_login_data.mac = Utils::Random::RandomMac();
-    m_login_data.rid = Utils::Random::RandomHex(32, true);
-    m_login_data.wk = Utils::Random::RandomHex(32, true);
-    m_login_data.hash = std::to_string(Utils::Hash::proton(fmt::format("{}RT", Utils::Random::RandomHex(16, true)).c_str()));
+    m_login_data.Mac = Utils::Random::RandomMac();
+    m_login_data.Rid = Utils::Random::RandomHex(32, true);
+    m_login_data.Wk = Utils::Random::RandomHex(32, true);
+    m_login_data.Hash = std::to_string(Utils::Hash::proton(fmt::format("{}RT", Utils::Random::RandomHex(16, true)).c_str()));
 }
 
 void Bot::SetLoginGuest(std::string mac, std::string rid) {
-    m_login_data.mac = mac;
-    m_login_data.rid = rid;
+    m_login_data.Mac = mac;
+    m_login_data.Rid = rid;
 
-    m_login_data.growid = "";
-    m_login_data.growid_pass = "";
+    m_login_data.GrowID = "";
+    m_login_data.GrowIDPass = "";
 }
 
 void Bot::SetLoginGrowID(std::string growid, std::string password) {
-    m_login_data.growid = growid;
-    m_login_data.growid_pass = password;
+    m_login_data.GrowID = growid;
+    m_login_data.GrowIDPass = password;
 }
 
 bool Bot::ConnectWithHttp() {
@@ -59,7 +59,7 @@ retry:
 }
 
 bool Bot::Connect(std::string ip, std::string port, std::string meta, bool use_new_packet) { 
-    m_login_data.meta = meta;
+    m_login_data.Meta = meta;
     m_using_new_packet = use_new_packet;
 
     return EnetClient::Connect(ip, port, use_new_packet);
@@ -200,7 +200,7 @@ void Bot::on_disconnect() {
 
     if (m_is_redirected) {
         m_logger->Info("Reconnecting to sub-server");
-        if (!Connect(m_server_ip, m_server_port, m_login_data.meta, m_using_new_packet)) {
+        if (!Connect(m_server_ip, m_server_port, m_login_data.Meta, m_using_new_packet)) {
             m_logger->Error("Error occured while reconnecting to sub-server");
         }
         m_is_redirected = false;
@@ -226,7 +226,7 @@ void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
     case NET_MESSAGE_UNKNOWN:
         break;
     case NET_MESSAGE_SERVER_HELLO: {
-        m_packet_handler_manager.HandleLogonPacket();
+        m_packet_handler_manager.HandleHelloPacket();
         break;
     }
     // it seems like the NET_MESSAGE_GENERIC_TEXT came from client and is not sent by the server.

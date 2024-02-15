@@ -4,13 +4,13 @@
 
 struct LoginData 
 {
-    std::string growid{};
-    std::string growid_pass{};
-    std::string game_protocol = "205";
-    std::string game_version = "4.5";
-    std::string meta{};
-    std::string mac{};
-    std::string wk{};
-    std::string hash{};
-    std::string rid{};
+    std::string GrowID{};
+    std::string GrowIDPass{};
+    std::string GameProtocol = "205";
+    std::string GameVersion = "4.5";
+    std::string Meta{};
+    std::string Mac{};
+    std::string Wk{};
+    std::string Hash{};
+    std::string Rid{};
 };

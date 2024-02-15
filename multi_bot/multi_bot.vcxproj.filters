@@ -105,7 +105,7 @@
     <ClInclude Include="Bot\BotManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\LogonPacket\LogonPacketHandler.h">
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\HelloPacket\HelloPacketHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bot\LoginData.h">
@@ -141,9 +141,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bot\BotManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bot\PacketHandler\Handlers\TextPacket\LogonPacket\LogonPacketHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

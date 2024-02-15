@@ -210,7 +210,7 @@
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PingRequestHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\ActionPacket\LogonFailHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\GenericTextHandler.hpp" />
-    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\LogonPacket\LogonPacketHandler.h" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\HelloPacket\HelloPacketHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldExitHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldVisitHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnReconnect.hpp" />
@@ -238,7 +238,6 @@
   <ItemGroup>
     <ClCompile Include="Bot\BotManager.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
-    <ClCompile Include="Bot\PacketHandler\Handlers\TextPacket\LogonPacket\LogonPacketHandler.cpp" />
     <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp" />
     <ClCompile Include="Network\Enet\EnetPeer.cpp" />
     <ClCompile Include="Network\Enet\EnetClient.cpp" />

@@ -1,8 +1,9 @@
 #include "PacketHandlerManager.h"
 
 #include "../../Utils/TextParse.h"
-void PacketHandlerManager::HandleLogonPacket() {
-    std::shared_ptr<IPacketHandler> handler = m_handler_registry->GetLogonPacketHandler();
+
+void PacketHandlerManager::HandleHelloPacket() {
+    std::shared_ptr<IPacketHandler> handler = m_handler_registry->GetHelloPacketHandler();
 
     if (handler) {
         handler->Handle();
