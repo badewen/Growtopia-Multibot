@@ -16,6 +16,7 @@
 #include "PacketHandler/PacketHandlerManager.h"
 #include "NetAvatar.h"
 #include "RedirectServerData.h"
+#include "LoginData.h"
 
 class Bot : public EnetClient
 {
@@ -51,7 +52,8 @@ public:
     std::unordered_map<int32_t, NetAvatar>* GetPlayerListPtr() { return &m_player_list; }
     NetAvatar* GetLocalPtr() { return &m_local; }
     std::shared_ptr<ILogger> GetLoggerPtr() { return m_logger; }
-
+    RedirectServerData GetRedirectData() { return m_redirect_server_data; }
+    LoginData GetLoginData() { return m_login_data; }
 
     void SetIsInWorld(bool in_world) { m_is_in_world = in_world; }
     void SetIsInGame(bool in_game) { m_is_in_game = in_game; }
@@ -72,18 +74,8 @@ private:
     void on_incoming_text_packet(ePacketType type, TextPacket pkt);
     void on_incoming_tank_packet(TankPacket pkt);
     void on_incoming_varlist(VariantList varlist, TankPacket pkt);
-
-    void on_login();
 private:
-    std::string m_login_mac{}, m_login_rid{};
-    std::string m_login_wk{}, m_login_hash{};
-
-    std::string m_login_meta{};
-
-    std::string m_login_growid{}, m_login_growid_pass{};
-
-    std::string m_game_version = "4.5";
-    std::string m_game_proto_version = "205";
+    LoginData m_login_data{};
 
     bool m_is_in_world = false, m_is_in_game = false;
     bool m_is_redirected = false, m_reconnect = false;

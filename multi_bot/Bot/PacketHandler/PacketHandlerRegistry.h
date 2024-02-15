@@ -13,6 +13,7 @@ class PacketHandlerRegistry
 public:
     PacketHandlerRegistry(Bot* bot_obj);
 
+    std::shared_ptr<IPacketHandler> GetHelloPacketHandler();
     std::shared_ptr<IPacketHandler> GetGenericTextPacketHandler();
     std::shared_ptr<IPacketHandler> GetActionPacketHandler(std::string action_name);
     std::shared_ptr<IPacketHandler> GetTrackPacketHandler(std::string event_name);
@@ -23,6 +24,7 @@ public:
 
     std::shared_ptr<IPacketHandler> GetVarlistPacketHandler(std::string varlist_func);
 private:
+    std::shared_ptr<IPacketHandler> m_hello_packet_handler{};
     std::shared_ptr<IPacketHandler> m_generic_text_packet_handler{};
     std::unordered_map<std::string /*action_name*/, std::shared_ptr<IPacketHandler>> m_action_packet_handlers{};
     std::unordered_map<std::string /*event_name*/, std::shared_ptr<IPacketHandler>> m_track_packet_handlers{};

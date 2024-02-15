@@ -204,11 +204,13 @@
   <ItemGroup>
     <ClInclude Include="Bot\BotManager.h" />
     <ClInclude Include="Bot\Bot.h" />
+    <ClInclude Include="Bot\LoginData.h" />
     <ClInclude Include="Bot\NetAvatar.h" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketStateHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PingRequestHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\ActionPacket\LogonFailHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\GenericTextHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\HelloPacket\HelloPacketHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldExitHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\TrackPacket\WorldVisitHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnReconnect.hpp" />
