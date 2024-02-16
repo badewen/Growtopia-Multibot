@@ -187,7 +187,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
