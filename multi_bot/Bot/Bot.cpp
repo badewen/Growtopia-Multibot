@@ -51,7 +51,7 @@ retry:
 
     Utils::TextParse parse{ res->body, "\n" };
 
-    if (!Connect(parse.Get("server"), parse.Get("port"), parse.Get("meta"), true)) {
+    if (!Connect(parse.Get("server"), parse.Get("port"), parse.Get("meta"), std::stoi(parse.Get("type2")))) {
         m_logger->Error("Failed to connect to server. Reconnecting to server in 3 seconds");
         goto retry;
     }
