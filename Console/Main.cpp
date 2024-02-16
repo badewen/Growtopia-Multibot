@@ -141,8 +141,8 @@ int main() {
             break;
         }
 
-        std::this_thread::sleep_for(100ms);
         }
+        std::this_thread::sleep_for(100ms);
     }
 
     return 0;
