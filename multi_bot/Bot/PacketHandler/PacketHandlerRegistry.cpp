@@ -4,6 +4,7 @@
 #include "Handlers/TankPacket/PingRequestHandler.hpp"
 
 #include "Handlers/TextPacket/ActionPacket/LogonFailHandler.hpp"
+#include "Handlers/TextPacket/HelloPacket/HelloPacketHandler.hpp"
 
 #include "Handlers/TextPacket/TrackPacket/WorldVisitHandler.hpp"
 #include "Handlers/TextPacket/TrackPacket/WorldExitHandler.hpp"
@@ -30,6 +31,9 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     // Track Packets
     m_track_packet_handlers.emplace("300_WORLD_VISIT", std::make_shared<WorldVisitHandler>(bot_obj));
     m_track_packet_handlers.emplace("worldexit", std::make_shared<WorldExitHandler>(bot_obj));
+    
+    // Hello Packet
+    m_hello_packet_handler = std::make_shared<HelloPacketHandler>(bot_obj);
 
     // Generic Text
     m_generic_text_packet_handler = std::make_shared<GenericTextHandler>(bot_obj);
@@ -42,6 +46,10 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     m_varlist_packet_handlers.emplace("OnSpawn", std::make_shared<OnSpawnHandler>(bot_obj));
     m_varlist_packet_handlers.emplace("OnSuperMainStartAcceptLogonHrdxs47254722215a", std::make_shared<OnSuperMainAcceptHandler>(bot_obj));
 
+}
+
+std::shared_ptr<IPacketHandler> PacketHandlerRegistry::GetHelloPacketHandler() {
+    return m_hello_packet_handler;
 }
 
 std::shared_ptr<IPacketHandler> PacketHandlerRegistry::GetGenericTextPacketHandler() {

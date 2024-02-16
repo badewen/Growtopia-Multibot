@@ -10,29 +10,28 @@
 #include "../Utils/Random.h"
 #include "../Utils/TextParse.h"
 #include "../Utils/Hash.hpp"
-#include "../Utils/Klv.hpp"
 #include "../Packet/Packet.h"
 
 using namespace std::chrono_literals;
 
 void Bot::GenerateNewSpoof() {
-    m_login_mac = Utils::Random::RandomMac();
-    m_login_rid = Utils::Random::RandomHex(32, true);
-    m_login_wk = Utils::Random::RandomHex(32, true);
-    m_login_hash = std::to_string(Utils::Hash::proton(fmt::format("{}RT", Utils::Random::RandomHex(16, true)).c_str()));
+    m_login_data.Mac = Utils::Random::RandomMac();
+    m_login_data.Rid = Utils::Random::RandomHex(32, true);
+    m_login_data.Wk = Utils::Random::RandomHex(32, true);
+    m_login_data.Hash = std::to_string(Utils::Hash::proton(fmt::format("{}RT", Utils::Random::RandomHex(16, true)).c_str()));
 }
 
 void Bot::SetLoginGuest(std::string mac, std::string rid) {
-    m_login_mac = mac;
-    m_login_rid = rid;
+    m_login_data.Mac = mac;
+    m_login_data.Rid = rid;
 
-    m_login_growid = "";
-    m_login_growid_pass = "";
+    m_login_data.GrowID = "";
+    m_login_data.GrowIDPass = "";
 }
 
 void Bot::SetLoginGrowID(std::string growid, std::string password) {
-    m_login_growid = growid;
-    m_login_growid_pass = password;
+    m_login_data.GrowID = growid;
+    m_login_data.GrowIDPass = password;
 }
 
 bool Bot::ConnectWithHttp() {
@@ -60,7 +59,7 @@ retry:
 }
 
 bool Bot::Connect(std::string ip, std::string port, std::string meta, bool use_new_packet) { 
-    m_login_meta = meta;
+    m_login_data.Meta = meta;
     m_using_new_packet = use_new_packet;
 
     return EnetClient::Connect(ip, port, use_new_packet);
@@ -201,7 +200,7 @@ void Bot::on_disconnect() {
 
     if (m_is_redirected) {
         m_logger->Info("Reconnecting to sub-server");
-        if (!Connect(m_server_ip, m_server_port, m_login_meta, m_using_new_packet)) {
+        if (!Connect(m_server_ip, m_server_port, m_login_data.Meta, m_using_new_packet)) {
             m_logger->Error("Error occured while reconnecting to sub-server");
         }
         m_is_redirected = false;
@@ -227,7 +226,7 @@ void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
     case NET_MESSAGE_UNKNOWN:
         break;
     case NET_MESSAGE_SERVER_HELLO: {
-        on_login();
+        m_packet_handler_manager.HandleHelloPacket();
         break;
     }
     // it seems like the NET_MESSAGE_GENERIC_TEXT came from client and is not sent by the server.
@@ -262,51 +261,3 @@ void Bot::on_incoming_tank_packet(TankPacket pkt) {
 void Bot::on_incoming_varlist(VariantList varlist, TankPacket pkt) {
     m_packet_handler_manager.HandleVarlistPacket(&varlist, &pkt);
 }
-
-void Bot::on_login() {
-    m_logger->Debug("building login data");
-    Utils::TextParse login_data{ "requestedName|MouseGar", "\n"};
-
-    if (!m_login_growid.empty()) {
-        login_data = Utils::TextParse("tankIDName|"+m_login_growid, "\n");
-        login_data.Add("tankIDPass", m_login_growid_pass);
-        login_data.Add("requestedName", "MouseGar");
-    }
-
-    login_data.Add("f", "1");
-    login_data.Add("protocol", m_game_proto_version);
-    login_data.Add("game_version", m_game_version);
-    login_data.Add("fz", "37836328");
-    login_data.Add("cbits", "1056");
-    login_data.Add("player_age", "19");
-    login_data.Add("GDPR", "1");
-    login_data.Add("category", "_-5000");
-    login_data.Add("totalPlaytime", "0");
-    login_data.Add("meta", m_login_meta);
-    login_data.Add("platformID", "0,1,1");
-    login_data.Add("deviceVersion", "0");
-    login_data.Add("country", "us");
-    login_data.Add("mac", m_login_mac);
-    login_data.Add("wk", m_login_wk);
-    login_data.Add("zf", "-145153251");
-    login_data.Add("hash", m_login_hash);
-    login_data.Add("fhash", "-716928004");
-    login_data.Add("rid", m_login_rid);
-    login_data.Add("lmode", "0");
-
-    if (!m_redirect_server_data.UserID.empty()) {
-        login_data.Add("user", m_redirect_server_data.UserID);
-        login_data.Add("UUIDToken", m_redirect_server_data.UUIDToken);
-        login_data.Add("token", m_redirect_server_data.Token);
-        login_data.Add("doorID", m_redirect_server_data.DoorID);
-        login_data.Set("lmode", "1");
-    }
-
-    login_data.Add("hash2", std::to_string(Utils::Hash::proton(fmt::format("{}RT", m_login_mac).c_str())));
-    login_data.Add("klv", Utils::generate_klv(std::stoi(m_game_proto_version), m_game_version, m_login_rid));
-
-    Packet login_pkt{ ePacketType::NET_MESSAGE_GENERIC_TEXT, login_data.GetTextRaw() };
-    SendPacket(login_pkt.CreateToENetPacket());
-    m_logger->Debug("Sent login data");
-}
-

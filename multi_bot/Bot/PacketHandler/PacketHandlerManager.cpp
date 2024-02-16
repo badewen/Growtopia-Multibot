@@ -2,6 +2,14 @@
 
 #include "../../Utils/TextParse.h"
 
+void PacketHandlerManager::HandleHelloPacket() {
+    std::shared_ptr<IPacketHandler> handler = m_handler_registry->GetHelloPacketHandler();
+
+    if (handler) {
+        handler->Handle();
+    }
+}
+
 void PacketHandlerManager::HandleGenericTextPacket(const TextPacket* pkt) {
     std::shared_ptr<IPacketHandler> handler = m_handler_registry->GetGenericTextPacketHandler();
 

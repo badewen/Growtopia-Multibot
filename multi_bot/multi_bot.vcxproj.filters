@@ -105,6 +105,12 @@
     <ClInclude Include="Bot\BotManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\HelloPacket\HelloPacketHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\LoginData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp">
