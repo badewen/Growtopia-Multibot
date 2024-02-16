@@ -858,6 +858,12 @@
     <ClInclude Include="openssl\include\openssl\x509v3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="glfw\include\glfw\glfw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glfw\include\glfw\glfw3native.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ENet\include\callbacks.c">

@@ -225,6 +225,8 @@
     <ClInclude Include="fmt\include\fmt\ostr.h" />
     <ClInclude Include="fmt\include\fmt\ranges.h" />
     <ClInclude Include="fmt\include\fmt\xchar.h" />
+    <ClInclude Include="glfw\include\glfw\glfw3.h" />
+    <ClInclude Include="glfw\include\glfw\glfw3native.h" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum.hpp" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum_containers.hpp" />
