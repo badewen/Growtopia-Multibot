@@ -14,6 +14,7 @@
 #include "../Packet/PacketTypes.h"
 #include "../Network/Enet/EnetClient.h"
 #include "PacketHandler/PacketHandlerManager.h"
+#include "Inventory/Inventory.h"
 #include "NetAvatar.h"
 #include "RedirectServerData.h"
 #include "LoginData.h"
@@ -44,13 +45,16 @@ public:
 
     void JoinWorld(std::string world);
     void Move(float x, float y);
+    // if off_x < 0 then it is on left side
+    // if off_y < 0 then it is on the upper side
+    void Place(uint32_t item_id, uint32_t off_x, uint32_t off_y);
+    void Punch(uint32_t off_x, uint32_t off_y);
 
     bool IsInGame() { return m_is_in_game; }
 
-    void AlwaysReconnect(bool reconnect) { m_always_reconnect = reconnect; }
-
     std::unordered_map<int32_t, NetAvatar>* GetPlayerListPtr() { return &m_player_list; }
     NetAvatar* GetLocalPtr() { return &m_local; }
+    Inventory& GetInventoryRef() { return m_inventory; }
     std::shared_ptr<ILogger> GetLoggerPtr() { return m_logger; }
     RedirectServerData GetRedirectData() { return m_redirect_server_data; }
     LoginData GetLoginData() { return m_login_data; }
@@ -80,7 +84,7 @@ private:
     bool m_is_in_world = false, m_is_in_game = false;
     bool m_is_redirected = false, m_reconnect = false;
 
-    bool m_is_running = false, m_using_new_packet = false, m_always_reconnect = false;
+    bool m_is_running = false, m_using_new_packet = false;
 
     std::string m_server_ip{}, m_server_port{};
 
@@ -91,6 +95,8 @@ private:
     NetAvatar m_local{};
     // netid, netavatar
     std::unordered_map<int32_t, NetAvatar> m_player_list{};
+
+    Inventory m_inventory{};
 
     bool m_is_bot_moving = false;
 

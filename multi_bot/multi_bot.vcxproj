@@ -202,10 +202,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bot\Inventory\Inventory.h" />
+    <ClInclude Include="Utils\BinaryStreamReader.h" />
     <ClInclude Include="Bot\BotManager.h" />
     <ClInclude Include="Bot\Bot.h" />
     <ClInclude Include="Bot\LoginData.h" />
     <ClInclude Include="Bot\NetAvatar.h" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\InventoryStateHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketStateHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PingRequestHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TextPacket\ActionPacket\LogonFailHandler.hpp" />
@@ -229,13 +232,14 @@
     <ClInclude Include="Logger\ILogger.hpp" />
     <ClInclude Include="Packet\Packet.h" />
     <ClInclude Include="Packet\PacketTypes.h" />
-    <ClInclude Include="Utils\EventManager.hpp" />
     <ClInclude Include="Utils\Hash.hpp" />
     <ClInclude Include="Utils\Klv.hpp" />
     <ClInclude Include="Utils\Random.h" />
     <ClInclude Include="Utils\TextParse.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bot\Inventory\Inventory.cpp" />
+    <ClCompile Include="Utils\BinaryStreamReader.cpp" />
     <ClCompile Include="Bot\BotManager.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
     <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp" />

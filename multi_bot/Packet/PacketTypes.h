@@ -205,6 +205,6 @@ struct TankPacket {
         uint32_t DataLength = 0;
     } Header;
 
-    std::vector<uint8_t> Value;
+    std::vector<uint8_t> Value{};
 };
 #pragma pack(pop)

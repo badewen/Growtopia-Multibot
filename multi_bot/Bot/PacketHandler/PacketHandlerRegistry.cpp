@@ -2,6 +2,7 @@
 
 #include "Handlers/TankPacket/PacketStateHandler.hpp"
 #include "Handlers/TankPacket/PingRequestHandler.hpp"
+#include "Handlers/TankPacket/InventoryStateHandler.hpp"
 
 #include "Handlers/TextPacket/ActionPacket/LogonFailHandler.hpp"
 #include "Handlers/TextPacket/HelloPacket/HelloPacketHandler.hpp"
@@ -24,7 +25,8 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     // Tank Packets
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_STATE, std::make_shared<PacketStateHandler>(bot_obj));
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_PING_REQUEST, std::make_shared<PingRequestHandler>(bot_obj));
-
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_SEND_INVENTORY_STATE, std::make_shared<InventoryStateHandler>(bot_obj));
+        
     // Action Packets
     m_action_packet_handlers.emplace("logon_fail", std::make_shared<LogonFailHandler>(bot_obj));
 

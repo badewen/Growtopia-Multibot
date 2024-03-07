@@ -22,11 +22,11 @@ Packet::Packet(ENetPacket* enet_packet) {
     }
     else {
         TankPkt = std::make_unique<TankPacket>();
-    
-        memcpy(TankPkt.get(), enet_packet->data + sizeof(ePacketType), sizeof(TankPacket::Header));
-        
-        if (TankPkt->Header.DataLength > 0) {
-            TankPkt->Value.reserve(TankPkt->Header.DataLength);
+
+        memcpy(&TankPkt->Header, enet_packet->data + sizeof(ePacketType), sizeof(TankPacket::Header));
+
+        if (TankPkt->Header.DataLength > 0 || TankPkt->Header.Flags.bExtended) {
+            TankPkt->Value.resize(TankPkt->Header.DataLength);
 
             memcpy(
                 TankPkt->Value.data(),
@@ -70,7 +70,10 @@ std::string Packet::ToString() {
             return fmt::format("VariantList, netid: {} \n{}\n", TankPkt->Header.NetId, varlist.GetContentsAsDebugString());
         }
 
-        if (!TankPkt->Header.Flags.bExtended || TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_SEND_MAP_DATA) {
+        if (!TankPkt->Header.Flags.bExtended || 
+            TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_SEND_MAP_DATA ||
+            TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_SEND_ITEM_DATABASE_DATA    
+        ) {
             return fmt::format(
                 "TankPacket, netid: {}, type {}[{}]\n",
                 TankPkt->Header.NetId,
@@ -84,7 +87,7 @@ std::string Packet::ToString() {
                 TankPkt->Header.NetId,
                 magic_enum::enum_name<eTankPacketType>(TankPkt->Header.Type),
                 TankPkt->Header.Type,
-                spdlog::to_hex(TankPkt->Value)
+                spdlog::to_hex(TankPkt->Value.begin(), TankPkt->Value.end())
             );
         }
     }

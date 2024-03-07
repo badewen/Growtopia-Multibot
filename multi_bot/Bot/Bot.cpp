@@ -35,24 +35,31 @@ void Bot::SetLoginGrowID(std::string growid, std::string password) {
 }
 
 bool Bot::ConnectWithHttp() {
-retry:
-
     m_logger->Info("Getting server data...");
     httplib::Result res = m_http_cl.Post("/growtopia/server_data.php", {}, {}, "application/x-www-form-urlencoded");
 
     if (res.error() != httplib::Error::Success) {
-        m_logger->Error("Failed to get server data. Retrying in 5 seconds. Err : {}",
+        m_logger->Error("Failed to get server data. Err : {}",
             magic_enum::enum_name<httplib::Error>(res.error())
         );
-        std::this_thread::sleep_for(5000ms);
-        goto retry;
+
+        return false;
     }
+
 
     Utils::TextParse parse{ res->body, "\n" };
 
+    // maintenance lol
+    if (!parse.Get("maint").empty()) {
+        m_logger->Warn("Server is under maintenance. Reason {}", parse.Get("maint"));
+
+        return false;
+    }
+
     if (!Connect(parse.Get("server"), parse.Get("port"), parse.Get("meta"), std::stoi(parse.Get("type2")))) {
-        m_logger->Error("Failed to connect to server. Reconnecting to server in 3 seconds");
-        goto retry;
+        m_logger->Error("Failed to connect to server");
+        
+        return false;
     }
 
     return true;
@@ -175,7 +182,6 @@ void Bot::on_receive(ENetPacket* pkt) {
 
     enet_packet_destroy(pkt);
 
-
     switch (rec_packet.Type)
     {
     case ePacketType::NET_MESSAGE_GAME_PACKET: {
@@ -207,12 +213,15 @@ void Bot::on_disconnect() {
         return;
     }
 
-    if (m_reconnect || m_always_reconnect) {
-        m_logger->Info("Auto reconnecting in 3 seconds");
-        std::this_thread::sleep_for(3000ms);
-        ConnectWithHttp();
+    if (m_reconnect) {
+        m_logger->Info("Reconnect requested, Reconnecting...");
+        if (!ConnectWithHttp()) {
+            m_logger->Error("Reconnect failed. Try reconnecting again manually");
+        }
         m_reconnect = false;
     }
+
+    m_redirect_server_data.UserID = "";
 
     m_is_in_world = false;
     m_is_in_game = false;

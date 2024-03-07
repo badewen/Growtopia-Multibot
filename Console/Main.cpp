@@ -1,6 +1,8 @@
 #include <memory>
 #include <chrono>
 
+#define ESC_SEQ_CLEAR_SCREEN "\033[2J\033[;H"
+
 // BULDING FOR LINUX?
 // https://github.com/casualsnek/linuxconio
 #include <conio.h>
@@ -18,7 +20,9 @@
 using namespace std::chrono_literals;
 
 bool g_output_log = true;
+
 bool g_show_player_list = false;
+bool g_show_inventory = false;
 
 class loger : public ILogger
 {
@@ -27,16 +31,21 @@ protected:
         if (!g_output_log) { return; }
         switch (type)
         {
+        case ILogger::LogType::Debug: {
+            spdlog::debug(log);
+            break;
+        }
         case ILogger::LogType::Info: {
             spdlog::info(log);
             break;
         }
-        case ILogger::LogType::Error: {
-            spdlog::error(log);
+        case ILogger::LogType::Warn: {
+            spdlog::warn(log);
             break;
         }
-        case ILogger::LogType::Debug: {
-            spdlog::debug(log);
+
+        case ILogger::LogType::Error: {
+            spdlog::error(log);
             break;
         }
         default:
@@ -70,20 +79,15 @@ int main() {
         spdlog::info("Failed to create host");
     }
 
-    curr_bot->SetLoginGuest("MAC", "RID");
+    //curr_bot->SetLoginGuest("MAC", "RID");
     //curr_bot->GenerateNewSpoof();
     //curr_bot->SetLoginGrowID("GROWID", "PASS");
-    curr_bot->AlwaysReconnect(true);
 
-    curr_bot->ConnectWithHttp();
-
-    curr_bot->StartBotThread();
-
-    while (!curr_bot->IsInGame()) {
-        std::this_thread::sleep_for(10ms);
+    if (!curr_bot->ConnectWithHttp()) {
+        spdlog::error("Failed to connect. Press \"R\" to try connecting again.");
     }
 
-    std::this_thread::sleep_for(3000ms);
+    curr_bot->StartBotThread();
 
     while (true) {
         char pressed_key = non_block_getch();
@@ -91,7 +95,9 @@ int main() {
         if (g_show_player_list) {
             // reduce screen flickering
             std::stringstream output_str = {};
-            output_str << "\033[2J\033[;HPlayer name\t\tpos\t\tlast pos\tCurrent World : " << curr_bot->GetLocalPtr()->WorldName << "\n";
+            std::cout << ESC_SEQ_CLEAR_SCREEN;
+
+            output_str << "Player name\t\tpos\t\tlast pos\tCurrent World : " << curr_bot->GetLocalPtr()->WorldName << "\n";
             output_str << curr_bot->GetLocalPtr()->Name << "\t\t" << curr_bot->GetLocalPtr()->PosX << ", " << curr_bot->GetLocalPtr()->PosY << "\t\t" << curr_bot->GetLocalPtr()->LastPosX << ", " << curr_bot->GetLocalPtr()->LastPosY << "\n";
             for (auto player : *curr_bot->GetPlayerListPtr()) {
                 output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\n";
@@ -100,47 +106,85 @@ int main() {
             std::cout << output_str.str();
         }
 
-        switch (pressed_key)
-        {
-        case 'W': {
-            curr_bot->Move(0, -1);
-            break;
-        }
-        case 'A': {
-            curr_bot->Move(-1, 0);
-            break;
-        }
-        case 'S': {
-            curr_bot->Move(0, 1);
-            break;
-        }
-        case 'D': {
-            curr_bot->Move(1, 0);
-            break;
-        }
-        case 'J': {
-            // ubisoft nuked the tordawn312312 world :sad:
-            curr_bot->JoinWorld("tordawn3123122");
-            break;
-        }
-        case 'L': {
-            curr_bot->JoinWorld("EXIT");
-            break;
-        }
-        case '1': {
-            g_output_log = true;
-            g_show_player_list = false;
-            printf("\033[2J\033[;H");
-            break;
+        if (g_show_inventory) {
+            std::stringstream output_str = {};
+            std::cout << ESC_SEQ_CLEAR_SCREEN;
+
+            output_str << "Inventory Info\nCount\t\tItem ID\t\t\t(" << curr_bot->GetInventoryRef().GetAvailInvSpace() << "/" << curr_bot->GetInventoryRef().GetTotalInvSpace() << ")\n";
+
+            auto item_list = curr_bot->GetInventoryRef().GetInventory();
+
+            for (const auto& item : item_list) {
+                output_str << item.second << "x\t" << item.first << "\n";
+            }
+
+            std::cout << output_str.str();
         }
 
-        case '2': {
-            g_output_log = false;
-            g_show_player_list = true;
-            printf("\033[2J\033[;H");
-            break;
-        }
+        if (pressed_key != NULL) {
+            switch (pressed_key)
+            {
+            case 'W': {
+                curr_bot->Move(0, -1);
+                break;
+            }
+            case 'A': {
+                curr_bot->Move(-1, 0);
+                break;
+            }
+            case 'S': {
+                curr_bot->Move(0, 1);
+                break;
+            }
+            case 'D': {
+                curr_bot->Move(1, 0);
+                break;
+            }
+            case 'J': {
+                // ubisoft nuked the tordawn312312 world :sad:
+                curr_bot->JoinWorld("tordawn3123132");
+                break;
+            }
+            case 'L': {
+                curr_bot->JoinWorld("EXIT");
+                break;
+            }
+            case 'R': {
+                spdlog::info("Connecting to the server...");
+                if (!curr_bot->ConnectWithHttp()) {
+                    spdlog::error("Failed to connect. Press \"R\" to try connecting again.");
+                }
+                break;
+            }
+            case '1': {
+                g_output_log = true;
+                g_show_player_list = false;
+                g_show_inventory = false;
+                printf(ESC_SEQ_CLEAR_SCREEN);
+                break;
+            }
 
+            case '2': {
+                g_output_log = false;
+                g_show_player_list = true;
+                g_show_inventory = false;
+                printf(ESC_SEQ_CLEAR_SCREEN);
+                break;
+            }         
+            
+            case '3': {
+                g_output_log = false;
+                g_show_player_list = false;
+                g_show_inventory = true;
+                printf(ESC_SEQ_CLEAR_SCREEN);
+                break;
+            }
+
+            default: {
+                spdlog::info("KEY PRESS {}", pressed_key);
+                break;
+            }
+            }
         }
         std::this_thread::sleep_for(100ms);
     }

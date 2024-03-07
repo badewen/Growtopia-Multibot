@@ -10,9 +10,10 @@ class ILogger
 {
 public:
     enum class LogType {
+        Debug,
         Info,
+        Warn,
         Error,
-        Debug
     };
 public:
     ILogger() = default;
@@ -33,6 +34,14 @@ public:
     }
 
     template<typename ...Args>
+    void Debug(std::string format, Args&&... arg) {
+        Log(
+            ILogger::LogType::Debug,
+            fmt::format(format, arg...)
+        );
+    }
+
+    template<typename ...Args>
     void Info(std::string format, Args&&... arg) { 
         Log(
             ILogger::LogType::Info,
@@ -41,12 +50,13 @@ public:
     }
 
     template<typename ...Args>
-    void Debug(std::string format, Args&&... arg) {
+    void Warn(std::string format, Args&&... arg) { 
         Log(
-            ILogger::LogType::Debug,
+            ILogger::LogType::Warn,
             fmt::format(format, arg...)
         );
     }
+
 
     template<typename ...Args>
     void Error(std::string format, Args&&... arg) {
