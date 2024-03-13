@@ -3,7 +3,7 @@
 using namespace Utils;
 
 BinaryStreamReader::BinaryStreamReader(uint8_t* buffer, size_t buffer_size) {
-    std::vector<uint8_t> buffer_vec(buffer_size);
+    std::vector<uint8_t> buffer_vec{};
 
     buffer_vec.insert(buffer_vec.end(), buffer, buffer + buffer_size);
 
@@ -41,10 +41,13 @@ std::vector<uint8_t> BinaryStreamReader::ReadBytes(size_t count) {
     return ret;
 }
 
-float BinaryStreamReader::ReadFloat() {
-    std::vector<uint8_t> float_raw = ReadBytes(sizeof(float));
+void Utils::BinaryStreamReader::ReadBytesToBuffer(uint8_t* out_buffer, size_t count) {
+    auto bytes = ReadBytes(count);
+    memcpy(out_buffer, bytes.data(), count);
+}
 
-    return *((float*)float_raw.data());
+float BinaryStreamReader::ReadFloat() {
+    return GenericRead<float>();
 }
 
 std::string BinaryStreamReader::ReadString() {

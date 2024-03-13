@@ -6,6 +6,11 @@ void Inventory::SetInventorySpace(uint32_t inv_space) {
 
 void Inventory::SetItemAmount(uint16_t item_id, uint16_t count) {
     m_item_list.insert_or_assign(item_id, count);
+    if (m_item_list.find(item_id) != m_item_list.end()) {
+        if (m_item_list[item_id] <= 0) {
+            m_item_list.erase(item_id);
+        }
+    }
 }
 
 void Inventory::AddItem(uint16_t item_id, uint16_t amount) {

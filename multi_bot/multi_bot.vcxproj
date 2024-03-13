@@ -203,6 +203,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bot\Inventory\Inventory.h" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\ItemChangeObjectHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\ModifyItemInventoryHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\SendMapDataHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileChangeRequestHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataHandler.hpp" />
+    <ClInclude Include="Bot\World\WorldItemObject.h" />
+    <ClInclude Include="Bot\World\WorldTile.h" />
+    <ClInclude Include="Bot\World\WorldTileExtraTypes.h" />
+    <ClInclude Include="ItemDatabase\ItemDatabase.h" />
+    <ClInclude Include="ItemDatabase\ItemInfo.h" />
     <ClInclude Include="Utils\BinaryStreamReader.h" />
     <ClInclude Include="Bot\BotManager.h" />
     <ClInclude Include="Bot\Bot.h" />
@@ -236,9 +246,11 @@
     <ClInclude Include="Utils\Klv.hpp" />
     <ClInclude Include="Utils\Random.h" />
     <ClInclude Include="Utils\TextParse.h" />
+    <ClInclude Include="Bot\World\WorldInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Inventory\Inventory.cpp" />
+    <ClCompile Include="ItemDatabase\ItemDatabase.cpp" />
     <ClCompile Include="Utils\BinaryStreamReader.cpp" />
     <ClCompile Include="Bot\BotManager.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
@@ -250,6 +262,7 @@
     <ClCompile Include="Packet\Packet.cpp" />
     <ClCompile Include="Utils\Random.cpp" />
     <ClCompile Include="Utils\TextParse.cpp" />
+    <ClCompile Include="Bot\World\WorldInfo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

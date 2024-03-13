@@ -13,8 +13,10 @@
 #include "../Logger/ILogger.hpp"
 #include "../Packet/PacketTypes.h"
 #include "../Network/Enet/EnetClient.h"
+#include "../ItemDatabase/ItemDatabase.h"
 #include "PacketHandler/PacketHandlerManager.h"
 #include "Inventory/Inventory.h"
+#include "World/WorldInfo.h"
 #include "NetAvatar.h"
 #include "RedirectServerData.h"
 #include "LoginData.h"
@@ -22,9 +24,10 @@
 class Bot : public EnetClient
 {
 public:
-    Bot(std::shared_ptr<ILogger> logger)
+    Bot(std::shared_ptr<ILogger> logger, std::shared_ptr<ItemDatabase> item_database)
         : EnetClient::EnetClient{ logger },
-        m_logger{ logger }
+        m_logger{ logger },
+        m_item_database{ std::move(item_database) }
     {
         GenerateNewSpoof();
         m_default_packet_handler_registry = std::make_shared<PacketHandlerRegistry>( this );
@@ -47,15 +50,17 @@ public:
     void Move(float x, float y);
     // if off_x < 0 then it is on left side
     // if off_y < 0 then it is on the upper side
-    void Place(uint32_t item_id, uint32_t off_x, uint32_t off_y);
-    void Punch(uint32_t off_x, uint32_t off_y);
+    void Place(uint32_t item_id, int32_t off_x, int32_t off_y);
+    void Punch(int32_t off_x, int32_t off_y);
 
     bool IsInGame() { return m_is_in_game; }
 
     std::unordered_map<int32_t, NetAvatar>* GetPlayerListPtr() { return &m_player_list; }
     NetAvatar* GetLocalPtr() { return &m_local; }
     Inventory& GetInventoryRef() { return m_inventory; }
+    WorldInfo& GetCurrentWorldRef() { return m_current_world; }
     std::shared_ptr<ILogger> GetLoggerPtr() { return m_logger; }
+    std::shared_ptr<ItemDatabase> GetItemDatabasePtr() { return m_item_database; }
     RedirectServerData GetRedirectData() { return m_redirect_server_data; }
     LoginData GetLoginData() { return m_login_data; }
 
@@ -97,8 +102,11 @@ private:
     std::unordered_map<int32_t, NetAvatar> m_player_list{};
 
     Inventory m_inventory{};
+    WorldInfo m_current_world{};
 
     bool m_is_bot_moving = false;
+
+    std::shared_ptr<ItemDatabase> m_item_database{};
 
     PacketHandlerManager m_packet_handler_manager{};
     std::shared_ptr<PacketHandlerRegistry> m_default_packet_handler_registry{};

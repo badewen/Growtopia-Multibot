@@ -97,13 +97,13 @@ struct TankPacket {
             uint8_t NpcType;
         };
         union {
-            uint8_t JumpCount;
+            uint8_t JumpCount = 0;
             uint8_t BuildRange;
             uint8_t NpcIndex;
             uint8_t LostItemCount;
         };
         union {
-            uint8_t AnimationType;
+            uint8_t AnimationType = 0;
             uint8_t PunchRange;
             uint8_t NpcAction;
             uint8_t ParticleIndex;
@@ -128,7 +128,7 @@ struct TankPacket {
             int32_t TilesLength;
         };
 
-        TankPacketFlag Flags;
+        TankPacketFlag Flags{};
 
         union {
             float FloatVariable = 0;

@@ -15,6 +15,7 @@ namespace Utils {
 
         uint8_t ReadByte();
         std::vector<uint8_t> ReadBytes(size_t count);
+        void ReadBytesToBuffer(uint8_t* out_buffer, size_t count);
 
         float ReadFloat();
 

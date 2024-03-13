@@ -97,6 +97,30 @@ void Bot::Move(float x, float y) {
     m_local.PosY += y * 32 /* the block height in pixel */ ;
 }
 
+void Bot::Place(uint32_t item_id, int32_t off_x, int32_t off_y) {
+    TankPacket pkt{};
+
+    pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_TILE_CHANGE_REQUEST;
+    pkt.Header.PositionX = m_local.PosX;
+    pkt.Header.PositionY = m_local.PosY;
+    pkt.Header.TilePositionX = std::floorf(m_local.PosX / 32) + off_x;
+    pkt.Header.TilePositionY = std::floorf(m_local.PosY / 32) + off_y;
+    pkt.Header.NetId = 0;
+    pkt.Header.MainData = item_id;
+
+    if (pkt.Header.TilePositionX <= std::floorf(m_local.PosX / 32) + 4 &&
+        pkt.Header.TilePositionX >= std::floorf(m_local.PosX / 32) - 4 &&
+        pkt.Header.TilePositionY <= std::floorf(m_local.PosY / 32) + 4 &&
+        pkt.Header.TilePositionY >= std::floorf(m_local.PosY / 32) - 4 
+    ) {
+        SendPacket({ pkt });
+    }
+}
+
+void Bot::Punch(int32_t off_x, int32_t off_y) {
+    Place(18, off_x, off_y);
+}
+
 void Bot::SetRedirectData(const RedirectServerData* server_data) {
     if (!server_data->Token.empty()) {
         m_redirect_server_data.Token = server_data->Token;
@@ -114,7 +138,7 @@ void Bot::bot_thread() {
 
     ENetEvent event{};
     while (m_is_running) {
-        if (m_local.LastPosX == m_local.PosX && m_local.LastPosY == m_local.PosY && m_is_bot_moving) {
+        if (m_local.LastPosX == m_local.PosX && m_local.LastPosY == m_local.PosY && m_is_bot_moving && m_is_in_world) {
             TankPacket tank_pkt{};
 
             tank_pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_STATE;
@@ -130,7 +154,7 @@ void Bot::bot_thread() {
             SendPacket(tank_pkt);
             m_is_bot_moving = false;
         }
-        if (m_local.LastPosX != m_local.PosX || m_local.LastPosY != m_local.PosY) {
+        if ((m_local.LastPosX != m_local.PosX || m_local.LastPosY != m_local.PosY) && m_is_in_world) {
             TankPacket tank_pkt{};
 
             tank_pkt.Header.Type = eTankPacketType::NET_GAME_PACKET_STATE;
@@ -202,16 +226,17 @@ void Bot::on_receive(ENetPacket* pkt) {
 }
 
 void Bot::on_disconnect() {
-    m_logger->Info("Bot disconnected from the server.");
 
     if (m_is_redirected) {
-        m_logger->Info("Reconnecting to sub-server");
+        m_logger->Info("Redirected to sub-server");
         if (!Connect(m_server_ip, m_server_port, m_login_data.Meta, m_using_new_packet)) {
             m_logger->Error("Error occured while reconnecting to sub-server");
         }
         m_is_redirected = false;
         return;
     }
+
+    m_logger->Info("Bot disconnected from the server.");
 
     if (m_reconnect) {
         m_logger->Info("Reconnect requested, Reconnecting...");

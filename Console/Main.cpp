@@ -72,7 +72,19 @@ int main() {
         return EXIT_FAILURE;
     }
 
+    std::shared_ptr<ItemDatabase> items_dat = std::make_shared<ItemDatabase>();
+
+    spdlog::info("Parsing items.dat");
+
+    if (!items_dat->LoadFromFile("items.dat")) {
+        spdlog::error("Cant find items.dat. Terminating...");
+        return EXIT_FAILURE;
+    }
+
+    spdlog::info("Items.dat parsed. Lmao memory usage spiked");
+
     BotManager bot_mgr {};
+    bot_mgr.SetItemDatabase(items_dat);
     std::shared_ptr<Bot> curr_bot = bot_mgr.AddBot("test_bot", std::make_shared<loger>());
 
     if (!curr_bot->CreateHost()) {
@@ -148,6 +160,10 @@ int main() {
             case 'L': {
                 curr_bot->JoinWorld("EXIT");
                 break;
+            }
+            case 'P': {
+                curr_bot->Place(2, -1, 0);
+                break; 
             }
             case 'R': {
                 spdlog::info("Connecting to the server...");

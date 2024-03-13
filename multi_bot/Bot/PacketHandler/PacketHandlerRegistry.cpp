@@ -3,6 +3,11 @@
 #include "Handlers/TankPacket/PacketStateHandler.hpp"
 #include "Handlers/TankPacket/PingRequestHandler.hpp"
 #include "Handlers/TankPacket/InventoryStateHandler.hpp"
+#include "Handlers/TankPacket/SendMapDataHandler.hpp"
+#include "Handlers/TankPacket/ItemChangeObjectHandler.hpp"
+#include "Handlers/TankPacket/ModifyItemInventoryHandler.hpp"
+#include "Handlers/TankPacket/TileChangeRequestHandler.hpp"
+#include "Handlers/TankPacket/TileUpdateDataHandler.hpp"
 
 #include "Handlers/TextPacket/ActionPacket/LogonFailHandler.hpp"
 #include "Handlers/TextPacket/HelloPacket/HelloPacketHandler.hpp"
@@ -26,7 +31,12 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_STATE, std::make_shared<PacketStateHandler>(bot_obj));
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_PING_REQUEST, std::make_shared<PingRequestHandler>(bot_obj));
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_SEND_INVENTORY_STATE, std::make_shared<InventoryStateHandler>(bot_obj));
-        
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_SEND_MAP_DATA, std::make_shared<SendMapDataHandler>(bot_obj));
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_ITEM_CHANGE_OBJECT, std::make_shared<ItemChangeObjectHandler>(bot_obj));
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_MODIFY_ITEM_INVENTORY, std::make_shared<ModifyItemInventoryHandler>(bot_obj));
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_TILE_CHANGE_REQUEST, std::make_shared<TileChangeRequestHandler>(bot_obj));
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_SEND_TILE_UPDATE_DATA, std::make_shared<TileUpdateDataHandler>(bot_obj));
+
     // Action Packets
     m_action_packet_handlers.emplace("logon_fail", std::make_shared<LogonFailHandler>(bot_obj));
 

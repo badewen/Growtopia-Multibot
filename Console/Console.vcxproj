@@ -136,7 +136,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -154,7 +154,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -183,6 +183,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Core.lib;$(SolutionDir)$(Platform)\$(Configuration)\Vendor.lib;%(AdditionalDependencies)</AdditionalDependencies>

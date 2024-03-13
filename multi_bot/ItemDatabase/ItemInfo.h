@@ -1,0 +1,414 @@
+#pragma once
+
+#include <string>
+
+// plies cwredwit, me put 10+ houws REing fwags awnd ewnuwms
+
+enum class eItemInfoMaterialType : uint8_t
+{
+    Wooden,
+    Glass,
+    Rock,
+    Steel, // idk what to name, portculis and stuff.
+};
+
+struct ItemInfoFlag
+{
+    uint16_t Flippable : 1;
+    uint16_t Editable : 1;
+    uint16_t Seedless : 1;
+    uint16_t Permanent : 1;
+    uint16_t Dropless : 1;
+    uint16_t NoSelf : 1;
+    uint16_t NoShadow : 1;
+    uint16_t WorldLocked : 1;
+    uint16_t Beta : 1;
+    uint16_t AutoPickup : 1;
+    uint16_t Mod : 1;
+    uint16_t RandomGrow : 1;
+    uint16_t Public : 1;
+    uint16_t Foreground : 1;
+    uint16_t Holiday : 1;
+    uint16_t Untradeable : 1;
+};
+
+// wtf idk anymore
+
+//struct ItemInfoFlag2
+//{
+//    uint32_t RobotDeadly : 1;
+//    uint32_t RobotShootLeft : 1;
+//    uint32_t RobotShootRight : 1;
+//    uint32_t RobotShootDown : 1;
+//    uint32_t RobotShootUp : 1;
+//    uint32_t RobotCanShoot : 1;
+//    uint32_t RobotLava : 1;
+//    uint32_t RobotPointy : 1;
+//    uint32_t RobotShootDeadly : 1;
+//    uint32_t GuildItem : 1;
+//    uint32_t GuildFlag : 1;
+//    uint32_t StarshipHelm : 1;
+//    uint32_t StarshipReactor : 1;
+//    uint32_t StarshipViewScreen : 1;
+//    uint32_t SMod : 1;
+//    uint32_t TileDeadlyIfOn : 1;
+//    uint32_t LongHandItem64x32 : 1;
+//    uint32_t Gemless : 1;
+//    uint32_t Transmutable : 1;
+//    uint32_t DungeonItem : 1;
+//    uint32_t OneInWorld : 1;
+//    uint32_t OnlyForWorldOwner : 1;
+//    uint32_t PVEMelee : 1;
+//    uint32_t PVERanged : 1;
+//    uint32_t PVEAutoAim : 1;
+//
+//};
+
+
+enum class eItemInfoItemType : uint8_t
+{
+    Fist = 0,
+    Wrench = 1,
+    UserDoor = 2,
+    Lock = 3,
+    Gems = 4,
+    Treasure = 5,
+    Deadly = 6,
+    Trampoline = 7,
+    Consumable = 8,
+    Gateway = 9,
+    Sign = 10,
+    SfxWithExtraFrame = 11,
+    Boombox = 12,
+    Door = 13,
+    Platform = 14,
+    Bedrock = 15,
+    Lava = 16,
+    Normal = 17,
+    Background = 18,
+    Seed = 19,
+    Clothes = 20,
+    NormalWithExtraFrame = 21,
+    BackgdSfxExtraFrame = 22,
+    BackBoombox = 23,
+    Bouncy = 24,
+    Pointy = 25,
+    Portal = 26,
+    Checkpoint = 27,
+    Musicnote = 28,
+    Ice = 29,
+    Switcheroo = 31,
+    Chest = 32,
+    Mailbox = 33,
+    Bulletin = 34,
+    Pinata = 35,
+    Dice = 36,
+    Component = 37,
+    Provider = 38,
+    Lab = 39,
+    Achievement = 40,
+    WeatherMachine = 41,
+    Scoreboard = 42,
+    Sungate = 43,
+    Profile = 44,
+    DeadlyIfOn = 45,
+    Heartmonitor = 46,
+    DonationBox = 47,
+    Toybox = 48,
+    Mannequin = 49,
+    Camera = 50,
+    Magicegg = 51,
+    Team = 52,
+    GameGen = 53,
+    Xenonite = 54,
+    Dressup = 55,
+    Crystal = 56,
+    Burglar = 57,
+    Compactor = 58,
+    Spotlight = 59,
+    Wind = 60,
+    DisplayBlock = 61,
+    Vending = 62,
+    Fishtank = 63,
+    Petfish = 64,
+    Solar = 65,
+    Forge = 66,
+    GivingTree = 67,
+    GivingTreeStump = 68,
+    Steampunk = 69,
+    SteamLavaIfOn = 70,
+    SteamOrgan = 71,
+    Tamagotchi = 72,
+    Sewing = 73,
+    Flag = 74,
+    LobsterTrap = 75,
+    Artcanvas = 76,
+    BattleCage = 77,
+    PetTrainer = 78,
+    SteamEngine = 79,
+    LockBot = 80,
+    WeatherSpecial = 81,
+    SpiritStorage = 82,
+    DisplayShelf = 83,
+    VipDoor = 84,
+    ChalTimer = 85,
+    ChalFlag = 86,
+    FishMount = 87,
+    Portrait = 88,
+    WeatherSpecial2 = 89,
+    Fossil = 90,
+    FossilPrep = 91,
+    DnaMachine = 92,
+    Blaster = 93,
+    Valhowla = 94,
+    Chemsynth = 95,
+    Chemtank = 96,
+    Storage = 97,
+    Oven = 98,
+    SuperMusic = 99,
+    Geigercharge = 100,
+    AdventureReset = 101,
+    TombRobber = 102,
+    Faction = 103,
+    RedFaction = 104,
+    GreenFaction = 105,
+    BlueFaction = 106,
+    Artifact = 107,
+    TrampolineMomentum = 108,
+    FishgotchiTank = 109,
+    FishingBlock = 110,
+    ItemSucket = 111,
+    ItemPlanter = 112,
+    Robot = 113,
+    Command = 114,
+    Ticket = 115,
+    StatsBlock = 116,
+    FieldNode = 117,
+    OuijaBoard = 118,
+    ArchitectMachine = 119,
+    Starship = 120,
+    AutoActionBreak = 123,
+    AutoActionHarvest = 124,
+    AutoActionHarvestSuck = 125,
+    LightningIfOn = 126,
+    PhasedBlock = 127,
+    Mud = 128,
+    RootCutting = 129,
+    PasswordStorage = 130,
+    PhasedBlock2 = 131,
+    Bomb = 132,
+    WeatherInfinity = 134,
+    Slime = 135,
+    Acid = 136,
+    Completionist = 137,
+    PunchToggle = 138,
+    AnzuBlock = 139,
+    FeedingBlock = 140,
+    KrankensBlock = 141,
+    FriendsEntrance = 142,
+    Pearls = 143,
+};
+
+enum class eItemInfoVisualEffect : uint8_t
+{
+    None = 1,
+    FlameLick = 1,
+    Smoking = 2,
+    GlowTint1 = 3,
+    Anim = 4,
+    Bubbles = 5,
+    Pet = 6,
+    PetAnim = 7,
+    NoArms = 8,
+    Wavey = 9,
+    WaveyAnim = 10,
+    Botharms = 11,
+    Lowhair = 12,
+    Underface = 13,
+    Skintint = 14,
+    Mask = 15,
+    AnimMask = 16,
+    LowhairMask = 17,
+    Ghost = 18,
+    BubbleMachine = 46,
+    Pulse = 19,
+    Colorize = 20,
+    ColorizeToShirt = 21,
+    ColorizeAnim = 22,
+    Highface = 23,
+    HighfaceAnim = 24,
+    RainbowShift = 25,
+    Backfore = 26,
+    ColorizeWithSkin = 27,
+    NoRender = 28,
+    Spin = 29,
+    Offhand = 30,
+    Winged = 31,
+    Sink = 32,
+    Darkness = 33,
+    Lightsource = 34,
+    LightIfOn = 35,
+    Discolor = 36,
+    StepSpin = 37,
+    Petcolored = 38,
+    Silkfoot = 39,
+    Tilty = 40,
+    TiltyDark = 41,
+    NextFrameIfOn = 42,
+    Wobble = 43,
+    Scroll = 44,
+    LightsourcePulse = 45,
+    Verylowhair = 47,
+    VerylowhairMask = 48,
+};
+
+enum class eItemInfoTextureType : uint8_t
+{
+    None = 1,
+    EightDirection,
+    Horizontal,
+    AttachedToWall,
+    FourDirection,
+    Randomized,
+    Vertical,
+    HorizontalCavePlatform,
+    AttachedToWallGround,
+    Diagonal,
+};
+     
+enum class eItemInfoCollisionType : uint8_t
+{
+    None,
+    Full,
+    JumpThrough,
+    Gateway,
+    CollideIfOff,
+    OneWay,
+    VIPDoor,
+    JumpDown,
+    Adventure,
+    CollideIfOn,
+    Faction,
+    Guild,
+    Cloud,
+    FriendEntrance
+};
+     
+enum class eItemInfoSeedBase : uint8_t
+{
+    None,
+    ShadeUpper,
+    Empty,
+    Rough,
+    Lines,
+    Empty2,
+    Rough2,
+    Rough3,
+    Lines2,
+    CircleCenter,
+    CircleCenter2,
+    Empty3,
+    DarkBottom,
+    ShadeTop,
+    Empty4,
+    Cracked,
+};
+     
+enum class eItemInfoSeedOverlay : uint8_t
+{
+    Lines,
+    Stripey = 2,
+    PolkaDot = 4,
+    ShadeHalf = 6,
+    Cross = 8,
+    JaggedLine = 10,
+    WaveyLines = 12,
+    DiagonalLines = 14,
+};
+     
+enum class eItemInfoTreeBase : uint8_t
+{
+    BranchTree,
+    Roots,
+    Roots2,
+    BigTrunk,
+    BranchTree2,
+    NoRoots,
+    BentSlightly,
+    VineLikePlant,
+};
+     
+enum class eItemInfoTreeLeaves : uint8_t
+{
+    FlatLeaves = 0,
+    BigTriangularLeaves = 2,
+    BigCircleLeaves = 4,
+    CircularLeaves = 6,
+};
+
+struct eItemInfoColor
+{
+    uint8_t A;
+    uint8_t R;
+    uint8_t G;
+    uint8_t B;
+};
+
+enum class eItemInfoClothingType : uint8_t
+{
+    None,
+    Shirt,
+    Pants,
+    Shoes,
+    Face,
+    Hand,
+    Back,
+    Hair,
+    Neck
+};
+
+struct ItemInfo
+{
+    uint32_t ItemID;
+    ItemInfoFlag Flags;
+    eItemInfoItemType ItemType;
+    eItemInfoMaterialType MaterialType;
+    std::string ItemName;
+    std::string TextureFilePath;
+    int32_t TextureFileHash;
+    eItemInfoVisualEffect VisualEffect;
+    uint32_t Flags2;
+    uint8_t TextureCoordX;
+    uint8_t TextureCoordY;
+    eItemInfoTextureType TextureType;
+    uint8_t IsStripeyWallpaper;
+    eItemInfoCollisionType CollisionType;
+    uint8_t Health;
+    uint32_t ResetTime;
+    eItemInfoClothingType ClothingType;
+    uint16_t Rarity;
+    uint8_t MaxAmount;
+    std::string ExtraFile;
+    uint32_t ExtraFileHash;
+    uint32_t AnimationTime; 
+    std::string PetName;
+    std::string PetPrefix;
+    std::string PetSuffix;
+    std::string PetAbility;
+    eItemInfoSeedBase SeedBase;
+    eItemInfoSeedOverlay SeedOverlay;
+    eItemInfoTreeBase TreeBase;
+    eItemInfoTreeLeaves TreeLeaves;
+    eItemInfoColor SeedColor;
+    eItemInfoColor SeedOverlayColor;
+    uint32_t Ingredient; // unused now.
+    uint32_t GrowTime;
+    uint16_t Flags3; // idk 
+    uint16_t IsRayman;
+    std::string ExtraOption;
+    std::string TextureFile2;
+    std::string ExtraOption2;
+    std::string PunchOptions;
+    uint8_t BodyPartList[9];
+    std::string RendererFilePath;
+};

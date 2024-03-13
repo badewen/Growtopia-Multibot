@@ -1,7 +1,7 @@
 #include "BotManager.h"
 
 std::shared_ptr<Bot> BotManager::AddBot(std::string bot_id, std::shared_ptr<ILogger> logger) {
-    m_bot_list.insert_or_assign(bot_id, std::make_shared<Bot>(logger));
+    m_bot_list.insert_or_assign(bot_id, std::make_shared<Bot>(logger, m_item_dats));
 
     return GetBot(bot_id);
 }

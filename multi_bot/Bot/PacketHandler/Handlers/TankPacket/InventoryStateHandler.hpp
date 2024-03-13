@@ -20,7 +20,7 @@ public:
 
     void Handle(const TankPacket* tank_pkt) override {
         Utils::BinaryStreamReader reader{ tank_pkt->Value };
-
+        
         // idk it is always 0x01 
         reader.Advance(1);
 
