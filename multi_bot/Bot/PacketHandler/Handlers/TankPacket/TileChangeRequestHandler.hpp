@@ -9,6 +9,10 @@ public:
     TileChangeRequestHandler(Bot* bot_obj) : IPacketHandler::IPacketHandler(bot_obj) {}
 
     void Handle(const TankPacket* tank_pkt) override {
+        if (!m_bot->GetCurrentWorldRef().IsParsedSuccessfully()) {
+            return;
+        }
+
         const WorldTile& old_tile =  m_bot->GetCurrentWorldRef()
                                            .GetTileRef(
                                                 tank_pkt->Header.TilePositionX,

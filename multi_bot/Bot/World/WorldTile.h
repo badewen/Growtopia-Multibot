@@ -65,6 +65,15 @@ union WorldTileExtraAllUnion {
     WorldTileGuildItemExtra GuildItemExtra;
     WorldTileKrakenBlockExtra KrakenBlockExtra;
     WorldTileFriendsEntranceExtra FriendEntranceExtra;
+    WorldTileCrystalExtra CrystalExtra;
+    WorldTileSolarCollectorExtra SolarCollectorExtra;
+    WorldTileSteamEngineExtra SteamEngineExtra;
+    WorldTileGeigerChargerExtra GeigerChargerExtra;
+    WorldTileItemSuckerExtra ItemSuckerExtra;
+    WorldTileGrowscanExtra GrowscanExtra;
+    WorldTileTemporaryPlatformExtra TemporaryPlatformExtra;
+    WorldTileSafeVaultExtra SafeVaultExtra;
+    WorldTileInfinityWeatherMachineExtra InfinityWeatherMachineExtra;
 };
 
 class WorldTile {
@@ -135,6 +144,15 @@ public:
         WorldTileGuildItemExtra* GuildItemExtra;
         WorldTileKrakenBlockExtra* KrakenBlockExtra;
         WorldTileFriendsEntranceExtra* FriendEntranceExtra;
+        WorldTileCrystalExtra* CrystalExtra;
+        WorldTileSolarCollectorExtra* SolarCollectorExtra;
+        WorldTileSteamEngineExtra* SteamEngineExtra;
+        WorldTileGeigerChargerExtra* GeigerChargerExtra;
+        WorldTileItemSuckerExtra* ItemSuckerExtra;
+        WorldTileGrowscanExtra* GrowscanExtra;
+        WorldTileTemporaryPlatformExtra* TemporaryPlatformExtra;
+        WorldTileSafeVaultExtra* SafeVaultExtra;
+        WorldTileInfinityWeatherMachineExtra* InfinityWeatherMachineExtra;
     } ExtraTileData{};
 
 private:

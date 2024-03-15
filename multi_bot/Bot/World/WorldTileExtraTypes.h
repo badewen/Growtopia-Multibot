@@ -21,16 +21,19 @@ enum eWorldTileExtraType : uint8_t {
     GameGenerator = 17,
     Xenonite = 18,
     PhoneBooth = 19,
+    Crystal = 20,
     Spotlight = 22,
     DisplayBlock = 23,
     VendingMachine = 24,
     FishTankPort = 25,
+    SolarCollector = 26,
     Forge = 27,
     GivingTree = 28,
     SewingMachine = 32,
     CountryFlag = 33,
     LobsterTrap = 34,
     PaintingEasel = 35,
+    SteamEngine = 38,
     WeatherMachine = 40,
     DataBedrock = 42,
     Shelf = 43,
@@ -43,10 +46,16 @@ enum eWorldTileExtraType : uint8_t {
     StorageBlock = 54,
     CookingOven = 55,
     AudioRack = 56,
+    GeigerCharger = 57,
     AdventureBegin = 58,
     TombRobber = 59,
     TrainingPort = 61,
+    ItemSucker = 62,
     GuildItem = 65,
+    Growscan = 66,
+    TemporaryPlatform = 73,
+    SafeVault = 74,
+    InfinityWeatherMachine = 77,
     KrakenGalaticBlock = 80,
     FriendsEntrance = 81,
 };
@@ -69,7 +78,7 @@ struct WorldTileLockExtra {
 };
 
 struct WorldTileSeedExtra {
-    uint32_t TimePassed;
+    uint32_t TimeLeft;
     uint8_t FruitCount;
 };
 
@@ -78,7 +87,7 @@ struct WorldTileDiceExtra {
 };
 
 struct WorldTileProviderExtra {
-    uint32_t TimePassed;
+    uint32_t TimeLeft;
 };
 
 struct WorldTileAchievementBlockExtra {
@@ -129,6 +138,10 @@ struct WorldTilePhoneBoothExtra {
     uint16_t Neck;
 };
 
+struct WorldTileCrystalExtra {
+    std::vector<uint8_t> Crystals;
+};
+
 struct WorldTileSpotlightExtra {};
 
 struct WorldTileDisplayBlockExtra {
@@ -146,6 +159,10 @@ struct WorldTileFishTankPortExtra {
         uint32_t FishItemId, Lbs;
     };
     std::vector<FishInfo> Fishes;
+};
+
+struct WorldTileSolarCollectorExtra {
+    uint8_t Unk1[5];
 };
 
 struct WorldTileForgeExtra {
@@ -171,6 +188,10 @@ struct WorldTileLobsterTrapExtra {};
 struct WorldTilePaintingEaselExtra {
     uint32_t ItemId;
     std::string Label;
+};
+
+struct WorldTileSteamEngineExtra {
+    uint32_t Temperature;
 };
 
 struct WorldTileWeatherMachineExtra {
@@ -227,6 +248,10 @@ struct WorldTileAudioRackExtra {
     uint32_t Volume;
 };
 
+struct WorldTileGeigerChargerExtra {
+    uint32_t Unk1;
+};
+
 struct WorldTileAdventureBeginsExtra {};
 
 struct WorldTileTombRobberExtra {};
@@ -242,8 +267,30 @@ struct WorldTileTrainingPortExtra {
     uint8_t Unk3[5];
 };
 
+struct WorldTileItemSuckerExtra {
+    uint32_t ItemIdToSuck;
+    uint32_t ItemAmount;
+    uint16_t Flags;
+    uint32_t Limit;
+};
+
 struct WorldTileGuildItemExtra {
     uint8_t Unk1[17];
+};
+
+struct WorldTileGrowscanExtra {
+    uint8_t Unk1;
+};
+
+struct WorldTileTemporaryPlatformExtra {
+    uint32_t Unk1;
+};
+
+struct WorldTileSafeVaultExtra {};
+
+struct WorldTileInfinityWeatherMachineExtra {
+    uint32_t IntervalMinutes;
+    std::vector<uint32_t> WeatherMachineList;
 };
 
 struct WorldTileKrakenBlockExtra {

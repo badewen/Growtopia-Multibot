@@ -12,6 +12,10 @@ public:
         Utils::BinaryStreamReader reader{ tank_pkt->Value };
         WorldTile parsed_tile{};
 
+        if (!m_bot->GetCurrentWorldRef().IsParsedSuccessfully()) {
+            return;
+        }
+
         bool parse_successful = WorldInfo::ParseTile(reader, parsed_tile);
 
         if (!parse_successful) {

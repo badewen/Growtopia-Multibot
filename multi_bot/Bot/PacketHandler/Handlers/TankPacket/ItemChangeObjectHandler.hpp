@@ -10,6 +10,10 @@ public:
     ItemChangeObjectHandler(Bot* bot_obj) : IPacketHandler::IPacketHandler(bot_obj) {}
 
     void Handle(const TankPacket* tank_pkt) override {
+        if (!m_bot->GetCurrentWorldRef().IsParsedSuccessfully()) {
+            return;
+        }
+
         if (tank_pkt->Header.NetId == -1) {
             m_bot->GetCurrentWorldRef().AddItemObject(
                 tank_pkt->Header.MainData,
