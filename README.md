@@ -1,3 +1,5 @@
+Please kindly credit me or this repos if you are going to use this repos, thank you :)
+
 # Usage
 Press number key that correspond to page number in order to navigate through pages.
 - Page 1 = Packet and other logging thing
