@@ -19,7 +19,7 @@ Other keys : (CAPSLOCK OR SHIFT MUST BE USED WHEN PRESSING THESE KEYS)
 - P = place dirt block at the left of the character
 
 # Features
-~- GUI~ this repos only provide the Core project. do the GUI urself since i dont write or maintain GUI
+- [ ] ~GUI~ this repos only provide the Core project. do the GUI urself since i dont write or maintain GUI
 - [ ] Proxy support
 - [x] World serializer
 - [x] Items dat serializer
