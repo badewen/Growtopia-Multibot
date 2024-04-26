@@ -1,3 +1,5 @@
+Please kindly credit me or this repos if you are going to use this repos, thank you :)
+
 # Usage
 Press number key that correspond to page number in order to navigate through pages.
 - Page 1 = Packet and other logging thing
@@ -15,11 +17,11 @@ Other keys : (CAPSLOCK OR SHIFT MUST BE USED WHEN PRESSING THESE KEYS)
 - P = place dirt block at the left of the character
 
 # Features
-- [ ] GUI
+- [ ] ~GUI~ this repos only provide the Core project. do the GUI urself since i dont write or maintain GUI
 - [ ] Proxy support
 - [x] World serializer
 - [x] Items dat serializer
 - [x] Inventory support
 
 # Update Frequency
-Since this is the core lib from a private project, expect an update bumps to happen every 1 - 3 weeks
+Since this is the core lib from a private project, expect an update bumps to happen unexpectedly ;)
