@@ -151,10 +151,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;BCrypt.lib;Normaliz.lib;Wldap32.lib;$(ProjectDir)lib/curl/$(TargetPlatformIdentifier)/libcurl.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libssl.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,10 +177,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;BCrypt.lib;Normaliz.lib;Wldap32.lib;$(ProjectDir)lib/curl/$(TargetPlatformIdentifier)/libcurl.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libssl.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
@@ -187,23 +191,28 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libssl.lib;$(ProjectDir)lib/openssl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;BCrypt.lib;Normaliz.lib;Wldap32.lib;$(ProjectDir)lib/curl/$(TargetPlatformIdentifier)/libcurl.lib;$(ProjectDir)lib/glfw/$(TargetPlatformIdentifier)/glfw3.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libcrypto.lib;$(ProjectDir)lib/libressl/$(TargetPlatformIdentifier)/libssl.lib</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)lib\openssl\$(TargetPlatformIdentifier)\*.dll" "$(OutDir)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cpp-httplib\include\cpp-httplib\httplib.h" />
-    <ClInclude Include="ENet\include\enet\callbacks.h" />
-    <ClInclude Include="ENet\include\enet\enet.h" />
-    <ClInclude Include="ENet\include\enet\list.h" />
-    <ClInclude Include="ENet\include\enet\protocol.h" />
-    <ClInclude Include="ENet\include\enet\time.h" />
-    <ClInclude Include="ENet\include\enet\types.h" />
-    <ClInclude Include="ENet\include\enet\unix.h" />
-    <ClInclude Include="ENet\include\enet\utility.h" />
-    <ClInclude Include="ENet\include\enet\win32.h" />
+    <ClInclude Include="curl\include\curl\curl.h" />
+    <ClInclude Include="curl\include\curl\curlver.h" />
+    <ClInclude Include="curl\include\curl\easy.h" />
+    <ClInclude Include="curl\include\curl\header.h" />
+    <ClInclude Include="curl\include\curl\mprintf.h" />
+    <ClInclude Include="curl\include\curl\multi.h" />
+    <ClInclude Include="curl\include\curl\options.h" />
+    <ClInclude Include="curl\include\curl\stdcheaders.h" />
+    <ClInclude Include="curl\include\curl\system.h" />
+    <ClInclude Include="curl\include\curl\typecheck-gcc.h" />
+    <ClInclude Include="curl\include\curl\urlapi.h" />
+    <ClInclude Include="curl\include\curl\websockets.h" />
     <ClInclude Include="fmt\include\fmt\bin_to_hex.h" />
     <ClInclude Include="fmt\include\fmt\bundled\args.h" />
     <ClInclude Include="fmt\include\fmt\bundled\chrono.h" />
@@ -225,8 +234,56 @@
     <ClInclude Include="fmt\include\fmt\ostr.h" />
     <ClInclude Include="fmt\include\fmt\ranges.h" />
     <ClInclude Include="fmt\include\fmt\xchar.h" />
+    <ClInclude Include="glfw\include\GLFW\cocoa_joystick.h" />
+    <ClInclude Include="glfw\include\GLFW\cocoa_platform.h" />
+    <ClInclude Include="glfw\include\GLFW\cocoa_time.h" />
     <ClInclude Include="glfw\include\glfw\glfw3.h" />
     <ClInclude Include="glfw\include\glfw\glfw3native.h" />
+    <ClInclude Include="glfw\include\GLFW\internal.h" />
+    <ClInclude Include="glfw\include\GLFW\linux_joystick.h" />
+    <ClInclude Include="glfw\include\GLFW\mappings.h" />
+    <ClInclude Include="glfw\include\GLFW\null_joystick.h" />
+    <ClInclude Include="glfw\include\GLFW\null_platform.h" />
+    <ClInclude Include="glfw\include\GLFW\platform.h" />
+    <ClInclude Include="glfw\include\GLFW\posix_poll.h" />
+    <ClInclude Include="glfw\include\GLFW\posix_thread.h" />
+    <ClInclude Include="glfw\include\GLFW\posix_time.h" />
+    <ClInclude Include="glfw\include\GLFW\win32_joystick.h" />
+    <ClInclude Include="glfw\include\GLFW\win32_platform.h" />
+    <ClInclude Include="glfw\include\GLFW\win32_thread.h" />
+    <ClInclude Include="glfw\include\GLFW\win32_time.h" />
+    <ClInclude Include="glfw\include\GLFW\wl_platform.h" />
+    <ClInclude Include="glfw\include\GLFW\x11_platform.h" />
+    <ClInclude Include="glfw\include\GLFW\xkb_unicode.h" />
+    <ClInclude Include="lua\include\lua\lapi.h" />
+    <ClInclude Include="lua\include\lua\lauxlib.h" />
+    <ClInclude Include="lua\include\lua\lcode.h" />
+    <ClInclude Include="lua\include\lua\lctype.h" />
+    <ClInclude Include="lua\include\lua\ldebug.h" />
+    <ClInclude Include="lua\include\lua\ldo.h" />
+    <ClInclude Include="lua\include\lua\lfunc.h" />
+    <ClInclude Include="lua\include\lua\lgc.h" />
+    <ClInclude Include="lua\include\lua\ljumptab.h" />
+    <ClInclude Include="lua\include\lua\llex.h" />
+    <ClInclude Include="lua\include\lua\llimits.h" />
+    <ClInclude Include="lua\include\lua\lmem.h" />
+    <ClInclude Include="lua\include\lua\lobject.h" />
+    <ClInclude Include="lua\include\lua\lopcodes.h" />
+    <ClInclude Include="lua\include\lua\lopnames.h" />
+    <ClInclude Include="lua\include\lua\lparser.h" />
+    <ClInclude Include="lua\include\lua\lprefix.h" />
+    <ClInclude Include="lua\include\lua\lstate.h" />
+    <ClInclude Include="lua\include\lua\lstring.h" />
+    <ClInclude Include="lua\include\lua\ltable.h" />
+    <ClInclude Include="lua\include\lua\ltests.h" />
+    <ClInclude Include="lua\include\lua\ltm.h" />
+    <ClInclude Include="lua\include\lua\lua.h" />
+    <ClInclude Include="lua\include\lua\lua.hpp" />
+    <ClInclude Include="lua\include\lua\luaconf.h" />
+    <ClInclude Include="lua\include\lua\lualib.h" />
+    <ClInclude Include="lua\include\lua\lundump.h" />
+    <ClInclude Include="lua\include\lua\lvm.h" />
+    <ClInclude Include="lua\include\lua\lzio.h" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum.hpp" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="magic_enum\include\magic_enum\magic_enum_containers.hpp" />
@@ -252,6 +309,7 @@
     <ClInclude Include="openssl\include\openssl\buffererr.h" />
     <ClInclude Include="openssl\include\openssl\camellia.h" />
     <ClInclude Include="openssl\include\openssl\cast.h" />
+    <ClInclude Include="openssl\include\openssl\chacha.h" />
     <ClInclude Include="openssl\include\openssl\cmac.h" />
     <ClInclude Include="openssl\include\openssl\cmp.h" />
     <ClInclude Include="openssl\include\openssl\cmperr.h" />
@@ -276,6 +334,7 @@
     <ClInclude Include="openssl\include\openssl\cryptoerr_legacy.h" />
     <ClInclude Include="openssl\include\openssl\ct.h" />
     <ClInclude Include="openssl\include\openssl\cterr.h" />
+    <ClInclude Include="openssl\include\openssl\curve25519.h" />
     <ClInclude Include="openssl\include\openssl\decoder.h" />
     <ClInclude Include="openssl\include\openssl\decodererr.h" />
     <ClInclude Include="openssl\include\openssl\des.h" />
@@ -283,6 +342,7 @@
     <ClInclude Include="openssl\include\openssl\dherr.h" />
     <ClInclude Include="openssl\include\openssl\dsa.h" />
     <ClInclude Include="openssl\include\openssl\dsaerr.h" />
+    <ClInclude Include="openssl\include\openssl\dso.h" />
     <ClInclude Include="openssl\include\openssl\dtls1.h" />
     <ClInclude Include="openssl\include\openssl\ebcdic.h" />
     <ClInclude Include="openssl\include\openssl\ec.h" />
@@ -302,6 +362,8 @@
     <ClInclude Include="openssl\include\openssl\e_ostime.h" />
     <ClInclude Include="openssl\include\openssl\fipskey.h" />
     <ClInclude Include="openssl\include\openssl\fips_names.h" />
+    <ClInclude Include="openssl\include\openssl\gost.h" />
+    <ClInclude Include="openssl\include\openssl\hkdf.h" />
     <ClInclude Include="openssl\include\openssl\hmac.h" />
     <ClInclude Include="openssl\include\openssl\hpke.h" />
     <ClInclude Include="openssl\include\openssl\http.h" />
@@ -322,6 +384,7 @@
     <ClInclude Include="openssl\include\openssl\ocsp.h" />
     <ClInclude Include="openssl\include\openssl\ocsperr.h" />
     <ClInclude Include="openssl\include\openssl\opensslconf.h" />
+    <ClInclude Include="openssl\include\openssl\opensslfeatures.h" />
     <ClInclude Include="openssl\include\openssl\opensslv.h" />
     <ClInclude Include="openssl\include\openssl\ossl_typ.h" />
     <ClInclude Include="openssl\include\openssl\params.h" />
@@ -333,6 +396,8 @@
     <ClInclude Include="openssl\include\openssl\pkcs12err.h" />
     <ClInclude Include="openssl\include\openssl\pkcs7.h" />
     <ClInclude Include="openssl\include\openssl\pkcs7err.h" />
+    <ClInclude Include="openssl\include\openssl\poly1305.h" />
+    <ClInclude Include="openssl\include\openssl\posix_time.h" />
     <ClInclude Include="openssl\include\openssl\proverr.h" />
     <ClInclude Include="openssl\include\openssl\provider.h" />
     <ClInclude Include="openssl\include\openssl\prov_ssl.h" />
@@ -349,10 +414,13 @@
     <ClInclude Include="openssl\include\openssl\seed.h" />
     <ClInclude Include="openssl\include\openssl\self_test.h" />
     <ClInclude Include="openssl\include\openssl\sha.h" />
+    <ClInclude Include="openssl\include\openssl\sm3.h" />
+    <ClInclude Include="openssl\include\openssl\sm4.h" />
     <ClInclude Include="openssl\include\openssl\srp.h" />
     <ClInclude Include="openssl\include\openssl\srtp.h" />
     <ClInclude Include="openssl\include\openssl\ssl.h" />
     <ClInclude Include="openssl\include\openssl\ssl2.h" />
+    <ClInclude Include="openssl\include\openssl\ssl23.h" />
     <ClInclude Include="openssl\include\openssl\ssl3.h" />
     <ClInclude Include="openssl\include\openssl\sslerr.h" />
     <ClInclude Include="openssl\include\openssl\sslerr_legacy.h" />
@@ -361,6 +429,7 @@
     <ClInclude Include="openssl\include\openssl\storeerr.h" />
     <ClInclude Include="openssl\include\openssl\symhacks.h" />
     <ClInclude Include="openssl\include\openssl\thread.h" />
+    <ClInclude Include="openssl\include\openssl\tls.h" />
     <ClInclude Include="openssl\include\openssl\tls1.h" />
     <ClInclude Include="openssl\include\openssl\trace.h" />
     <ClInclude Include="openssl\include\openssl\ts.h" />
@@ -369,6 +438,7 @@
     <ClInclude Include="openssl\include\openssl\types.h" />
     <ClInclude Include="openssl\include\openssl\ui.h" />
     <ClInclude Include="openssl\include\openssl\uierr.h" />
+    <ClInclude Include="openssl\include\openssl\ui_compat.h" />
     <ClInclude Include="openssl\include\openssl\whrlpool.h" />
     <ClInclude Include="openssl\include\openssl\x509.h" />
     <ClInclude Include="openssl\include\openssl\x509err.h" />
@@ -479,15 +549,39 @@
     <ClInclude Include="spdlog\include\spdlog\version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ENet\include\callbacks.c" />
-    <ClCompile Include="ENet\include\compress.c" />
-    <ClCompile Include="ENet\include\host.c" />
-    <ClCompile Include="ENet\include\list.c" />
-    <ClCompile Include="ENet\include\packet.c" />
-    <ClCompile Include="ENet\include\peer.c" />
-    <ClCompile Include="ENet\include\protocol.c" />
-    <ClCompile Include="ENet\include\unix.c" />
-    <ClCompile Include="ENet\include\win32.c" />
+    <ClCompile Include="ENet\enet.cpp" />
+    <ClCompile Include="lua\include\lua\lapi.cpp" />
+    <ClCompile Include="lua\include\lua\lauxlib.cpp" />
+    <ClCompile Include="lua\include\lua\lbaselib.cpp" />
+    <ClCompile Include="lua\include\lua\lcode.cpp" />
+    <ClCompile Include="lua\include\lua\lcorolib.cpp" />
+    <ClCompile Include="lua\include\lua\lctype.cpp" />
+    <ClCompile Include="lua\include\lua\ldblib.cpp" />
+    <ClCompile Include="lua\include\lua\ldebug.cpp" />
+    <ClCompile Include="lua\include\lua\ldo.cpp" />
+    <ClCompile Include="lua\include\lua\ldump.cpp" />
+    <ClCompile Include="lua\include\lua\lfunc.cpp" />
+    <ClCompile Include="lua\include\lua\lgc.cpp" />
+    <ClCompile Include="lua\include\lua\linit.cpp" />
+    <ClCompile Include="lua\include\lua\liolib.cpp" />
+    <ClCompile Include="lua\include\lua\llex.cpp" />
+    <ClCompile Include="lua\include\lua\lmathlib.cpp" />
+    <ClCompile Include="lua\include\lua\lmem.cpp" />
+    <ClCompile Include="lua\include\lua\loadlib.cpp" />
+    <ClCompile Include="lua\include\lua\lobject.cpp" />
+    <ClCompile Include="lua\include\lua\lopcodes.cpp" />
+    <ClCompile Include="lua\include\lua\loslib.cpp" />
+    <ClCompile Include="lua\include\lua\lparser.cpp" />
+    <ClCompile Include="lua\include\lua\lstate.cpp" />
+    <ClCompile Include="lua\include\lua\lstring.cpp" />
+    <ClCompile Include="lua\include\lua\lstrlib.cpp" />
+    <ClCompile Include="lua\include\lua\ltable.cpp" />
+    <ClCompile Include="lua\include\lua\ltablib.cpp" />
+    <ClCompile Include="lua\include\lua\ltm.cpp" />
+    <ClCompile Include="lua\include\lua\lundump.cpp" />
+    <ClCompile Include="lua\include\lua\lutf8lib.cpp" />
+    <ClCompile Include="lua\include\lua\lvm.cpp" />
+    <ClCompile Include="lua\include\lua\lzio.cpp" />
     <ClCompile Include="proton\include\proton\Variant.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

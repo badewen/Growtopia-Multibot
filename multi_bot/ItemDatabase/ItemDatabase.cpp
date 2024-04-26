@@ -34,6 +34,8 @@ void ItemDatabase::LoadFromReader(Utils::BinaryStreamReader& reader) {
     m_items_dat_version = reader.GenericRead<uint16_t>();
     m_items_count = reader.GenericRead<uint32_t>();
 
+    m_item_info_map.reserve(m_items_count);
+
     for (uint32_t i = 0; i < m_items_count; i++) {
         auto item_info = parse_next_item_info(reader);
         m_item_info_map.insert_or_assign(item_info.ItemID, item_info);
@@ -57,7 +59,7 @@ std::string ItemDatabase::DecryptString(ItemID item_id, const std::vector<uint8_
 ItemInfo ItemDatabase::GetItemInfo(uint32_t item_id) {
     auto it = m_item_info_map.find(item_id);
 
-    return it == m_item_info_map.end() ? ItemInfo{} : it->second;
+    return it == m_item_info_map.end() ? ItemInfo{} : std::move(it->second);
 }
 
 ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
@@ -71,7 +73,8 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
     ret.TextureFilePath = reader.ReadString();
     ret.TextureFileHash = reader.GenericRead<uint32_t>();
     ret.VisualEffect = reader.GenericRead<eItemInfoVisualEffect>();
-    ret.Flags2 = reader.GenericRead<uint32_t>();
+    reader.Advance(4);
+    //ret.Flags2 = reader.GenericRead<uint32_t>();
     ret.TextureCoordX = reader.GenericRead<uint8_t>();
     ret.TextureCoordY = reader.GenericRead<uint8_t>();
     ret.TextureType = reader.GenericRead<eItemInfoTextureType>();
@@ -97,13 +100,18 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
     ret.SeedOverlayColor = reader.GenericRead<eItemInfoColor>();
     ret.Ingredient = reader.GenericRead<uint32_t>();
     ret.GrowTime = reader.GenericRead<uint32_t>();
-    ret.Flags3 = reader.GenericRead<uint16_t>();
+    reader.Advance(2);
+    //ret.Flags3 = reader.GenericRead<uint16_t>();
     ret.IsRayman = reader.GenericRead<uint16_t>();
     ret.ExtraOption = reader.ReadString();
     ret.TextureFile2 = reader.ReadString();
     ret.ExtraOption2 = reader.ReadString();
 
-    reader.Advance(80);
+    reader.Advance(8);
+
+    ret.Flags2 = reader.GenericRead<ItemInfoFlag2>();
+
+    reader.Advance(68);
 
     ret.PunchOptions = reader.ReadString();
     reader.Advance(4);

@@ -54,7 +54,7 @@
     <ClInclude Include="Bot\PacketHandler\IPacketHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h">
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerDispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bot\PacketHandler\PacketHandlerRegistry.h">
@@ -150,6 +150,75 @@
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bot\World\WorldNPC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketNPCHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\ILuaLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\BuiltinLibs\BuiltinLuaLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\BuiltinLibs\Functions\Sleep.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\LuaBotApiLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\SendRawPacket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\GetLocal.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\SendTextPacket.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\IsInGame.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\IsInWorld.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\AddHook.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Structs\TankPacketLua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\BuiltinLibs\Functions\RunThread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSetBux.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\BuiltinLibs\Functions\SendWebhook.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\DebugGetFaultyTile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Structs\NetAvatarLua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataMultipleHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp">
@@ -173,7 +242,7 @@
     <ClCompile Include="Network\Enet\EnetClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp">
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerDispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bot\PacketHandler\PacketHandlerRegistry.cpp">
@@ -192,6 +261,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemDatabase\ItemDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\BuiltinLibs\BuiltinLuaLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Lua\BotApi\LuaBotApiLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Lua\BotApi\Structs\TankPacketLua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Lua\BotApi\Structs\NetAvatarLua.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -31,15 +31,15 @@ public:
     inline void SendPacket(ENetPacket* pkt) {
         if (m_enet_peer) {
             if (m_logger.get()) {
-                m_logger->LogString(ILogger::LogType::Info, "Outgoing " + Packet{ pkt }.ToString());
+                m_logger->LogString(ILogger::LogType::Info, "Outgoing " + Packet{ pkt }.ToDebugString());
             }
 
             enet_peer_send(m_enet_peer, 0, pkt);
         }
     }
 
-    void SendPacket(Packet* pkt);
-    inline void SendPacket(Packet&& pkt) { 
+    void SendPacket(const Packet* pkt);
+    inline void SendPacket(const Packet&& pkt) { 
         SendPacket(&pkt);
     }
 

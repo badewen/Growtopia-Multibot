@@ -7,6 +7,7 @@
 #include <proton/Variant.h>
 #include <magic_enum/magic_enum.hpp>
 
+#include "../Utils/Timer.h"
 #include "../Utils/Random.h"
 #include "../Utils/TextParse.h"
 #include "../Utils/Hash.hpp"
@@ -36,18 +37,23 @@ void Bot::SetLoginGrowID(std::string growid, std::string password) {
 
 bool Bot::ConnectWithHttp() {
     m_logger->Info("Getting server data...");
-    httplib::Result res = m_http_cl.Post("/growtopia/server_data.php", {}, {}, "application/x-www-form-urlencoded");
+    HttpClient::HttpResult res = m_http_cl.Post("/growtopia/server_data.php", {}, {}, "application/x-www-form-urlencoded");
 
-    if (res.error() != httplib::Error::Success) {
-        m_logger->Error("Failed to get server data. Err : {}",
-            magic_enum::enum_name<httplib::Error>(res.error())
+    if (res.ErrCode != CURLE_OK) {
+        if (res.ErrCode == CURLE_PROXY) {
+            m_logger->Error("Proxy related error occurred. Code: {}",
+                magic_enum::enum_name<CURLproxycode>(res.ProxyErrCode)
+            );
+        }
+        m_logger->Error("Failed to get server data. libcurl returned: {}",
+            magic_enum::enum_name<CURLcode>(res.ErrCode)
         );
 
         return false;
     }
 
 
-    Utils::TextParse parse{ res->body, "\n" };
+    Utils::TextParse parse{ res.Response.body, "\n" };
 
     // maintenance lol
     if (!parse.Get("maint").empty()) {
@@ -121,6 +127,10 @@ void Bot::Punch(int32_t off_x, int32_t off_y) {
     Place(18, off_x, off_y);
 }
 
+LuaExecutorError Bot::ExecuteScript(std::string script) {
+    return m_lua_executor.ExecuteString(script);
+}
+
 void Bot::SetRedirectData(const RedirectServerData* server_data) {
     if (!server_data->Token.empty()) {
         m_redirect_server_data.Token = server_data->Token;
@@ -136,7 +146,6 @@ void Bot::SetRedirectData(const RedirectServerData* server_data) {
 void Bot::bot_thread() {
     m_logger->Debug("STARTED BOT THREAD");
 
-    ENetEvent event{};
     while (m_is_running) {
         if (m_local.LastPosX == m_local.PosX && m_local.LastPosY == m_local.PosY && m_is_bot_moving && m_is_in_world) {
             TankPacket tank_pkt{};
@@ -149,7 +158,10 @@ void Bot::bot_thread() {
             tank_pkt.Header.VectorX2 = 0;
             tank_pkt.Header.VectorY2 = 0;
             tank_pkt.Header.Flags.bUnk = true;
-            tank_pkt.Header.Flags.bOnSolid = true;
+
+            m_local.Flags.bOnSolid = true;
+            // hack lol
+            *(uint32_t*)&tank_pkt.Header.Flags |= *(uint32_t*)&m_local.Flags;
 
             SendPacket(tank_pkt);
             m_is_bot_moving = false;
@@ -166,11 +178,11 @@ void Bot::bot_thread() {
 
             if (m_local.PosX - m_local.LastPosX < 0) {
                 tank_pkt.Header.VectorX2 = -250;
-                tank_pkt.Header.Flags.bRotateLeft = true;
+                m_local.Flags.bRotateLeft = true;
             }
             else if (m_local.PosX - m_local.LastPosX > 0) {
                 tank_pkt.Header.VectorX2 = 250;
-                tank_pkt.Header.Flags.bRotateLeft = false;
+                m_local.Flags.bRotateLeft = false;
             }
 
             if (m_local.PosY - m_local.LastPosY < 0) {
@@ -181,10 +193,10 @@ void Bot::bot_thread() {
             }
 
             tank_pkt.Header.Flags.bOnSolid = true;
+            tank_pkt.Header.Flags.bRotateLeft = m_local.Flags.bRotateLeft;
 
             SendPacket(tank_pkt);
 
-            m_local.Flags.bRotateLeft = tank_pkt.Header.Flags.bRotateLeft;
             m_local.LastPosX = m_local.PosX;
             m_local.LastPosY = m_local.PosY;
             m_is_bot_moving = true;
@@ -202,7 +214,7 @@ void Bot::on_connect() {
 void Bot::on_receive(ENetPacket* pkt) {
     Packet rec_packet { pkt };
 
-    m_logger->LogString(ILogger::LogType::Info, "Incoming " + rec_packet.ToString());
+    m_logger->LogString(ILogger::LogType::Info, "Incoming " + rec_packet.ToDebugString());
 
     enet_packet_destroy(pkt);
 
@@ -227,6 +239,9 @@ void Bot::on_receive(ENetPacket* pkt) {
 
 void Bot::on_disconnect() {
 
+    m_current_world.Reset();
+    m_player_list.clear();
+
     if (m_is_redirected) {
         m_logger->Info("Redirected to sub-server");
         if (!Connect(m_server_ip, m_server_port, m_login_data.Meta, m_using_new_packet)) {
@@ -237,6 +252,7 @@ void Bot::on_disconnect() {
     }
 
     m_logger->Info("Bot disconnected from the server.");
+    m_inventory.Reset();
 
     if (m_reconnect) {
         m_logger->Info("Reconnect requested, Reconnecting...");
@@ -260,38 +276,55 @@ void Bot::on_incoming_text_packet(ePacketType type, TextPacket pkt) {
     case NET_MESSAGE_UNKNOWN:
         break;
     case NET_MESSAGE_SERVER_HELLO: {
-        m_packet_handler_manager.HandleHelloPacket();
+        m_packet_handler_dispatcher.HandleHelloPacket();
         break;
     }
     // it seems like the NET_MESSAGE_GENERIC_TEXT came from client and is not sent by the server.
     // kept for "just in case" situation
     case NET_MESSAGE_GENERIC_TEXT:
-        m_packet_handler_manager.HandleGenericTextPacket(&pkt);
+        m_packet_handler_dispatcher.HandleGenericTextPacket(&pkt);
         break;
     case NET_MESSAGE_GAME_MESSAGE: {
-        m_packet_handler_manager.HandleActionPacket(&pkt);
+        m_packet_handler_dispatcher.HandleActionPacket(&pkt);
         break;
     }
     // seems unused
     case NET_MESSAGE_ERROR:
-        m_packet_handler_manager.HandleErrorPacket(&pkt);
+        m_packet_handler_dispatcher.HandleErrorPacket(&pkt);
         break;
     case NET_MESSAGE_TRACK:
-        m_packet_handler_manager.HandleTrackPacket(&pkt);
+        m_packet_handler_dispatcher.HandleTrackPacket(&pkt);
         break;
         // this seems unused too
     case NET_MESSAGE_CLIENT_LOG_REQUEST:
-        m_packet_handler_manager.HandleLogRequestPacket(&pkt);
+        m_packet_handler_dispatcher.HandleLogRequestPacket(&pkt);
         break;
     default:
         break;
     }
+
+    if (m_lua_executor.GetCurrentLuaState()) {
+        m_lua_bot_api_lib->TryInvokeOnTextPktCallback(m_lua_executor.GetCurrentLuaState().value(), type, pkt);
+    }
+    return;
 }
 
 void Bot::on_incoming_tank_packet(TankPacket pkt) {
-    m_packet_handler_manager.HandleTankPacket(&pkt);
+    m_packet_handler_dispatcher.HandleTankPacket(&pkt);
+
+    if (m_lua_executor.GetCurrentLuaState()) {
+        m_lua_bot_api_lib->TryInvokeOnTankPktCallback(m_lua_executor.GetCurrentLuaState().value(), pkt);
+    }
 }
 
 void Bot::on_incoming_varlist(VariantList varlist, TankPacket pkt) {
-    m_packet_handler_manager.HandleVarlistPacket(&varlist, &pkt);
+    m_packet_handler_dispatcher.HandleVarlistPacket(&varlist, &pkt);
+    if (m_lua_executor.GetCurrentLuaState()) {
+
+        m_lua_bot_api_lib->TryInvokeOnVarlistPktCallback(
+            m_lua_executor.GetCurrentLuaState().value(), 
+            pkt,
+            varlist
+        );
+    }
 }

@@ -12,10 +12,12 @@ public:
     void Handle(const TextPacket* pkt) override {
         Utils::TextParse pkt_parse{ *pkt, "\n" };
 
+        m_bot->SetIsInWorld(false);
+
         *m_bot->GetLocalPtr() = {};
         m_bot->GetLocalPtr()->WorldName = "EXIT";
         m_bot->GetPlayerListPtr()->clear();
+        m_bot->GetCurrentWorldRef().Reset();
 
-        m_bot->SetIsInWorld(false);
     }
 };

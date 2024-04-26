@@ -4,6 +4,7 @@
 
 #include "Bot.h"
 
+
 class BotManager
 {
 public:

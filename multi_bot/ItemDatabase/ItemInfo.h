@@ -9,7 +9,7 @@ enum class eItemInfoMaterialType : uint8_t
     Wooden,
     Glass,
     Rock,
-    Steel, // idk what to name, portculis and stuff.
+    Metal, // idk what to name, portculis and stuff.
 };
 
 struct ItemInfoFlag
@@ -32,38 +32,42 @@ struct ItemInfoFlag
     uint16_t Untradeable : 1;
 };
 
-// wtf idk anymore
+// lets go bits by bits
+struct ItemInfoFlag2
+{
+    uint32_t RobotDeadly : 1;       
+    uint32_t RobotShootLeft : 1;
+    uint32_t RobotShootRight : 1;
+    uint32_t RobotShootDown : 1;
+    uint32_t RobotShootUp : 1;
+    uint32_t RobotCanShoot : 1;
+    uint32_t RobotLava : 1;
+    uint32_t RobotPointy : 1;
+    uint32_t RobotShootDeadly : 1;
+    uint32_t GuildItem : 1;
+    uint32_t GuildFlag : 1;
+    uint32_t StarshipHelm : 1;
+    uint32_t StarshipReactor : 1;
+    uint32_t StarshipViewScreen : 1;
+    uint32_t SuperMod : 1;
+    uint32_t TileDeadlyIfOn : 1;
+    uint32_t LongHandItem64x32 : 1;
+    uint32_t Gemless : 1;
+    uint32_t Transmutable : 1;
+    uint32_t DungeonItem : 1;
+    uint32_t PVEMelee : 1;
+    uint32_t PVERanged : 1;
+    uint32_t PVEAutoAim : 1;
+    uint32_t OneInWorld : 1;
+    uint32_t OnlyForWorldOwner : 1;
+    uint32_t NoUpgrade : 1;
+};
 
-//struct ItemInfoFlag2
-//{
-//    uint32_t RobotDeadly : 1;
-//    uint32_t RobotShootLeft : 1;
-//    uint32_t RobotShootRight : 1;
-//    uint32_t RobotShootDown : 1;
-//    uint32_t RobotShootUp : 1;
-//    uint32_t RobotCanShoot : 1;
-//    uint32_t RobotLava : 1;
-//    uint32_t RobotPointy : 1;
-//    uint32_t RobotShootDeadly : 1;
-//    uint32_t GuildItem : 1;
-//    uint32_t GuildFlag : 1;
-//    uint32_t StarshipHelm : 1;
-//    uint32_t StarshipReactor : 1;
-//    uint32_t StarshipViewScreen : 1;
-//    uint32_t SMod : 1;
-//    uint32_t TileDeadlyIfOn : 1;
-//    uint32_t LongHandItem64x32 : 1;
-//    uint32_t Gemless : 1;
-//    uint32_t Transmutable : 1;
-//    uint32_t DungeonItem : 1;
-//    uint32_t OneInWorld : 1;
-//    uint32_t OnlyForWorldOwner : 1;
-//    uint32_t PVEMelee : 1;
-//    uint32_t PVERanged : 1;
-//    uint32_t PVEAutoAim : 1;
-//
+
+// dont know where this is but might get discovered later. 
+//struct ItemInfoFlags5 {
+//    uint32_t ServerFlagAltMode : 1;
 //};
-
 
 enum class eItemInfoItemType : uint8_t
 {
@@ -377,7 +381,7 @@ struct ItemInfo
     std::string TextureFilePath;
     int32_t TextureFileHash;
     eItemInfoVisualEffect VisualEffect;
-    uint32_t Flags2;
+    //uint32_t Flags2;
     uint8_t TextureCoordX;
     uint8_t TextureCoordY;
     eItemInfoTextureType TextureType;
@@ -403,11 +407,12 @@ struct ItemInfo
     eItemInfoColor SeedOverlayColor;
     uint32_t Ingredient; // unused now.
     uint32_t GrowTime;
-    uint16_t Flags3; // idk 
+    //uint16_t Flags3; // idk 
     uint16_t IsRayman;
     std::string ExtraOption;
     std::string TextureFile2;
     std::string ExtraOption2;
+    ItemInfoFlag2 Flags2;
     std::string PunchOptions;
     uint8_t BodyPartList[9];
     std::string RendererFilePath;

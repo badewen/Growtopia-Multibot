@@ -16,7 +16,7 @@ public:
             return;
         }
 
-        bool parse_successful = WorldInfo::ParseTile(reader, parsed_tile);
+        bool parse_successful = WorldInfo::ParseTile(reader, parsed_tile, m_bot->GetItemDatabasePtr());
 
         if (!parse_successful) {
             m_bot->GetLoggerPtr()->Error("Unkown extra tile data type {} on block id {} is encountered in UPDATE_TILE_DATA Packet. Who knows what will happen now",

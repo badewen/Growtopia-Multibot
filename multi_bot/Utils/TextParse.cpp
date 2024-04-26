@@ -15,7 +15,7 @@ std::vector<std::string> TextParse::StringTokenize(const std::string text, const
 
     while ((found = text.find(delim, cur_pos)) != std::string::npos) {
         ret.push_back(text.substr(cur_pos, found - cur_pos));
-        cur_pos = found + 1;
+        cur_pos = found + delim.length();
     }
 
     if (cur_pos <= text.length() - 1) {
@@ -39,15 +39,24 @@ std::vector<std::string> Utils::TextParse::StringTokenizeFormatted(std::string t
     return tokenized;
 }
 
-std::string Utils::TextParse::StringVectorToRaw(std::vector<std::string> str_vector, std::string seperator) {
-    std::string ret {};
+std::string Utils::TextParse::StringVectorToRaw(std::vector<std::string> str_vector, std::string seperator, bool ignore_empty_vector) {
+    std::string ret{};
+
+    if (!str_vector.size()) {
+        return {};
+    }
 
     for (const std::string& str : str_vector) {
+        if (str.empty() && ignore_empty_vector) {
+            continue;
+        }
         ret += str + seperator;
     }
 
     // remove trailing newline
-    ret.pop_back();
+    if (!ret.empty()) {
+        ret.pop_back();
+    }
 
     return ret;
 }

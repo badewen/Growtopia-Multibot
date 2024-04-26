@@ -30,7 +30,15 @@ public:
             m_bot->GetCurrentWorldRef().RemoveItemObject(collected_obj.ObjectID);
 
             if (tank_pkt->Header.NetId == m_bot->GetLocalPtr()->NetID) {
-                m_bot->GetInventoryRef().AddItem(collected_obj.ItemID, collected_obj.ItemAmount);
+                // 112 = gems id
+                if (m_bot->GetItemDatabasePtr()->GetItemInfo(collected_obj.ItemID).ItemType == 
+                    eItemInfoItemType::Gems
+                ) {
+                    m_bot->GetLocalPtr()->Gems += collected_obj.ItemAmount;
+                }
+                else {
+                    m_bot->GetInventoryRef().AddItem(collected_obj.ItemID, collected_obj.ItemAmount);
+                }
             }
         }
     }

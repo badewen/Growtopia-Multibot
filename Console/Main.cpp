@@ -14,6 +14,9 @@
 #include <Network/Http/HttpClient.h>
 
 #include <Utils/TextParse.h>
+#include <Utils/Random.h>
+
+#include <Utils/Timer.h>
 
 // this project is more of a place to test the curr_bot->
 
@@ -23,6 +26,8 @@ bool g_output_log = true;
 
 bool g_show_player_list = false;
 bool g_show_inventory = false;
+bool g_show_npc = false;
+bool g_show_world_debug_progg = false;
 
 class loger : public ILogger
 {
@@ -110,9 +115,9 @@ int main() {
             std::cout << ESC_SEQ_CLEAR_SCREEN;
 
             output_str << "Player name\t\tpos\t\tlast pos\tCurrent World : " << curr_bot->GetLocalPtr()->WorldName << "\n";
-            output_str << curr_bot->GetLocalPtr()->Name << "\t\t" << curr_bot->GetLocalPtr()->PosX << ", " << curr_bot->GetLocalPtr()->PosY << "\t\t" << curr_bot->GetLocalPtr()->LastPosX << ", " << curr_bot->GetLocalPtr()->LastPosY << "\n";
+            output_str << curr_bot->GetLocalPtr()->Name << "\t\t" << curr_bot->GetLocalPtr()->PosX << ", " << curr_bot->GetLocalPtr()->PosY << "\t\t" << curr_bot->GetLocalPtr()->LastPosX << ", " << curr_bot->GetLocalPtr()->LastPosY << "\t\t" << *(uint32_t*)&curr_bot->GetLocalPtr()->Gems << "\n";
             for (auto player : *curr_bot->GetPlayerListPtr()) {
-                output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\n";
+                output_str << player.second.Name << "\t\t" << player.second.PosX << ", " << player.second.PosY << "\t\t" << player.second.LastPosX << ", " << player.second.LastPosY << "\t\t" << *(uint32_t*)&player.second.Flags << "\n";
             }
 
             std::cout << output_str.str();
@@ -131,6 +136,86 @@ int main() {
             }
 
             std::cout << output_str.str();
+        }
+
+        if (g_show_npc) {
+            std::stringstream output_str = {};
+            std::cout << ESC_SEQ_CLEAR_SCREEN;
+
+            output_str << "Type\t\tIndex\t\tPos\t\t\t\tTarget Pos\n";
+
+            // when you want to calculate the current npc pos.
+            curr_bot->GetCurrentWorldRef().UpdateNPCsPos();
+
+            auto npc_list = curr_bot->GetCurrentWorldRef().GetNPCs();
+
+            for (const auto& npc : npc_list) {
+                output_str << std::to_string(npc.Type) << "\t\t"
+                           << std::to_string(npc.Index) << "\t\t("
+                           << npc.PosX << ", " << npc.PosY << ")\t("
+                           << npc.TargetX << ", " << npc.TargetY << ")\n";
+            }
+
+            std::cout << output_str.str();
+        }
+
+        if (g_show_world_debug_progg) {
+            LuaExecutorError err = curr_bot->ExecuteScript(R"(
+-- WORLD CHECKER
+require "math"
+
+world_lett_limit = 3
+chars = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' }
+
+failed_enter_world = false
+
+function joinworld(name)
+	SendTextPacket(3, "action|join_request\nname|"..name.."\ninvitedWorld|0")
+end
+
+
+AddHook("OnVarlist", "failed_world_hook", function(pkt, var)
+	if (var[0] == "OnFailedToEnterWorld") then
+		failed_enter_world = true
+	end
+end)
+SendWebhook("YOUR_WEBHOOK_URL", 
+			'{"content": "HELLO WORLD"}')
+for i=0,((#chars)^world_lett_limit)-1 do
+	world_name = ""
+
+	for j=0,world_lett_limit - 1 do
+		if i < (#chars)^j then
+			break
+		end
+		world_name = world_name .. chars[ (math.floor((i/(#chars)^j)) % #chars) + 1]
+	end
+
+	failed_enter_world = false
+
+	print("Joining world "..world_name)
+
+	joinworld(world_name)
+
+	while (not IsInWorld()) do
+		if (failed_enter_world) then
+			goto end_loop
+		end
+		Sleep(100)
+	end
+
+	if (next(DebugGetFaultyTile()) ~= nil) then
+		SendWebhook("YOUR_WEBHOOK_URL", 
+			'{"content": "World parser failed "' .. i .. "th world ".. world_name .. ". Data " .. DebugGetFaultyTile().id .. ", " .. DebugGetFaultyTile().extra_tile_type .. '. "}')
+	end
+
+	Sleep(1500)
+
+	::end_loop::
+end
+)");
+            spdlog::info("Script returned {}, {}", err.ErrorCode, err.ErrorMessage);
+            spdlog::info("WORLD TESTING IS DONE");
         }
 
         if (pressed_key != NULL) {
@@ -154,7 +239,7 @@ int main() {
             }
             case 'J': {
                 // ubisoft nuked the tordawn312312 world :sad:
-                curr_bot->JoinWorld("tordawn3123132");
+                curr_bot->JoinWorld("tordawn123321");
                 break;
             }
             case 'L': {
@@ -166,16 +251,51 @@ int main() {
                 break; 
             }
             case 'R': {
-                spdlog::info("Connecting to the server...");
+                spdlog::info("Reconnecting to the server...");
+                curr_bot->Disconnect();
+                std::this_thread::sleep_for(30ms);
                 if (!curr_bot->ConnectWithHttp()) {
                     spdlog::error("Failed to connect. Press \"R\" to try connecting again.");
                 }
+                break;
+            }
+            case 'T': {
+                spdlog::info("Disconnecting from the server");
+                curr_bot->SendPacket({ ePacketType::NET_MESSAGE_GAME_MESSAGE, "action|quit" });
+                curr_bot->Disconnect();
+                break;
+            }
+            case 'X': {
+                spdlog::info("Executing test script..");
+                std::thread th{ [&]() {
+                LuaExecutorError err = curr_bot->ExecuteScript(R"(   
+-- text packet test
+SendTextPacket(2, "action|input\n|text|HELLO")
+
+Sleep(3000)
+
+-- raw packet and get local test 
+pkt = {}
+pkt.type = 3
+pkt.int_data = 2
+pkt.pos_x = GetLocal().pos_x
+pkt.pos_y = GetLocal().pos_y
+pkt.int_x = (GetLocal().pos_x // 32) + 1
+pkt.int_y = (GetLocal().pos_y // 32) + 1
+SendRawPacket(pkt)
+)");
+                spdlog::info("Script returned {}, {}", err.ErrorCode, err.ErrorMessage);
+                } };
+                th.detach();
+                
                 break;
             }
             case '1': {
                 g_output_log = true;
                 g_show_player_list = false;
                 g_show_inventory = false;
+                g_show_npc = false;
+                g_show_world_debug_progg = false;
                 printf(ESC_SEQ_CLEAR_SCREEN);
                 break;
             }
@@ -184,6 +304,8 @@ int main() {
                 g_output_log = false;
                 g_show_player_list = true;
                 g_show_inventory = false;
+                g_show_npc = false;
+                g_show_world_debug_progg = false;
                 printf(ESC_SEQ_CLEAR_SCREEN);
                 break;
             }         
@@ -192,6 +314,29 @@ int main() {
                 g_output_log = false;
                 g_show_player_list = false;
                 g_show_inventory = true;
+                g_show_npc = false;
+                g_show_world_debug_progg = false;
+                printf(ESC_SEQ_CLEAR_SCREEN);
+                break;
+            }
+
+            case '4': {
+                g_output_log = false;
+                g_show_player_list = false;
+                g_show_inventory = false;
+                g_show_npc = true;
+                g_show_world_debug_progg = false;
+                printf(ESC_SEQ_CLEAR_SCREEN);
+                break;
+            }
+
+            // serialize tons of worlds
+            case 'Z': {
+                g_output_log = false;
+                g_show_player_list = false;
+                g_show_inventory = false;
+                g_show_npc = false;
+                g_show_world_debug_progg = true;
                 printf(ESC_SEQ_CLEAR_SCREEN);
                 break;
             }
@@ -202,6 +347,7 @@ int main() {
             }
             }
         }
+
         std::this_thread::sleep_for(100ms);
     }
 

@@ -25,6 +25,11 @@ void Inventory::ResetInventoryItems() {
     m_item_list.clear();
 }
 
+void Inventory::Reset() {
+    ResetInventoryItems();
+    SetInventorySpace(0);
+}
+
 uint16_t Inventory::GetItemAmount(uint16_t item_id) {
     auto it = m_item_list.find(item_id);
 

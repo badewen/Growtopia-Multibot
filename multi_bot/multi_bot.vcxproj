@@ -152,7 +152,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -175,7 +175,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -194,7 +194,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/magic_enum/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
@@ -203,16 +203,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bot\Inventory\Inventory.h" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\AddHook.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\DebugGetFaultyTile.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\IsInGame.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\IsInWorld.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataMultipleHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSetBux.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Structs\NetAvatarLua.h" />
+    <ClInclude Include="Lua\BuiltinLibs\Functions\RunThread.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\SendRawPacket.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\ItemChangeObjectHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\ModifyItemInventoryHandler.hpp" />
+    <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\PacketNPCHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\SendMapDataHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileChangeRequestHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataHandler.hpp" />
     <ClInclude Include="Bot\World\WorldItemObject.h" />
+    <ClInclude Include="Bot\World\WorldNPC.h" />
     <ClInclude Include="Bot\World\WorldTile.h" />
     <ClInclude Include="Bot\World\WorldTileExtraTypes.h" />
     <ClInclude Include="ItemDatabase\ItemDatabase.h" />
     <ClInclude Include="ItemDatabase\ItemInfo.h" />
+    <ClInclude Include="Bot\Lua\BotApi\LuaBotApiLib.h" />
+    <ClInclude Include="Lua\BuiltinLibs\BuiltinLuaLib.h" />
+    <ClInclude Include="Lua\BuiltinLibs\Functions\SendWebhook.hpp" />
+    <ClInclude Include="Lua\BuiltinLibs\Functions\Sleep.hpp" />
+    <ClInclude Include="Lua\ILuaLibrary.h" />
+    <ClInclude Include="Lua\LuaExecutor.h" />
+    <ClInclude Include="Bot\Lua\BotApi\Structs\TankPacketLua.h" />
+    <ClInclude Include="Lua\LuaHelper.h" />
     <ClInclude Include="Utils\BinaryStreamReader.h" />
     <ClInclude Include="Bot\BotManager.h" />
     <ClInclude Include="Bot\Bot.h" />
@@ -233,7 +252,7 @@
     <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSpawnHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSuperMainAccepHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\IPacketHandler.hpp" />
-    <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h" />
+    <ClInclude Include="Bot\PacketHandler\PacketHandlerDispatcher.h" />
     <ClInclude Include="Bot\PacketHandler\PacketHandlerRegistry.h" />
     <ClInclude Include="Bot\RedirectServerData.h" />
     <ClInclude Include="Network\Enet\EnetPeer.h" />
@@ -247,10 +266,20 @@
     <ClInclude Include="Utils\Random.h" />
     <ClInclude Include="Utils\TextParse.h" />
     <ClInclude Include="Bot\World\WorldInfo.h" />
+    <ClInclude Include="Utils\Timer.h" />
+    <ClInclude Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Inventory\Inventory.cpp" />
+    <ClCompile Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.cpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\GetLocal.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\SendTextPacket.hpp" />
     <ClCompile Include="ItemDatabase\ItemDatabase.cpp" />
+    <ClCompile Include="Bot\Lua\BotApi\LuaBotApiLib.cpp" />
+    <ClCompile Include="Bot\Lua\BotApi\Structs\NetAvatarLua.cpp" />
+    <ClCompile Include="Lua\BuiltinLibs\BuiltinLuaLib.cpp" />
+    <ClCompile Include="Lua\LuaExecutor.cpp" />
+    <ClCompile Include="Bot\Lua\BotApi\Structs\TankPacketLua.cpp" />
     <ClCompile Include="Utils\BinaryStreamReader.cpp" />
     <ClCompile Include="Bot\BotManager.cpp" />
     <ClCompile Include="Bot\Bot.cpp" />
@@ -258,7 +287,7 @@
     <ClCompile Include="Network\Enet\EnetPeer.cpp" />
     <ClCompile Include="Network\Enet\EnetClient.cpp" />
     <ClCompile Include="Network\Http\HttpClient.cpp" />
-    <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp" />
+    <ClCompile Include="Bot\PacketHandler\PacketHandlerDispatcher.cpp" />
     <ClCompile Include="Packet\Packet.cpp" />
     <ClCompile Include="Utils\Random.cpp" />
     <ClCompile Include="Utils\TextParse.cpp" />

@@ -8,6 +8,7 @@
 #include "Handlers/TankPacket/ModifyItemInventoryHandler.hpp"
 #include "Handlers/TankPacket/TileChangeRequestHandler.hpp"
 #include "Handlers/TankPacket/TileUpdateDataHandler.hpp"
+#include "Handlers/TankPacket/PacketNPCHandler.hpp"
 
 #include "Handlers/TextPacket/ActionPacket/LogonFailHandler.hpp"
 #include "Handlers/TextPacket/HelloPacket/HelloPacketHandler.hpp"
@@ -36,6 +37,7 @@ PacketHandlerRegistry::PacketHandlerRegistry(Bot* bot_obj) {
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_MODIFY_ITEM_INVENTORY, std::make_shared<ModifyItemInventoryHandler>(bot_obj));
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_TILE_CHANGE_REQUEST, std::make_shared<TileChangeRequestHandler>(bot_obj));
     m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_SEND_TILE_UPDATE_DATA, std::make_shared<TileUpdateDataHandler>(bot_obj));
+    m_tank_packet_handlers.emplace(eTankPacketType::NET_GAME_PACKET_NPC, std::make_shared<PacketNPCHandler>(bot_obj));
 
     // Action Packets
     m_action_packet_handlers.emplace("logon_fail", std::make_shared<LogonFailHandler>(bot_obj));

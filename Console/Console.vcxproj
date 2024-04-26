@@ -138,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -146,6 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Core.lib;$(SolutionDir)$(Platform)\$(Configuration)\Vendor.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries);MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,7 +157,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -166,6 +167,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Core.lib;$(SolutionDir)$(Platform)\$(Configuration)\Vendor.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries);MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
@@ -181,13 +183,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelMinSize|x64'">
     <ClCompile>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)multi_bot;$(SolutionDir)Vendor/fmt/include;$(SolutionDir)Vendor/ENet/include;$(SolutionDir)Vendor/eventpp/include;$(SolutionDir)Vendor/cpp-httplib/include;$(SolutionDir)Vendor/openssl/include;$(SolutionDir)Vendor/proton/include;$(SolutionDir)Vendor/spdlog/include;$(SolutionDir)Vendor/curl/include;$(SolutionDir)Vendor/lua/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Core.lib;$(SolutionDir)$(Platform)\$(Configuration)\Vendor.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries);MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='aSU|x64'">

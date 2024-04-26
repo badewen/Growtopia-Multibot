@@ -51,7 +51,7 @@ Packet::Packet(TankPacket tank_pkt) {
 }
 
 Packet::~Packet() {
-    if (Type != ePacketType::NET_MESSAGE_GAME_PACKET) {
+    if (Type == ePacketType::NET_MESSAGE_GAME_PACKET) {
         TankPkt.release();
     }
     else {
@@ -61,7 +61,7 @@ Packet::~Packet() {
     Type = ePacketType::NET_MESSAGE_UNKNOWN;
 }
 
-std::string Packet::ToString() {
+std::string Packet::ToDebugString() {
     if (Type == ePacketType::NET_MESSAGE_GAME_PACKET) {
         if (TankPkt->Header.Type == eTankPacketType::NET_GAME_PACKET_CALL_FUNCTION) {
             VariantList varlist {};
@@ -100,7 +100,7 @@ std::string Packet::ToString() {
     );
 }
 
-ENetPacket* Packet::CreateToENetPacket() {
+ENetPacket* Packet::CreateToENetPacket() const {
     if (Type == ePacketType::NET_MESSAGE_GAME_PACKET) {
         ENetPacket* pkt = enet_packet_create(
             nullptr,

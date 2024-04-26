@@ -28,7 +28,7 @@ public:
 
         std::vector<InvItemInfoPacketStruct> items = reader.ReadList<uint16_t, InvItemInfoPacketStruct>();
 
-        m_bot->GetInventoryRef().ResetInventoryItems();
+        m_bot->GetInventoryRef().Reset();
         m_bot->GetInventoryRef().SetInventorySpace(inventory_size);
 
         for (const auto& item : items) {

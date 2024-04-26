@@ -94,14 +94,6 @@ std::string Variant::Print() {
             return toString(GetUINT32());
         case TYPE_INT32:
             return toString(GetINT32());
-        /*case TYPE_ENTITY:
-            // return GetEntity()->GetName();
-            return "An entity"; // I don't want to include the entity.h here right now
-            break;
-        case TYPE_COMPONENT:
-            // return GetEntity()->GetName();
-            return "A component"; // I don't want to include the entity.h here right now
-            break;*/
         case TYPE_RECT:
             return PrintRect(GetRect());
         case TYPE_UNUSED:
@@ -214,10 +206,6 @@ bool Variant::operator==(const Variant &rhs) const {
             return GetVector3() == rhs.GetVector3();
         case TYPE_UINT32:
             return GetUINT32() == rhs.GetUINT32();
-        /*case TYPE_ENTITY:
-            return GetEntity() == rhs.GetEntity();
-        case TYPE_COMPONENT:
-            return GetComponent() == rhs.GetComponent();*/
         case TYPE_RECT:
             return GetRect() == rhs.GetRect();
         case TYPE_INT32:
@@ -256,8 +244,6 @@ uint32_t ColorCombineMix(uint32_t c1, uint32_t c2, float progress) {
 int GetSizeOfData(eVariantType type) {
     switch (type) {
     case eVariantType::TYPE_UNUSED:
-    /*case eVariantType::TYPE_COMPONENT:
-    case eVariantType::TYPE_ENTITY:*/
         return 0;
     case eVariantType::TYPE_UINT32:
     case eVariantType::TYPE_INT32:

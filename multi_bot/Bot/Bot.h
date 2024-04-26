@@ -14,12 +14,16 @@
 #include "../Packet/PacketTypes.h"
 #include "../Network/Enet/EnetClient.h"
 #include "../ItemDatabase/ItemDatabase.h"
-#include "PacketHandler/PacketHandlerManager.h"
+#include "../Lua/LuaExecutor.h"
+#include "PacketHandler/PacketHandlerDispatcher.h"
 #include "Inventory/Inventory.h"
 #include "World/WorldInfo.h"
 #include "NetAvatar.h"
 #include "RedirectServerData.h"
 #include "LoginData.h"
+
+#include "../Lua/BuiltinLibs/BuiltinLuaLib.h"
+#include "Lua/BotApi/LuaBotApiLib.h"
 
 class Bot : public EnetClient
 {
@@ -27,11 +31,16 @@ public:
     Bot(std::shared_ptr<ILogger> logger, std::shared_ptr<ItemDatabase> item_database)
         : EnetClient::EnetClient{ logger },
         m_logger{ logger },
-        m_item_database{ std::move(item_database) }
+        m_item_database{ std::move(item_database) },
+        m_lua_executor{}
     {
         GenerateNewSpoof();
+        m_current_world = { m_item_database };
         m_default_packet_handler_registry = std::make_shared<PacketHandlerRegistry>( this );
-        m_packet_handler_manager.SetHandlerRegistry(m_default_packet_handler_registry);
+        m_packet_handler_dispatcher.SetHandlerRegistry(m_default_packet_handler_registry);
+        m_lua_bot_api_lib = std::make_shared<LuaBotApiLib>(this);
+        m_lua_executor.AddLibrary(std::make_shared<BuiltinLuaLib>());
+        m_lua_executor.AddLibrary(m_lua_bot_api_lib);
     }
 
         
@@ -53,12 +62,17 @@ public:
     void Place(uint32_t item_id, int32_t off_x, int32_t off_y);
     void Punch(int32_t off_x, int32_t off_y);
 
+    // true if there is no syntax error, false otherwise
+    LuaExecutorError ExecuteScript(std::string script);
+
     bool IsInGame() { return m_is_in_game; }
+    bool IsInWorld() { return m_is_in_world; }
 
     std::unordered_map<int32_t, NetAvatar>* GetPlayerListPtr() { return &m_player_list; }
     NetAvatar* GetLocalPtr() { return &m_local; }
     Inventory& GetInventoryRef() { return m_inventory; }
     WorldInfo& GetCurrentWorldRef() { return m_current_world; }
+    HttpClient& GetCurrentHttpClientRef() { return m_http_cl; } // idk maybe implement login bypass on the app's code side?
     std::shared_ptr<ILogger> GetLoggerPtr() { return m_logger; }
     std::shared_ptr<ItemDatabase> GetItemDatabasePtr() { return m_item_database; }
     RedirectServerData GetRedirectData() { return m_redirect_server_data; }
@@ -68,6 +82,8 @@ public:
     void SetIsInGame(bool in_game) { m_is_in_game = in_game; }
     void SetIsRedirected(bool is_redirected) { m_is_redirected = is_redirected; }
     void SetShouldReconnect(bool should_reconnect) { m_reconnect = should_reconnect; }
+    void SetHttpProxySocks5(std::string ip, std::string username, std::string pass) { m_http_cl.SetSocks5(ip, username, pass); }
+    void SetENetProxySocks5(std::string ip, std::string username, std::string pass) { EnetClient::SetSocks5Url(ip, username, pass); }
 
     void SetRedirectData(const RedirectServerData* server_data);
     void SetServerIp(std::string ip) { m_server_ip = ip; }
@@ -102,14 +118,17 @@ private:
     std::unordered_map<int32_t, NetAvatar> m_player_list{};
 
     Inventory m_inventory{};
-    WorldInfo m_current_world{};
+    WorldInfo m_current_world{ nullptr };
 
     bool m_is_bot_moving = false;
 
     std::shared_ptr<ItemDatabase> m_item_database{};
 
-    PacketHandlerManager m_packet_handler_manager{};
+    LuaExecutor m_lua_executor{};
+    PacketHandlerDispatcher m_packet_handler_dispatcher{};
     std::shared_ptr<PacketHandlerRegistry> m_default_packet_handler_registry{};
+
+    std::shared_ptr<LuaBotApiLib> m_lua_bot_api_lib{};
 
     std::shared_ptr<ILogger> m_logger{};
     HttpClient m_http_cl { "https://www.growtopia1.com" };

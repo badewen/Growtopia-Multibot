@@ -36,6 +36,8 @@ public:
             bot_local_ptr->CountryFlag = country;
             bot_local_ptr->PosX = x;
             bot_local_ptr->PosY = y;
+            bot_local_ptr->LastPosX = x;
+            bot_local_ptr->LastPosY = y;
         }
         else {
             NetAvatar temp;
@@ -48,6 +50,8 @@ public:
             temp.PosX = x;
             temp.PosY = y;
             temp.IsInvis = std::stoi(text_parse.Get("invis"));
+            temp.LastPosX = x;
+            temp.LastPosY = y;
 
             m_bot->GetPlayerListPtr()->insert_or_assign(netid, temp);
         }

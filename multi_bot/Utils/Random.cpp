@@ -11,6 +11,12 @@ uint64_t Random::RandomUInt64() {
     return sw_mt_rand();
 }
 
+uint64_t Random::RandomUInt64(uint64_t min, uint64_t max) {
+    std::uniform_int_distribution<> distr(min, max);
+
+    return distr(sw_mt_rand);
+}
+
 std::string Random::RandomHex(size_t length, bool upper) {
     std::string chars = upper ? "1234567890ABCDEF" : "1234567890abcdef";
     

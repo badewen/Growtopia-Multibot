@@ -86,6 +86,22 @@ struct TankPacketFlag {
     uint32_t pad_3 : 6;
 };
 
+enum eTankPacketNPCActionType : uint8_t
+{
+    FullState,
+    Delete,
+    Add,
+    MoveTo,
+    Sucked,
+    Burp,
+    Teleport,
+    Die,
+    Punch,
+    Ouch,
+    Attack,
+    PrepareToAttack
+};
+
 #pragma pack(push, 1)
 struct TankPacket {
     struct {
@@ -105,7 +121,7 @@ struct TankPacket {
         union {
             uint8_t AnimationType = 0;
             uint8_t PunchRange;
-            uint8_t NpcAction;
+            eTankPacketNPCActionType NpcAction;
             uint8_t ParticleIndex;
             uint8_t SteamEffect;
             uint8_t DiceResult;
@@ -128,8 +144,10 @@ struct TankPacket {
             int32_t TilesLength;
         };
 
-        TankPacketFlag Flags{};
-
+        union {
+            TankPacketFlag Flags{};
+            uint32_t FlagsValue;
+        };
         union {
             float FloatVariable = 0;
             float WaterSpeed;

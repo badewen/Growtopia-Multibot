@@ -33,6 +33,7 @@ union WorldTileExtraAllUnion {
     WorldTileAchievementBlockExtra AchievementBlockExtra;
     WorldTileHeartMonitorExtra HeartMonitorExtra;
     WorldTileMannequinExtra MannequinExtra;
+    WorldTileMagicEggExtra MagicEggExtra;
     WorldTileGameGraveExtra GameGraveExtra;
     WorldTileGameGeneratorExtra GameGeneratorExtra;
     WorldTileXenoniteExtra XenoniteExtra;
@@ -43,37 +44,57 @@ union WorldTileExtraAllUnion {
     WorldTileFishTankPortExtra FishTankPortExtra;
     WorldTileForgeExtra ForgeExtra;
     WorldTileGivingTreeExtra GivingTreeExtra;
+    WorldTileSteamOrganExtra SteamOrganExtra;
+    WorldTileSilkWormExtra SilkWormExtra;
     WorldTileSewingMachineExtra SewingMachineExtra;
     WorldTileCountryFlagExtra CountryFlagExtra;
     WorldTileLobsterTrapExtra LobsterTrapExtra;
     WorldTilePaintingEaselExtra PaintingEaselExtra;
+    WorldTilePetBattleCageExtra PetBattleCageExtra;
+    WorldTilePetTrainerExtra PetTrainerExtra;
     WorldTileWeatherMachineExtra WeatherMachineExtra;
+    WorldTileSpiritStorageUnitExtra SpiritStorageUnitExtra;
     WorldTileDataBedrockExtra DataBedrockExtra;
     WorldTileShelfExtra ShelfExtra;
     WorldTileVipEntranceExtra VipEntranceExtra;
     WorldTileChallengeTimerExtra ChallengeTimerExtra;
+    WorldTileFishWallMountExtra FishWallMountExtra;
     WorldTilePortraitExtra PortraitExtra;
     WorldTileGuildWeatherMachineExtra GuildWeatherMachineExtra;
+    WorldTileFossilPrepStationExtra FossilPrepStationExtra;
     WorldTileDnaExtractorExtra DnaExtractorExtra;
     WorldTileHowlerExtra HowlerExtra;
+    WorldTileChemsynthTankExtra ChemsynthTankExtra;
     WorldTileStorageBlockExtra StorageBlockExtra;
     WorldTileCookingOvenExtra CookingOvenExtra;
     WorldTileAudioRackExtra AudioRackExtra;
     WorldTileAdventureBeginsExtra AdventureBeginsExtra;
     WorldTileTombRobberExtra TombRobberExtra;
+    WorldTileBalloonOMaticExtra BalloonOMaticExtra;
     WorldTileTrainingPortExtra TrainingPortExtra;
     WorldTileGuildItemExtra GuildItemExtra;
     WorldTileKrakenBlockExtra KrakenBlockExtra;
     WorldTileFriendsEntranceExtra FriendEntranceExtra;
     WorldTileCrystalExtra CrystalExtra;
+    WorldTileCrimeInProgressExtra CrimeInProgressExtra;
     WorldTileSolarCollectorExtra SolarCollectorExtra;
     WorldTileSteamEngineExtra SteamEngineExtra;
+    WorldTileLockBotExtra LockBotExtra;
     WorldTileGeigerChargerExtra GeigerChargerExtra;
     WorldTileItemSuckerExtra ItemSuckerExtra;
+    WorldTileCyBotExtra CyBotExtra;
     WorldTileGrowscanExtra GrowscanExtra;
+    WorldTileContainmentFieldPowerNodeExtra ContainmentFieldPowerNodeExtra;
+    WorldTileSpiritBoardExtra SpiritBoardExtra;
+    WorldTileStormyCloudExtra StormyCloudExtra;
     WorldTileTemporaryPlatformExtra TemporaryPlatformExtra;
     WorldTileSafeVaultExtra SafeVaultExtra;
+    WorldTileAngelicCountingCloudExtra AngelicCountingCloudExtra;
     WorldTileInfinityWeatherMachineExtra InfinityWeatherMachineExtra;
+    WorldTilePineappleGuzzlerExtra PineappleGuzzlerExtra;
+
+    ~WorldTileExtraAllUnion() = delete;
+    WorldTileExtraAllUnion() = delete;
 };
 
 class WorldTile {
@@ -95,11 +116,6 @@ public:
     // if bTileExtra is set.
     eWorldTileExtraType ExtraTileDataType{};
 
-    // assigning a dynamically allocated pointer will be taken over by this class.
-    // NOTE : USE MALLOC.
-    // the pointer is managed by this class. 
-    // freeing this pointer outside of the class lifetime may
-    // result in UB.
     union {
         // blame c++ constructor and destructor non-sense.
         uint8_t* _struct_buff_ptr;
@@ -112,6 +128,7 @@ public:
         WorldTileAchievementBlockExtra* AchievementBlockExtra;
         WorldTileHeartMonitorExtra* HeartMonitorExtra;
         WorldTileMannequinExtra* MannequinExtra;
+        WorldTileMagicEggExtra* MagicEggExtra;
         WorldTileGameGraveExtra* GameGraveExtra;
         WorldTileGameGeneratorExtra* GameGeneratorExtra;
         WorldTileXenoniteExtra* XenoniteExtra;
@@ -122,37 +139,54 @@ public:
         WorldTileFishTankPortExtra* FishTankPortExtra;
         WorldTileForgeExtra* ForgeExtra;
         WorldTileGivingTreeExtra* GivingTreeExtra;
+        WorldTileSteamOrganExtra* SteamOrganExtra;
+        WorldTileSilkWormExtra* SilkWormExtra;
         WorldTileSewingMachineExtra* SewingMachineExtra;
         WorldTileCountryFlagExtra* CountryFlagExtra;
         WorldTileLobsterTrapExtra* LobsterTrapExtra;
         WorldTilePaintingEaselExtra* PaintingEaselExtra;
+        WorldTilePetBattleCageExtra* PetBattleCageExtra;
+        WorldTilePetTrainerExtra* PetTrainerExtra;
         WorldTileWeatherMachineExtra* WeatherMachineExtra;
+        WorldTileSpiritStorageUnitExtra* SpiritStorageUnitExtra;
         WorldTileDataBedrockExtra* DataBedrockExtra;
         WorldTileShelfExtra* ShelfExtra;
         WorldTileVipEntranceExtra* VipEntranceExtra;
         WorldTileChallengeTimerExtra* ChallengeTimerExtra;
+        WorldTileFishWallMountExtra* FishWallMountExtra;
         WorldTilePortraitExtra* PortraitExtra;
         WorldTileGuildWeatherMachineExtra* GuildWeatherMachineExtra;
+        WorldTileFossilPrepStationExtra* FossilPrepStationExtra;
         WorldTileDnaExtractorExtra* DnaExtractorExtra;
         WorldTileHowlerExtra* HowlerExtra;
+        WorldTileChemsynthTankExtra* ChemsynthTankExtra;
         WorldTileStorageBlockExtra* StorageBlockExtra;
         WorldTileCookingOvenExtra* CookingOvenExtra;
         WorldTileAudioRackExtra* AudioRackExtra;
         WorldTileAdventureBeginsExtra* AdventureBeginsExtra;
         WorldTileTombRobberExtra* TombRobberExtra;
+        WorldTileBalloonOMaticExtra* BalloonOMaticExtra;
         WorldTileTrainingPortExtra* TrainingPortExtra;
         WorldTileGuildItemExtra* GuildItemExtra;
         WorldTileKrakenBlockExtra* KrakenBlockExtra;
         WorldTileFriendsEntranceExtra* FriendEntranceExtra;
         WorldTileCrystalExtra* CrystalExtra;
+        WorldTileCrimeInProgressExtra* CrimeInProgressExtra;
         WorldTileSolarCollectorExtra* SolarCollectorExtra;
         WorldTileSteamEngineExtra* SteamEngineExtra;
+        WorldTileLockBotExtra* LockBotExtra;
         WorldTileGeigerChargerExtra* GeigerChargerExtra;
         WorldTileItemSuckerExtra* ItemSuckerExtra;
+        WorldTileCyBotExtra* CyBotExtra;
         WorldTileGrowscanExtra* GrowscanExtra;
+        WorldTileContainmentFieldPowerNodeExtra* ContainmentFieldPowerNodeExtra;
+        WorldTileSpiritBoardExtra* SpiritBoardExtra;
+        WorldTileStormyCloudExtra* StormyCloudExtra;
         WorldTileTemporaryPlatformExtra* TemporaryPlatformExtra;
         WorldTileSafeVaultExtra* SafeVaultExtra;
+        WorldTileAngelicCountingCloudExtra* AngelicCountingCloudExtra;
         WorldTileInfinityWeatherMachineExtra* InfinityWeatherMachineExtra;
+        WorldTilePineappleGuzzlerExtra* PineappleGuzzlerExtra;
     } ExtraTileData{};
 
 private:

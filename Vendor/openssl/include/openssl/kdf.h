@@ -1,138 +1,111 @@
+/*	$OpenBSD: kdf.h,v 1.8 2022/07/12 14:42:49 kn Exp $ */
 /*
- * Copyright 2016-2021 The OpenSSL Project Authors. All Rights Reserved.
+ * Written by Dr Stephen N Henson (steve@openssl.org) for the OpenSSL
+ * project.
+ */
+/* ====================================================================
+ * Copyright (c) 2016-2018 The OpenSSL Project.  All rights reserved.
  *
- * Licensed under the Apache License 2.0 (the "License").  You may not use
- * this file except in compliance with the License.  You can obtain a copy
- * in the file LICENSE in the source distribution or at
- * https://www.openssl.org/source/license.html
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit. (http://www.OpenSSL.org/)"
+ *
+ * 4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    licensing@OpenSSL.org.
+ *
+ * 5. Products derived from this software may not be called "OpenSSL"
+ *    nor may "OpenSSL" appear in their names without prior written
+ *    permission of the OpenSSL Project.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit (http://www.OpenSSL.org/)"
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
  */
 
-#ifndef OPENSSL_KDF_H
-# define OPENSSL_KDF_H
-# pragma once
+#ifndef HEADER_KDF_H
+# define HEADER_KDF_H
 
-# include <openssl/macros.h>
-# ifndef OPENSSL_NO_DEPRECATED_3_0
-#  define HEADER_KDF_H
-# endif
-
-# include <stdarg.h>
-# include <stddef.h>
-# include <openssl/types.h>
-# include <openssl/core.h>
-
-# ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-# endif
+#endif
 
-int EVP_KDF_up_ref(EVP_KDF *kdf);
-void EVP_KDF_free(EVP_KDF *kdf);
-EVP_KDF *EVP_KDF_fetch(OSSL_LIB_CTX *libctx, const char *algorithm,
-                       const char *properties);
-
-EVP_KDF_CTX *EVP_KDF_CTX_new(EVP_KDF *kdf);
-void EVP_KDF_CTX_free(EVP_KDF_CTX *ctx);
-EVP_KDF_CTX *EVP_KDF_CTX_dup(const EVP_KDF_CTX *src);
-const char *EVP_KDF_get0_description(const EVP_KDF *kdf);
-int EVP_KDF_is_a(const EVP_KDF *kdf, const char *name);
-const char *EVP_KDF_get0_name(const EVP_KDF *kdf);
-const OSSL_PROVIDER *EVP_KDF_get0_provider(const EVP_KDF *kdf);
-const EVP_KDF *EVP_KDF_CTX_kdf(EVP_KDF_CTX *ctx);
-
-void EVP_KDF_CTX_reset(EVP_KDF_CTX *ctx);
-size_t EVP_KDF_CTX_get_kdf_size(EVP_KDF_CTX *ctx);
-int EVP_KDF_derive(EVP_KDF_CTX *ctx, unsigned char *key, size_t keylen,
-                   const OSSL_PARAM params[]);
-int EVP_KDF_get_params(EVP_KDF *kdf, OSSL_PARAM params[]);
-int EVP_KDF_CTX_get_params(EVP_KDF_CTX *ctx, OSSL_PARAM params[]);
-int EVP_KDF_CTX_set_params(EVP_KDF_CTX *ctx, const OSSL_PARAM params[]);
-const OSSL_PARAM *EVP_KDF_gettable_params(const EVP_KDF *kdf);
-const OSSL_PARAM *EVP_KDF_gettable_ctx_params(const EVP_KDF *kdf);
-const OSSL_PARAM *EVP_KDF_settable_ctx_params(const EVP_KDF *kdf);
-const OSSL_PARAM *EVP_KDF_CTX_gettable_params(EVP_KDF_CTX *ctx);
-const OSSL_PARAM *EVP_KDF_CTX_settable_params(EVP_KDF_CTX *ctx);
-
-void EVP_KDF_do_all_provided(OSSL_LIB_CTX *libctx,
-                             void (*fn)(EVP_KDF *kdf, void *arg),
-                             void *arg);
-int EVP_KDF_names_do_all(const EVP_KDF *kdf,
-                         void (*fn)(const char *name, void *data),
-                         void *data);
-
-# define EVP_KDF_HKDF_MODE_EXTRACT_AND_EXPAND  0
-# define EVP_KDF_HKDF_MODE_EXTRACT_ONLY        1
-# define EVP_KDF_HKDF_MODE_EXPAND_ONLY         2
-
-#define EVP_KDF_SSHKDF_TYPE_INITIAL_IV_CLI_TO_SRV     65
-#define EVP_KDF_SSHKDF_TYPE_INITIAL_IV_SRV_TO_CLI     66
-#define EVP_KDF_SSHKDF_TYPE_ENCRYPTION_KEY_CLI_TO_SRV 67
-#define EVP_KDF_SSHKDF_TYPE_ENCRYPTION_KEY_SRV_TO_CLI 68
-#define EVP_KDF_SSHKDF_TYPE_INTEGRITY_KEY_CLI_TO_SRV  69
-#define EVP_KDF_SSHKDF_TYPE_INTEGRITY_KEY_SRV_TO_CLI  70
-
-/**** The legacy PKEY-based KDF API follows. ****/
-
-# define EVP_PKEY_CTRL_TLS_MD                   (EVP_PKEY_ALG_CTRL)
-# define EVP_PKEY_CTRL_TLS_SECRET               (EVP_PKEY_ALG_CTRL + 1)
-# define EVP_PKEY_CTRL_TLS_SEED                 (EVP_PKEY_ALG_CTRL + 2)
 # define EVP_PKEY_CTRL_HKDF_MD                  (EVP_PKEY_ALG_CTRL + 3)
 # define EVP_PKEY_CTRL_HKDF_SALT                (EVP_PKEY_ALG_CTRL + 4)
 # define EVP_PKEY_CTRL_HKDF_KEY                 (EVP_PKEY_ALG_CTRL + 5)
 # define EVP_PKEY_CTRL_HKDF_INFO                (EVP_PKEY_ALG_CTRL + 6)
 # define EVP_PKEY_CTRL_HKDF_MODE                (EVP_PKEY_ALG_CTRL + 7)
-# define EVP_PKEY_CTRL_PASS                     (EVP_PKEY_ALG_CTRL + 8)
-# define EVP_PKEY_CTRL_SCRYPT_SALT              (EVP_PKEY_ALG_CTRL + 9)
-# define EVP_PKEY_CTRL_SCRYPT_N                 (EVP_PKEY_ALG_CTRL + 10)
-# define EVP_PKEY_CTRL_SCRYPT_R                 (EVP_PKEY_ALG_CTRL + 11)
-# define EVP_PKEY_CTRL_SCRYPT_P                 (EVP_PKEY_ALG_CTRL + 12)
-# define EVP_PKEY_CTRL_SCRYPT_MAXMEM_BYTES      (EVP_PKEY_ALG_CTRL + 13)
 
-# define EVP_PKEY_HKDEF_MODE_EXTRACT_AND_EXPAND \
-            EVP_KDF_HKDF_MODE_EXTRACT_AND_EXPAND
-# define EVP_PKEY_HKDEF_MODE_EXTRACT_ONLY       \
-            EVP_KDF_HKDF_MODE_EXTRACT_ONLY
-# define EVP_PKEY_HKDEF_MODE_EXPAND_ONLY        \
-            EVP_KDF_HKDF_MODE_EXPAND_ONLY
+# define EVP_PKEY_HKDEF_MODE_EXTRACT_AND_EXPAND 0
+# define EVP_PKEY_HKDEF_MODE_EXTRACT_ONLY       1
+# define EVP_PKEY_HKDEF_MODE_EXPAND_ONLY        2
 
-int EVP_PKEY_CTX_set_tls1_prf_md(EVP_PKEY_CTX *ctx, const EVP_MD *md);
+# define EVP_PKEY_CTX_set_hkdf_md(pctx, md) \
+            EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_DERIVE, \
+                              EVP_PKEY_CTRL_HKDF_MD, 0, (void *)(md))
 
-int EVP_PKEY_CTX_set1_tls1_prf_secret(EVP_PKEY_CTX *pctx,
-                                      const unsigned char *sec, int seclen);
+# define EVP_PKEY_CTX_set1_hkdf_salt(pctx, salt, saltlen) \
+            EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_DERIVE, \
+                              EVP_PKEY_CTRL_HKDF_SALT, saltlen, (void *)(salt))
 
-int EVP_PKEY_CTX_add1_tls1_prf_seed(EVP_PKEY_CTX *pctx,
-                                    const unsigned char *seed, int seedlen);
+# define EVP_PKEY_CTX_set1_hkdf_key(pctx, key, keylen) \
+            EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_DERIVE, \
+                              EVP_PKEY_CTRL_HKDF_KEY, keylen, (void *)(key))
 
-int EVP_PKEY_CTX_set_hkdf_md(EVP_PKEY_CTX *ctx, const EVP_MD *md);
+# define EVP_PKEY_CTX_add1_hkdf_info(pctx, info, infolen) \
+            EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_DERIVE, \
+                              EVP_PKEY_CTRL_HKDF_INFO, infolen, (void *)(info))
 
-int EVP_PKEY_CTX_set1_hkdf_salt(EVP_PKEY_CTX *ctx,
-                                const unsigned char *salt, int saltlen);
+# define EVP_PKEY_CTX_hkdf_mode(pctx, mode) \
+            EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_DERIVE, \
+                              EVP_PKEY_CTRL_HKDF_MODE, mode, NULL)
 
-int EVP_PKEY_CTX_set1_hkdf_key(EVP_PKEY_CTX *ctx,
-                               const unsigned char *key, int keylen);
+int ERR_load_KDF_strings(void);
 
-int EVP_PKEY_CTX_add1_hkdf_info(EVP_PKEY_CTX *ctx,
-                                const unsigned char *info, int infolen);
+/*
+ * KDF function codes.
+ */
+# define KDF_F_PKEY_HKDF_CTRL_STR                         103
+# define KDF_F_PKEY_HKDF_DERIVE                           102
+# define KDF_F_PKEY_HKDF_INIT                             108
 
-int EVP_PKEY_CTX_set_hkdf_mode(EVP_PKEY_CTX *ctx, int mode);
-# define EVP_PKEY_CTX_hkdf_mode EVP_PKEY_CTX_set_hkdf_mode
+/*
+ * KDF reason codes.
+ */
+# define KDF_R_MISSING_KEY                                104
+# define KDF_R_MISSING_MESSAGE_DIGEST                     105
+# define KDF_R_UNKNOWN_PARAMETER_TYPE                     103
 
-int EVP_PKEY_CTX_set1_pbe_pass(EVP_PKEY_CTX *ctx, const char *pass,
-                               int passlen);
-
-int EVP_PKEY_CTX_set1_scrypt_salt(EVP_PKEY_CTX *ctx,
-                                  const unsigned char *salt, int saltlen);
-
-int EVP_PKEY_CTX_set_scrypt_N(EVP_PKEY_CTX *ctx, uint64_t n);
-
-int EVP_PKEY_CTX_set_scrypt_r(EVP_PKEY_CTX *ctx, uint64_t r);
-
-int EVP_PKEY_CTX_set_scrypt_p(EVP_PKEY_CTX *ctx, uint64_t p);
-
-int EVP_PKEY_CTX_set_scrypt_maxmem_bytes(EVP_PKEY_CTX *ctx,
-                                         uint64_t maxmem_bytes);
-
-
-# ifdef __cplusplus
+# ifdef  __cplusplus
 }
 # endif
 #endif

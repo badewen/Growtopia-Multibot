@@ -15,11 +15,13 @@ public:
     Packet(ENetPacket* enet_packet);
     Packet(ePacketType type, TextPacket text_pkt);
     Packet(TankPacket tank_pkt);
+    Packet() = default;
+    Packet(const Packet&) = delete;
 
     ~Packet();
 
-    std::string ToString();
-    ENetPacket* CreateToENetPacket();
+    std::string ToDebugString();
+    ENetPacket* CreateToENetPacket() const;
 public:
     ePacketType Type;
 

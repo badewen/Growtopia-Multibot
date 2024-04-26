@@ -17,6 +17,8 @@ public:
     // reset all stored items
     void ResetInventoryItems();
 
+    void Reset();
+
     uint16_t GetItemAmount(uint16_t item_id);
     uint32_t GetAvailInvSpace();
 
