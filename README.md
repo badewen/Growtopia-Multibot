@@ -18,10 +18,11 @@ Other keys : (CAPSLOCK OR SHIFT MUST BE USED WHEN PRESSING THESE KEYS)
 
 # Features
 - [ ] ~GUI~ this repos only provide the Core project. do the GUI urself since i dont write or maintain GUI
-- [ ] Proxy support
+- [x] Proxy support
 - [x] World serializer
 - [x] Items dat serializer
 - [x] Inventory support
+- [x] Lua executor
 
 # Update Frequency
 Since this is the core lib from a private project, expect an update bumps to happen unexpectedly ;)
