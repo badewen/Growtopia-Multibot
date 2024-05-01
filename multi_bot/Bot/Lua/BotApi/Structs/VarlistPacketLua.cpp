@@ -51,7 +51,7 @@ void VarlistPacketLua::PushAsTable(lua_State* L, VariantList& varlist) {
             lua_newtable(L);
             LUAHELPER_SET_TABLE(number, "x", curr_variant.GetVector3().x);
             LUAHELPER_SET_TABLE(number, "y", curr_variant.GetVector3().y);
-            LUAHELPER_SET_TABLE(number, "z", curr_variant.GetVector3().y);
+            LUAHELPER_SET_TABLE(number, "z", curr_variant.GetVector3().z);
             break;
         }
 
