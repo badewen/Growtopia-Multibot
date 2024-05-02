@@ -62,7 +62,7 @@ void EnetClient::DisconnectNow() {
 }
 
 void EnetClient::SetSocks5Url(std::string ip, std::string username, std::string pass) {
-    m_enet_host->usingProxy = ip.empty();
+    m_enet_host->usingProxy = !ip.empty();
 
     std::vector<std::string> ip_port = Utils::TextParse::StringTokenize(ip, ":");
     
