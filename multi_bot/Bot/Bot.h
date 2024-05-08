@@ -15,7 +15,7 @@
 #include "../Network/Enet/EnetClient.h"
 #include "../ItemDatabase/ItemDatabase.h"
 #include "../Lua/LuaExecutor.h"
-#include "PacketHandler/PacketHandlerDispatcher.h"
+#include "PacketHandler/PacketHandlerManager.h"
 #include "Inventory/Inventory.h"
 #include "World/WorldInfo.h"
 #include "NetAvatar.h"
@@ -125,7 +125,7 @@ private:
     std::shared_ptr<ItemDatabase> m_item_database{};
 
     LuaExecutor m_lua_executor{};
-    PacketHandlerDispatcher m_packet_handler_dispatcher{};
+    PacketHandlerManager m_packet_handler_dispatcher{};
     std::shared_ptr<PacketHandlerRegistry> m_default_packet_handler_registry{};
 
     std::shared_ptr<LuaBotApiLib> m_lua_bot_api_lib{};
