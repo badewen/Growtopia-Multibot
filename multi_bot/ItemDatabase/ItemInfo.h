@@ -32,8 +32,15 @@ struct ItemInfoFlag
     uint16_t Untradeable : 1;
 };
 
-// lets go bits by bits
 struct ItemInfoFlag2
+{
+    uint16_t MultiFrame : 1; // the frame is dictated by extra option string
+    uint16_t ReverseFrame : 1; // reverse the frame order instead of returning to the first frame immediately
+    // idk the rest. Lazy
+};
+
+// lets go bits by bits
+struct ItemInfoFlag3
 {
     uint32_t RobotDeadly : 1;       
     uint32_t RobotShootLeft : 1;
@@ -381,7 +388,7 @@ struct ItemInfo
     std::string TextureFilePath;
     int32_t TextureFileHash;
     eItemInfoVisualEffect VisualEffect;
-    //uint32_t Flags2;
+    uint32_t CookingIngredientType;
     uint8_t TextureCoordX;
     uint8_t TextureCoordY;
     eItemInfoTextureType TextureType;
@@ -394,7 +401,7 @@ struct ItemInfo
     uint8_t MaxAmount;
     std::string ExtraFile;
     uint32_t ExtraFileHash;
-    uint32_t AnimationTime; 
+    uint32_t AnimationTime;
     std::string PetName;
     std::string PetPrefix;
     std::string PetSuffix;
@@ -407,13 +414,14 @@ struct ItemInfo
     eItemInfoColor SeedOverlayColor;
     uint32_t Ingredient; // unused now.
     uint32_t GrowTime;
-    //uint16_t Flags3; // idk 
+    ItemInfoFlag2 Flags2; // idk 
     uint16_t IsRayman;
     std::string ExtraOption;
     std::string TextureFile2;
     std::string ExtraOption2;
-    ItemInfoFlag2 Flags2;
+    ItemInfoFlag3 Flags3;
     std::string PunchOptions;
     uint8_t BodyPartList[9];
     std::string RendererFilePath;
+    int32_t RendererFileHash;
 };

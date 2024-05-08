@@ -73,8 +73,7 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
     ret.TextureFilePath = reader.ReadString();
     ret.TextureFileHash = reader.GenericRead<uint32_t>();
     ret.VisualEffect = reader.GenericRead<eItemInfoVisualEffect>();
-    reader.Advance(4);
-    //ret.Flags2 = reader.GenericRead<uint32_t>();
+    ret.CookingIngredientType = reader.GenericRead<uint32_t>();
     ret.TextureCoordX = reader.GenericRead<uint8_t>();
     ret.TextureCoordY = reader.GenericRead<uint8_t>();
     ret.TextureType = reader.GenericRead<eItemInfoTextureType>();
@@ -100,8 +99,7 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
     ret.SeedOverlayColor = reader.GenericRead<eItemInfoColor>();
     ret.Ingredient = reader.GenericRead<uint32_t>();
     ret.GrowTime = reader.GenericRead<uint32_t>();
-    reader.Advance(2);
-    //ret.Flags3 = reader.GenericRead<uint16_t>();
+    ret.Flags2 = reader.GenericRead<ItemInfoFlag2>();
     ret.IsRayman = reader.GenericRead<uint16_t>();
     ret.ExtraOption = reader.ReadString();
     ret.TextureFile2 = reader.ReadString();
@@ -109,7 +107,7 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
 
     reader.Advance(8);
 
-    ret.Flags2 = reader.GenericRead<ItemInfoFlag2>();
+    ret.Flags3 = reader.GenericRead<ItemInfoFlag3>();
 
     reader.Advance(68);
 
@@ -122,6 +120,10 @@ ItemInfo ItemDatabase::parse_next_item_info(Utils::BinaryStreamReader& reader) {
     reader.ReadString();
 
     ret.RendererFilePath = reader.ReadString();
+
+    reader.GenericRead<uint32_t>();
+
+    ret.RendererFileHash = reader.GenericRead<int32_t>();
 
     return ret;
 }

@@ -4,8 +4,6 @@
 
 #include "../../../Bot/Bot.h"
 
-
-// WIP
 int BuiltinLuaLib::l_run_thread(lua_State* L) {
     luaL_checktype(L, 1, LUA_TFUNCTION);
 
