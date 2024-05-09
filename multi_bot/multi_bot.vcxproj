@@ -275,6 +275,7 @@
     <ClInclude Include="Bot\Lua\BotApi\Functions\GetLocal.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\SendTextPacket.hpp" />
     <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp" />
+    <ClCompile Include="Bot\World\WorldTile.cpp" />
     <ClCompile Include="ItemDatabase\ItemDatabase.cpp" />
     <ClCompile Include="Bot\Lua\BotApi\LuaBotApiLib.cpp" />
     <ClCompile Include="Bot\Lua\BotApi\Structs\NetAvatarLua.cpp" />

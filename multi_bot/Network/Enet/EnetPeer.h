@@ -24,6 +24,7 @@ public:
     }
 
     inline void DisconnectNow() {
+        enet_peer_disconnect(m_enet_peer, NULL);
         enet_peer_disconnect_now(m_enet_peer, NULL);
         m_enet_peer = nullptr;
     }

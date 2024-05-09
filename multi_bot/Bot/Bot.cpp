@@ -55,6 +55,11 @@ bool Bot::ConnectWithHttp() {
 
     Utils::TextParse parse{ res.Response.body, "\n" };
 
+    if (res.Response.status != httplib::StatusCode::OK_200) {
+        m_logger->Warn("Server refused to respond. Error code {}", res.Response.status);
+        return false;
+    }
+
     // maintenance lol
     if (!parse.Get("maint").empty()) {
         m_logger->Warn("Server is under maintenance. Reason {}", parse.Get("maint"));

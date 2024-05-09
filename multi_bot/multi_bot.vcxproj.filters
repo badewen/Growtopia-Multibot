@@ -281,5 +281,8 @@
     <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bot\World\WorldTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
