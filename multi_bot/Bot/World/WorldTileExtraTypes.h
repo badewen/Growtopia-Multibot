@@ -58,7 +58,7 @@ enum eWorldTileExtraType : uint8_t {
     CookingOven = 55,
     AudioRack = 56, // apparently ubisoft uses this for lucky token??? wtf dev??
     GeigerCharger = 57,
-    AdventureBegin = 58,
+    AdventureBegins = 58,
     TombRobber = 59,
     BalloonOMatic = 60,
     TrainingPort = 61,
@@ -432,7 +432,7 @@ struct WorldTilePineappleGuzzlerExtra {
     // the field is unknown
 };
 
-struct WorldTileKrakenBlockExtra {
+struct WorldTileKrakenGalaticBlockExtra {
     uint8_t PatternIndex;
     uint32_t Unk1;
     uint8_t R, G, B;

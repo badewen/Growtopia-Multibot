@@ -23,85 +23,13 @@ struct WorldTileFlag {
     uint16_t bGreen      : 1;
 };
 
-union WorldTileExtraAllUnion {
-    WorldTileDoorExtra DoorExtra;
-    WorldTileSignExtra SignExtra;
-    WorldTileLockExtra LockExtra;
-    WorldTileSeedExtra SeedExtra;
-    WorldTileDiceExtra DiceExtra;
-    WorldTileProviderExtra ProviderExtra;
-    WorldTileAchievementBlockExtra AchievementBlockExtra;
-    WorldTileHeartMonitorExtra HeartMonitorExtra;
-    WorldTileMannequinExtra MannequinExtra;
-    WorldTileMagicEggExtra MagicEggExtra;
-    WorldTileGameGraveExtra GameGraveExtra;
-    WorldTileGameGeneratorExtra GameGeneratorExtra;
-    WorldTileXenoniteExtra XenoniteExtra;
-    WorldTilePhoneBoothExtra PhoneBoothExtra;
-    WorldTileSpotlightExtra SpotlightExtra;
-    WorldTileDisplayBlockExtra DisplayBlockExtra;
-    WorldTileVendingMachineExtra VendingMachineExtra;
-    WorldTileFishTankPortExtra FishTankPortExtra;
-    WorldTileForgeExtra ForgeExtra;
-    WorldTileGivingTreeExtra GivingTreeExtra;
-    WorldTileSteamOrganExtra SteamOrganExtra;
-    WorldTileSilkWormExtra SilkWormExtra;
-    WorldTileSewingMachineExtra SewingMachineExtra;
-    WorldTileCountryFlagExtra CountryFlagExtra;
-    WorldTileLobsterTrapExtra LobsterTrapExtra;
-    WorldTilePaintingEaselExtra PaintingEaselExtra;
-    WorldTilePetBattleCageExtra PetBattleCageExtra;
-    WorldTilePetTrainerExtra PetTrainerExtra;
-    WorldTileWeatherMachineExtra WeatherMachineExtra;
-    WorldTileSpiritStorageUnitExtra SpiritStorageUnitExtra;
-    WorldTileDataBedrockExtra DataBedrockExtra;
-    WorldTileShelfExtra ShelfExtra;
-    WorldTileVipEntranceExtra VipEntranceExtra;
-    WorldTileChallengeTimerExtra ChallengeTimerExtra;
-    WorldTileFishWallMountExtra FishWallMountExtra;
-    WorldTilePortraitExtra PortraitExtra;
-    WorldTileGuildWeatherMachineExtra GuildWeatherMachineExtra;
-    WorldTileFossilPrepStationExtra FossilPrepStationExtra;
-    WorldTileDnaExtractorExtra DnaExtractorExtra;
-    WorldTileHowlerExtra HowlerExtra;
-    WorldTileChemsynthTankExtra ChemsynthTankExtra;
-    WorldTileStorageBlockExtra StorageBlockExtra;
-    WorldTileCookingOvenExtra CookingOvenExtra;
-    WorldTileAudioRackExtra AudioRackExtra;
-    WorldTileAdventureBeginsExtra AdventureBeginsExtra;
-    WorldTileTombRobberExtra TombRobberExtra;
-    WorldTileBalloonOMaticExtra BalloonOMaticExtra;
-    WorldTileTrainingPortExtra TrainingPortExtra;
-    WorldTileGuildItemExtra GuildItemExtra;
-    WorldTileKrakenBlockExtra KrakenBlockExtra;
-    WorldTileFriendsEntranceExtra FriendEntranceExtra;
-    WorldTileCrystalExtra CrystalExtra;
-    WorldTileCrimeInProgressExtra CrimeInProgressExtra;
-    WorldTileSolarCollectorExtra SolarCollectorExtra;
-    WorldTileSteamEngineExtra SteamEngineExtra;
-    WorldTileLockBotExtra LockBotExtra;
-    WorldTileGeigerChargerExtra GeigerChargerExtra;
-    WorldTileItemSuckerExtra ItemSuckerExtra;
-    WorldTileCyBotExtra CyBotExtra;
-    WorldTileGrowscanExtra GrowscanExtra;
-    WorldTileContainmentFieldPowerNodeExtra ContainmentFieldPowerNodeExtra;
-    WorldTileSpiritBoardExtra SpiritBoardExtra;
-    WorldTileStormyCloudExtra StormyCloudExtra;
-    WorldTileTemporaryPlatformExtra TemporaryPlatformExtra;
-    WorldTileSafeVaultExtra SafeVaultExtra;
-    WorldTileAngelicCountingCloudExtra AngelicCountingCloudExtra;
-    WorldTileInfinityWeatherMachineExtra InfinityWeatherMachineExtra;
-    WorldTilePineappleGuzzlerExtra PineappleGuzzlerExtra;
-
-    ~WorldTileExtraAllUnion() = delete;
-    WorldTileExtraAllUnion() = delete;
-};
-
 class WorldTile {
 public:
-    WorldTile() {
-        ExtraTileData._struct_buff_ptr = m_struct_buffer;
-    }
+    WorldTile() = default;
+
+    // i think this is needed because the previous code is leaking, but unnoticeable.
+    void InitializeTileExtra(eWorldTileExtraType type);
+    void FreeTileExtra();
 
 public:
     uint16_t Fg{}, Bg{};
@@ -168,8 +96,8 @@ public:
         WorldTileBalloonOMaticExtra* BalloonOMaticExtra;
         WorldTileTrainingPortExtra* TrainingPortExtra;
         WorldTileGuildItemExtra* GuildItemExtra;
-        WorldTileKrakenBlockExtra* KrakenBlockExtra;
-        WorldTileFriendsEntranceExtra* FriendEntranceExtra;
+        WorldTileKrakenGalaticBlockExtra* KrakenGalaticBlockExtra;
+        WorldTileFriendsEntranceExtra* FriendsEntranceExtra;
         WorldTileCrystalExtra* CrystalExtra;
         WorldTileCrimeInProgressExtra* CrimeInProgressExtra;
         WorldTileSolarCollectorExtra* SolarCollectorExtra;
@@ -188,7 +116,4 @@ public:
         WorldTileInfinityWeatherMachineExtra* InfinityWeatherMachineExtra;
         WorldTilePineappleGuzzlerExtra* PineappleGuzzlerExtra;
     } ExtraTileData{};
-
-private:
-    uint8_t m_struct_buffer[sizeof(WorldTileExtraAllUnion)]{};
 };

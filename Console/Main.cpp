@@ -239,7 +239,7 @@ end
             }
             case 'J': {
                 // ubisoft nuked the tordawn312312 world :sad:
-                curr_bot->JoinWorld("tordawn123321");
+                curr_bot->JoinWorld("A");
                 break;
             }
             case 'L': {
@@ -262,7 +262,7 @@ end
             case 'T': {
                 spdlog::info("Disconnecting from the server");
                 curr_bot->SendPacket({ ePacketType::NET_MESSAGE_GAME_MESSAGE, "action|quit" });
-                curr_bot->Disconnect();
+                curr_bot->DisconnectNow();
                 break;
             }
             case 'X': {

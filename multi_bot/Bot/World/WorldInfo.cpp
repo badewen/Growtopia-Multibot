@@ -51,6 +51,11 @@ void WorldInfo::Reset() {
     m_current_weather = 0;
     m_world_name = "";
     m_dropped_items.clear();
+
+    std::for_each(m_tiles.begin(), m_tiles.end(), [](WorldTile& tile) {
+        tile.FreeTileExtra();
+    });
+
     m_tiles.clear();
     m_parsed_succesfully = false;
     m_npc_list.clear();
@@ -142,6 +147,7 @@ void WorldInfo::UpdateNPCsPos() {
 
 
 void WorldInfo::SetTile(uint32_t x, uint32_t y, WorldTile new_tile) {
+    m_tiles.at((y * m_width) + x).FreeTileExtra();
     m_tiles.at((y * m_width) + x) = std::move(new_tile);
 }
 
@@ -183,205 +189,188 @@ bool WorldInfo::ParseExtraTileData(
     Utils::BinaryStreamReader& stream, 
     std::shared_ptr<ItemDatabase> items_dat
 ) {
+    tile.InitializeTileExtra(tile.ExtraTileDataType);
+
     switch (tile.ExtraTileDataType) {
     case None: {
         break;
     }
     case Door: {
-        WorldTileDoorExtra extra_data {};
-        extra_data.Label = stream.ReadString();
-        extra_data.Unk1 = stream.GenericRead<uint8_t>();
+        WorldTileDoorExtra* extra_data = tile.ExtraTileData.DoorExtra;
+        extra_data->Label = stream.ReadString();
+        extra_data->Unk1 = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.DoorExtra = std::move(extra_data);
         break;
     }
 
     case Sign: {
-        WorldTileSignExtra extra_data {};
-        extra_data.Label = stream.ReadString();
+        WorldTileSignExtra* extra_data = tile.ExtraTileData.SignExtra;
+        extra_data->Label = stream.ReadString();
 
         stream.Advance(4);
 
-        *tile.ExtraTileData.SignExtra = std::move(extra_data);
         break;
     }
 
     case Lock: {
-        WorldTileLockExtra extra_data {};
-        extra_data.Flags = stream.GenericRead<uint8_t>();
-        extra_data.OwnerId = stream.GenericRead<uint32_t>();
-        extra_data.AccessList = stream.ReadList<uint32_t, uint32_t>();
+        WorldTileLockExtra* extra_data = tile.ExtraTileData.LockExtra;
+        extra_data->Flags = stream.GenericRead<uint8_t>();
+        extra_data->OwnerId = stream.GenericRead<uint32_t>();
+        extra_data->AccessList = stream.ReadList<uint32_t, uint32_t>();
 
         if (tile.Fg != 202 &&
             tile.Fg != 204 &&
             tile.Fg != 206 &&
             tile.Fg != 4994
-        ) {
-            extra_data.MinimumLevel = stream.GenericRead<uint8_t>();
-            stream.ReadBytesToBuffer(extra_data.UnkArr, 7);
+            ) {
+            extra_data->MinimumLevel = stream.GenericRead<uint8_t>();
+            stream.ReadBytesToBuffer(extra_data->UnkArr, 7);
         }
 
-        *tile.ExtraTileData.LockExtra = std::move(extra_data);
         break;
     }
 
     case Seed: {
-        WorldTileSeedExtra extra_data {};
-        extra_data.TimeLeft = stream.GenericRead<uint32_t>();
-        extra_data.FruitCount = stream.GenericRead<uint8_t>();
+        WorldTileSeedExtra* extra_data = tile.ExtraTileData.SeedExtra;
+        extra_data->TimeLeft = stream.GenericRead<uint32_t>();
+        extra_data->FruitCount = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.SeedExtra = std::move(extra_data);
         break;
     }
 
     case Dice: {
-        WorldTileDiceExtra extra_data {};
-        extra_data.Pattern = stream.GenericRead<uint8_t>();
+        WorldTileDiceExtra* extra_data = tile.ExtraTileData.DiceExtra;
+        extra_data->Pattern = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.DiceExtra = std::move(extra_data);
         break;
     }
 
     case Provider: {
-        WorldTileProviderExtra extra_data {};
-        extra_data.TimeLeft = stream.GenericRead<uint32_t>();
+        WorldTileProviderExtra* extra_data = tile.ExtraTileData.ProviderExtra;
+        extra_data->TimeLeft = stream.GenericRead<uint32_t>();
 
         // well of love
         if (tile.Fg == 10656) {
             stream.Advance(4);
         }
 
-        *tile.ExtraTileData.ProviderExtra = std::move(extra_data);
         break;
     }
 
     case AchievementBlock: {
-        WorldTileAchievementBlockExtra extra_data {};
-        extra_data.UserId = stream.GenericRead<uint32_t>();
-        extra_data.Achievement = stream.GenericRead<uint8_t>();
+        WorldTileAchievementBlockExtra* extra_data = tile.ExtraTileData.AchievementBlockExtra;
+        extra_data->UserId = stream.GenericRead<uint32_t>();
+        extra_data->Achievement = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.AchievementBlockExtra = std::move(extra_data);
         break;
     }
 
     case HeartMonitor: {
-        WorldTileHeartMonitorExtra extra_data {};
-        extra_data.UserId = stream.GenericRead<uint32_t>();
-        extra_data.Name = stream.ReadString();
+        WorldTileHeartMonitorExtra* extra_data = tile.ExtraTileData.HeartMonitorExtra;
+        extra_data->UserId = stream.GenericRead<uint32_t>();
+        extra_data->Name = stream.ReadString();
 
-        *tile.ExtraTileData.HeartMonitorExtra = std::move(extra_data);
         break;
     }
 
     case Mannequin: {
-        WorldTileMannequinExtra extra_data {};
-        extra_data.Label = stream.ReadString();
-        extra_data.Unk1 = stream.GenericRead<uint8_t>();
-        extra_data.Unk2 = stream.GenericRead<uint16_t>();
-        extra_data.Unk3 = stream.GenericRead<uint16_t>();
-        extra_data.Hat = stream.GenericRead<uint16_t>();
-        extra_data.Shirt = stream.GenericRead<uint16_t>();
-        extra_data.Pants = stream.GenericRead<uint16_t>();
-        extra_data.Boots = stream.GenericRead<uint16_t>();
-        extra_data.Face = stream.GenericRead<uint16_t>();
-        extra_data.Hand = stream.GenericRead<uint16_t>();
-        extra_data.Back = stream.GenericRead<uint16_t>();
-        extra_data.Hair = stream.GenericRead<uint16_t>();
-        extra_data.Neck = stream.GenericRead<uint16_t>();
+        WorldTileMannequinExtra* extra_data = tile.ExtraTileData.MannequinExtra;
+        extra_data->Label = stream.ReadString();
+        extra_data->Unk1 = stream.GenericRead<uint8_t>();
+        extra_data->Unk2 = stream.GenericRead<uint16_t>();
+        extra_data->Unk3 = stream.GenericRead<uint16_t>();
+        extra_data->Hat = stream.GenericRead<uint16_t>();
+        extra_data->Shirt = stream.GenericRead<uint16_t>();
+        extra_data->Pants = stream.GenericRead<uint16_t>();
+        extra_data->Boots = stream.GenericRead<uint16_t>();
+        extra_data->Face = stream.GenericRead<uint16_t>();
+        extra_data->Hand = stream.GenericRead<uint16_t>();
+        extra_data->Back = stream.GenericRead<uint16_t>();
+        extra_data->Hair = stream.GenericRead<uint16_t>();
+        extra_data->Neck = stream.GenericRead<uint16_t>();
 
-        *tile.ExtraTileData.MannequinExtra = std::move(extra_data);
         break;
     }
 
     case MagicEgg: {
-        WorldTileMagicEggExtra extra_data{};
-        extra_data.EggAmount = stream.GenericRead<uint32_t>();
+        WorldTileMagicEggExtra* extra_data = tile.ExtraTileData.MagicEggExtra;
+        extra_data->EggAmount = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.MagicEggExtra = std::move(extra_data);
         break;
     }
 
     case GameGrave: {
-        WorldTileGameGraveExtra extra_data {};
-        extra_data.Team = stream.GenericRead<uint8_t>();
+        WorldTileGameGraveExtra* extra_data = tile.ExtraTileData.GameGraveExtra;
+        extra_data->Team = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.GameGraveExtra = std::move(extra_data);
         break;
     }
 
     case GameGenerator: {
-        WorldTileGameGeneratorExtra extra_data {};
-        *tile.ExtraTileData.GameGeneratorExtra = std::move(extra_data);
+        WorldTileGameGeneratorExtra* extra_data = tile.ExtraTileData.GameGeneratorExtra;
         break;
     }
 
     case Xenonite: {
-        WorldTileXenoniteExtra extra_data {};
-        stream.ReadBytesToBuffer(extra_data.Unk1, 5);
+        WorldTileXenoniteExtra* extra_data = tile.ExtraTileData.XenoniteExtra;
+        stream.ReadBytesToBuffer(extra_data->Unk1, 5);
 
-        *tile.ExtraTileData.XenoniteExtra = std::move(extra_data);
         break;
     }
 
     case PhoneBooth: {
-        WorldTilePhoneBoothExtra extra_data {};
-        extra_data.Hat = stream.GenericRead<uint16_t>();
-        extra_data.Shirt = stream.GenericRead<uint16_t>();
-        extra_data.Pants = stream.GenericRead<uint16_t>();
-        extra_data.Shoes = stream.GenericRead<uint16_t>();
-        extra_data.Face = stream.GenericRead<uint16_t>();
-        extra_data.Hand = stream.GenericRead<uint16_t>();
-        extra_data.Back = stream.GenericRead<uint16_t>();
-        extra_data.Hair = stream.GenericRead<uint16_t>();
-        extra_data.Neck = stream.GenericRead<uint16_t>();
+        WorldTilePhoneBoothExtra* extra_data = tile.ExtraTileData.PhoneBoothExtra;
+        extra_data->Hat = stream.GenericRead<uint16_t>();
+        extra_data->Shirt = stream.GenericRead<uint16_t>();
+        extra_data->Pants = stream.GenericRead<uint16_t>();
+        extra_data->Shoes = stream.GenericRead<uint16_t>();
+        extra_data->Face = stream.GenericRead<uint16_t>();
+        extra_data->Hand = stream.GenericRead<uint16_t>();
+        extra_data->Back = stream.GenericRead<uint16_t>();
+        extra_data->Hair = stream.GenericRead<uint16_t>();
+        extra_data->Neck = stream.GenericRead<uint16_t>();
 
-        *tile.ExtraTileData.PhoneBoothExtra = std::move(extra_data);
         break;
     }
 
     case Crystal: {
-        WorldTileCrystalExtra extra_data{};
-        extra_data.Crystals = stream.ReadList<uint16_t, uint8_t>();
+        WorldTileCrystalExtra* extra_data = tile.ExtraTileData.CrystalExtra;
+        extra_data->Crystals = stream.ReadList<uint16_t, uint8_t>();
 
-        *tile.ExtraTileData.CrystalExtra = std::move(extra_data);
         break;
     }
 
     case CrimeInProgress: {
-        WorldTileCrimeInProgressExtra extra_data{};
-        extra_data.Name = stream.ReadString();
+        WorldTileCrimeInProgressExtra* extra_data = tile.ExtraTileData.CrimeInProgressExtra;
+        extra_data->Name = stream.ReadString();
         stream.Advance(5);
 
-        *tile.ExtraTileData.CrimeInProgressExtra = std::move(extra_data);
         break;
     }
 
     case Spotlight: {
-        WorldTileSpotlightExtra extra_data {};
-        *tile.ExtraTileData.SpotlightExtra = std::move(extra_data);
+        WorldTileSpotlightExtra* extra_data = tile.ExtraTileData.SpotlightExtra;
         break;
     }
 
     case DisplayBlock: {
-        WorldTileDisplayBlockExtra extra_data {};
-        extra_data.ItemId = stream.GenericRead<uint32_t>();
+        WorldTileDisplayBlockExtra* extra_data = tile.ExtraTileData.DisplayBlockExtra;
+        extra_data->ItemId = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.DisplayBlockExtra = std::move(extra_data);
         break;
     }
 
     case VendingMachine: {
-        WorldTileVendingMachineExtra extra_data {};
-        extra_data.ItemId = stream.GenericRead<uint32_t>();
-        extra_data.Price = stream.GenericRead<int32_t>();
+        WorldTileVendingMachineExtra* extra_data = tile.ExtraTileData.VendingMachineExtra;
+        extra_data->ItemId = stream.GenericRead<uint32_t>();
+        extra_data->Price = stream.GenericRead<int32_t>();
 
-        *tile.ExtraTileData.VendingMachineExtra = std::move(extra_data);
         break;
     }
 
     case FishTankPort: {
-        WorldTileFishTankPortExtra extra_data {};
-        extra_data.Flags = stream.GenericRead<uint8_t>();
+        WorldTileFishTankPortExtra* extra_data = tile.ExtraTileData.FishTankPortExtra;
+        extra_data->Flags = stream.GenericRead<uint8_t>();
         uint32_t length = stream.GenericRead<uint32_t>();
         for (uint32_t i = 0; i < static_cast<uint32_t>(length / 2); i++) {
             WorldTileFishTankPortExtra::FishInfo fish_info{};
@@ -389,260 +378,233 @@ bool WorldInfo::ParseExtraTileData(
             fish_info.FishItemId = stream.GenericRead<uint32_t>();
             fish_info.Lbs = stream.GenericRead<uint32_t>();
 
-            extra_data.Fishes.push_back(fish_info);
+            extra_data->Fishes.push_back(fish_info);
         }
 
-        *tile.ExtraTileData.FishTankPortExtra = std::move(extra_data);
         break;
     }
 
     case SolarCollector: {
-        WorldTileSolarCollectorExtra extra_data{};
-        stream.ReadBytesToBuffer(extra_data.Unk1, 5);
+        WorldTileSolarCollectorExtra* extra_data = tile.ExtraTileData.SolarCollectorExtra;
+        stream.ReadBytesToBuffer(extra_data->Unk1, 5);
 
-        *tile.ExtraTileData.SolarCollectorExtra = std::move(extra_data);
         break;
     }
 
     case Forge: {
-        WorldTileForgeExtra extra_data {};
-        extra_data.Temperature = stream.GenericRead<uint32_t>();
+        WorldTileForgeExtra* extra_data = tile.ExtraTileData.ForgeExtra;
+        extra_data->Temperature = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.ForgeExtra = std::move(extra_data);
         break;
     }
 
     case GivingTree: {
-        WorldTileGivingTreeExtra extra_data {};
-        extra_data.Harvested = stream.GenericRead<uint8_t>();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.DecorationPercent = stream.GenericRead<uint8_t>();
+        WorldTileGivingTreeExtra* extra_data = tile.ExtraTileData.GivingTreeExtra;
+        extra_data->Harvested = stream.GenericRead<uint8_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->DecorationPercent = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.GivingTreeExtra = std::move(extra_data);
         break;
     }
 
     case SteamOrgan: {
-        WorldTileSteamOrganExtra extra_data{};
-        extra_data.InstrumentType = stream.GenericRead<uint8_t>();
-        extra_data.Note = stream.GenericRead<uint32_t>();
+        WorldTileSteamOrganExtra* extra_data = tile.ExtraTileData.SteamOrganExtra;
+        extra_data->InstrumentType = stream.GenericRead<uint8_t>();
+        extra_data->Note = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.SteamOrganExtra = std::move(extra_data);
         break;
     }
 
     case SilkWorm: {
-        WorldTileSilkWormExtra extra_data{};
-        extra_data.Type = stream.ReadByte();
-        extra_data.Name = stream.ReadString();
-        extra_data.Age = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Unk2 = stream.GenericRead<uint32_t>();
-        extra_data.CanBeFed = stream.ReadByte();
-        extra_data.FoodSaturation = stream.GenericRead<uint32_t>();
-        extra_data.WaterSaturation = stream.GenericRead<uint32_t>();
-        stream.ReadBytesToBuffer((uint8_t*) & extra_data.Color, 4);
-        extra_data.SickDuration = stream.GenericRead<uint32_t>();
+        WorldTileSilkWormExtra* extra_data = tile.ExtraTileData.SilkWormExtra;
+        extra_data->Type = stream.ReadByte();
+        extra_data->Name = stream.ReadString();
+        extra_data->Age = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk2 = stream.GenericRead<uint32_t>();
+        extra_data->CanBeFed = stream.ReadByte();
+        extra_data->FoodSaturation = stream.GenericRead<uint32_t>();
+        extra_data->WaterSaturation = stream.GenericRead<uint32_t>();
+        stream.ReadBytesToBuffer((uint8_t*)&extra_data->Color, 4);
+        extra_data->SickDuration = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.SilkWormExtra = std::move(extra_data);
         break;
     }
 
     case SewingMachine: {
-        WorldTileSewingMachineExtra extra_data {};        
-        extra_data.BoltIdList = stream.ReadList<uint32_t, uint32_t>();
-        
-         *tile.ExtraTileData.SewingMachineExtra = std::move(extra_data);
-         break;
+        WorldTileSewingMachineExtra* extra_data = tile.ExtraTileData.SewingMachineExtra;
+        extra_data->BoltIdList = stream.ReadList<uint32_t, uint32_t>();
+
+        break;
     }
 
     case CountryFlag: {
-        WorldTileCountryFlagExtra extra_data {};
+        WorldTileCountryFlagExtra* extra_data = tile.ExtraTileData.CountryFlagExtra;
 
         if (items_dat->GetItemInfo(tile.Fg).ItemType != eItemInfoItemType::ChalFlag) {
-            extra_data.Country = stream.ReadString();
+            extra_data->Country = stream.ReadString();
         }
 
-        *tile.ExtraTileData.CountryFlagExtra = std::move(extra_data);
         break;
     }
 
     case LobsterTrap: {
-        WorldTileLobsterTrapExtra extra_data {};
-        *tile.ExtraTileData.LobsterTrapExtra = std::move(extra_data);
+        WorldTileLobsterTrapExtra* extra_data = tile.ExtraTileData.LobsterTrapExtra;
         break;
     }
 
     case PaintingEasel: {
-        WorldTilePaintingEaselExtra extra_data {};
-        extra_data.ItemId = stream.GenericRead<uint32_t>();
-        extra_data.Label = stream.ReadString();
+        WorldTilePaintingEaselExtra* extra_data = tile.ExtraTileData.PaintingEaselExtra;
+        extra_data->ItemId = stream.GenericRead<uint32_t>();
+        extra_data->Label = stream.ReadString();
 
-        *tile.ExtraTileData.PaintingEaselExtra = std::move(extra_data);
         break;
     }
 
     case PetBattleCage: {
-        WorldTilePetBattleCageExtra extra_data{};
-        extra_data.Label = stream.ReadString();
-        extra_data.BasePet = stream.GenericRead<uint32_t>();
-        extra_data.CombinedPet1 = stream.GenericRead<uint32_t>();
-        extra_data.CombinedPet2 = stream.GenericRead<uint32_t>();
+        WorldTilePetBattleCageExtra* extra_data = tile.ExtraTileData.PetBattleCageExtra;
+        extra_data->Label = stream.ReadString();
+        extra_data->BasePet = stream.GenericRead<uint32_t>();
+        extra_data->CombinedPet1 = stream.GenericRead<uint32_t>();
+        extra_data->CombinedPet2 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.PetBattleCageExtra = std::move(extra_data);
         break;
     }
 
     case PetTrainer: {
-        WorldTilePetTrainerExtra extra_data{};
-        extra_data.Name = stream.ReadString();
+        WorldTilePetTrainerExtra* extra_data = tile.ExtraTileData.PetTrainerExtra;
+        extra_data->Name = stream.ReadString();
         uint32_t pet_battle_count = stream.GenericRead<uint32_t>();
         stream.Advance(4);
 
         for (uint32_t i = 0; i < pet_battle_count; i++) {
-            extra_data.PetList.push_back(stream.GenericRead<uint32_t>());
+            extra_data->PetList.push_back(stream.GenericRead<uint32_t>());
         }
 
-        *tile.ExtraTileData.PetTrainerExtra = std::move(extra_data);
         break;
     }
 
     case SteamEngine: {
-        WorldTileSteamEngineExtra extra_data{};
-        extra_data.Temperature = stream.GenericRead<uint32_t>();
+        WorldTileSteamEngineExtra* extra_data = tile.ExtraTileData.SteamEngineExtra;
+        extra_data->Temperature = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.SteamEngineExtra = std::move(extra_data);
         break;
     }
 
     case LockBot: {
-        WorldTileLockBotExtra extra_data{};
-        extra_data.TimePassedSec = stream.GenericRead<uint32_t>();
+        WorldTileLockBotExtra* extra_data = tile.ExtraTileData.LockBotExtra;
+        extra_data->TimePassedSec = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.LockBotExtra = std::move(extra_data);
         break;
     }
 
     case WeatherMachine: {
-        WorldTileWeatherMachineExtra extra_data {};
-        extra_data.Flags = stream.GenericRead<uint32_t>();
+        WorldTileWeatherMachineExtra* extra_data = tile.ExtraTileData.WeatherMachineExtra;
+        extra_data->Flags = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.WeatherMachineExtra = std::move(extra_data);
         break;
     }
 
     case SpiritStorageUnit: {
-        WorldTileSpiritStorageUnitExtra extra_data{};
-        extra_data.JarCount = stream.GenericRead<uint32_t>();
+        WorldTileSpiritStorageUnitExtra* extra_data = tile.ExtraTileData.SpiritStorageUnitExtra;
+        extra_data->JarCount = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.SpiritStorageUnitExtra = std::move(extra_data);
         break;
     }
 
     case DataBedrock: {
-        WorldTileDataBedrockExtra extra_data {};
-        stream.ReadBytesToBuffer(extra_data.Unk1, 21);
+        WorldTileDataBedrockExtra* extra_data = tile.ExtraTileData.DataBedrockExtra;
+        stream.ReadBytesToBuffer(extra_data->Unk1, 21);
 
-        *tile.ExtraTileData.DataBedrockExtra = std::move(extra_data);
         break;
     }
 
     case Shelf: {
-        WorldTileShelfExtra extra_data {};
-        extra_data.TopLeft = stream.GenericRead<uint32_t>();
-        extra_data.TopRight = stream.GenericRead<uint32_t>();
-        extra_data.BottomLeft = stream.GenericRead<uint32_t>();
-        extra_data.BottomRight = stream.GenericRead<uint32_t>();
+        WorldTileShelfExtra* extra_data = tile.ExtraTileData.ShelfExtra;
+        extra_data->TopLeft = stream.GenericRead<uint32_t>();
+        extra_data->TopRight = stream.GenericRead<uint32_t>();
+        extra_data->BottomLeft = stream.GenericRead<uint32_t>();
+        extra_data->BottomRight = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.ShelfExtra = std::move(extra_data);
         break;
     }
 
     case VipEntrance: {
-        WorldTileVipEntranceExtra extra_data {};
-        extra_data.Unk1 = stream.GenericRead<uint8_t>();
-        extra_data.OwnerId = stream.GenericRead<uint32_t>();
-        extra_data.AllowedIdList = stream.ReadList<uint32_t, uint32_t>();
+        WorldTileVipEntranceExtra* extra_data = tile.ExtraTileData.VipEntranceExtra;
+        extra_data->Unk1 = stream.GenericRead<uint8_t>();
+        extra_data->OwnerId = stream.GenericRead<uint32_t>();
+        extra_data->AllowedIdList = stream.ReadList<uint32_t, uint32_t>();
 
-        *tile.ExtraTileData.VipEntranceExtra = std::move(extra_data);
         break;
     }
 
     case ChallengeTimer: {
-         WorldTileChallengeTimerExtra extra_data {};
-        *tile.ExtraTileData.ChallengeTimerExtra = std::move(extra_data);
+        WorldTileChallengeTimerExtra* extra_data = tile.ExtraTileData.ChallengeTimerExtra;
         break;
     }
 
     case FishWallMount: {
-        WorldTileFishWallMountExtra extra_data{};
+        WorldTileFishWallMountExtra* extra_data = tile.ExtraTileData.FishWallMountExtra;
 
-        extra_data.Label = stream.ReadString();
-        extra_data.ItemID = stream.GenericRead<uint32_t>();
-        extra_data.FishLb = stream.GenericRead<uint8_t>();
+        extra_data->Label = stream.ReadString();
+        extra_data->ItemID = stream.GenericRead<uint32_t>();
+        extra_data->FishLb = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.FishWallMountExtra = std::move(extra_data);
         break;
     }
 
     case Portrait: {
-        WorldTilePortraitExtra extra_data {};
-        extra_data.Label = stream.ReadString();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Unk2 = stream.GenericRead<uint32_t>();
-        extra_data.Unk3 = stream.GenericRead<uint32_t>();
-        extra_data.Unk4 = stream.GenericRead<uint32_t>();
-        extra_data.Face = stream.GenericRead<uint16_t>();
-        extra_data.Hat = stream.GenericRead<uint16_t>();
-        extra_data.Hair = stream.GenericRead<uint16_t>();
-        extra_data.Unk5 = stream.GenericRead<uint16_t>();
-        extra_data.Unk6 = stream.GenericRead<uint16_t>();
+        WorldTilePortraitExtra* extra_data = tile.ExtraTileData.PortraitExtra;
+        extra_data->Label = stream.ReadString();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk2 = stream.GenericRead<uint32_t>();
+        extra_data->Unk3 = stream.GenericRead<uint32_t>();
+        extra_data->Unk4 = stream.GenericRead<uint32_t>();
+        extra_data->Face = stream.GenericRead<uint16_t>();
+        extra_data->Hat = stream.GenericRead<uint16_t>();
+        extra_data->Hair = stream.GenericRead<uint16_t>();
+        extra_data->Unk5 = stream.GenericRead<uint16_t>();
+        extra_data->Unk6 = stream.GenericRead<uint16_t>();
 
-        *tile.ExtraTileData.PortraitExtra = std::move(extra_data);
         break;
     }
 
     case GuildWeatherMachine: {
-        WorldTileGuildWeatherMachineExtra extra_data {};
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Gravity = stream.GenericRead<uint32_t>();
-        extra_data.Flags = stream.GenericRead<uint8_t>();
+        WorldTileGuildWeatherMachineExtra* extra_data = tile.ExtraTileData.GuildWeatherMachineExtra;
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Gravity = stream.GenericRead<uint32_t>();
+        extra_data->Flags = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.GuildWeatherMachineExtra = std::move(extra_data);
         break;
     }
 
     case FossilPrepStation: {
-        WorldTileFossilPrepStationExtra extra_data{};
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
+        WorldTileFossilPrepStationExtra* extra_data = tile.ExtraTileData.FossilPrepStationExtra;
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.FossilPrepStationExtra = std::move(extra_data);
         break;
     }
 
     case DnaExtractor: {
-        WorldTileDnaExtractorExtra extra_data {};
-        *tile.ExtraTileData.DnaExtractorExtra = std::move(extra_data);
+        WorldTileDnaExtractorExtra* extra_data = tile.ExtraTileData.DnaExtractorExtra;
         break;
     }
 
     case Howler: {
-        WorldTileHowlerExtra extra_data {};
-        *tile.ExtraTileData.HowlerExtra = std::move(extra_data);
+        WorldTileHowlerExtra* extra_data = tile.ExtraTileData.HowlerExtra;
         break;
     }
 
     case ChemsynthTank: {
-        WorldTileChemsynthTankExtra extra_data{};
-        extra_data.CurrentChem = stream.GenericRead<uint32_t>();
-        extra_data.TargetChem = stream.GenericRead<uint32_t>();
+        WorldTileChemsynthTankExtra* extra_data = tile.ExtraTileData.ChemsynthTankExtra;
+        extra_data->CurrentChem = stream.GenericRead<uint32_t>();
+        extra_data->TargetChem = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.ChemsynthTankExtra = std::move(extra_data);
         break;
     }
 
     case StorageBlock: {
-        WorldTileStorageBlockExtra extra_data {};
+        WorldTileStorageBlockExtra* extra_data = tile.ExtraTileData.StorageBlockExtra;
         uint16_t length = stream.GenericRead<uint16_t>();
 
         for (uint16_t i = 0; i < static_cast<uint16_t>(length / 13); i++) {
@@ -656,17 +618,16 @@ bool WorldInfo::ParseExtraTileData(
             item_info.ItemId = item_id;
             item_info.ItemAmount = item_amount;
 
-            extra_data.Items.push_back(item_info);
+            extra_data->Items.push_back(item_info);
         }
 
-        *tile.ExtraTileData.StorageBlockExtra = std::move(extra_data);
         break;
     }
 
     case CookingOven: {
-        WorldTileCookingOvenExtra extra_data {};
+        WorldTileCookingOvenExtra* extra_data = tile.ExtraTileData.CookingOvenExtra;
 
-        extra_data.TemperatureLevel = stream.GenericRead<uint32_t>();
+        extra_data->TemperatureLevel = stream.GenericRead<uint32_t>();
         uint32_t ingr_list_size = stream.GenericRead<uint32_t>();
 
         for (uint32_t i = 0; i < ingr_list_size; i++) {
@@ -676,80 +637,72 @@ bool WorldInfo::ParseExtraTileData(
             ingr_info.TimeAdded = stream.GenericRead<uint32_t>();
         }
 
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.CookingOvenExtra = std::move(extra_data);
         break;
     }
 
     case AudioRack: {
-        WorldTileAudioRackExtra extra_data {};
-        extra_data.Note = stream.ReadString();
-        extra_data.Volume = stream.GenericRead<uint32_t>();
+        WorldTileAudioRackExtra* extra_data = tile.ExtraTileData.AudioRackExtra;
+        extra_data->Note = stream.ReadString();
+        extra_data->Volume = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.AudioRackExtra = std::move(extra_data);
         break;
     }
 
     case GeigerCharger: {
-        WorldTileGeigerChargerExtra extra_data{};
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
+        WorldTileGeigerChargerExtra* extra_data = tile.ExtraTileData.GeigerChargerExtra;
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.GeigerChargerExtra = std::move(extra_data);
         break;
     }
 
-    case AdventureBegin: {
-        WorldTileAdventureBeginsExtra extra_data {};
-        *tile.ExtraTileData.AdventureBeginsExtra = std::move(extra_data);
+    case AdventureBegins: {
+        WorldTileAdventureBeginsExtra* extra_data = tile.ExtraTileData.AdventureBeginsExtra;
         break;
     }
 
     case TombRobber: {
-        WorldTileTombRobberExtra extra_data {};
-        *tile.ExtraTileData.TombRobberExtra = std::move(extra_data);
+        WorldTileTombRobberExtra* extra_data = tile.ExtraTileData.TombRobberExtra;
         break;
     }
 
     case BalloonOMatic: {
-        WorldTileBalloonOMaticExtra extra_data{};
-        extra_data.TotalRarity = stream.GenericRead<uint32_t>();
-        extra_data.TeamType = stream.GenericRead<uint8_t>();
+        WorldTileBalloonOMaticExtra* extra_data = tile.ExtraTileData.BalloonOMaticExtra;
+        extra_data->TotalRarity = stream.GenericRead<uint32_t>();
+        extra_data->TeamType = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.BalloonOMaticExtra = std::move(extra_data);
-        break;  
+        break;
     }
 
     case TrainingPort: {
-        WorldTileTrainingPortExtra extra_data {};
-        extra_data.FishLb = stream.GenericRead<uint32_t>();
-        extra_data.FishStatus = stream.GenericRead<uint16_t>();
-        extra_data.FishId = stream.GenericRead<uint32_t>();
-        extra_data.FishTotalExp = stream.GenericRead<uint32_t>();
-        stream.ReadBytesToBuffer(extra_data.Unk1, 8);
-        extra_data.FishLevel = stream.GenericRead<uint32_t>();
-        extra_data.Unk2 = stream.GenericRead<uint32_t>();
-        stream.ReadBytesToBuffer(extra_data.Unk3, 5);
+        WorldTileTrainingPortExtra* extra_data = tile.ExtraTileData.TrainingPortExtra;
+        extra_data->FishLb = stream.GenericRead<uint32_t>();
+        extra_data->FishStatus = stream.GenericRead<uint16_t>();
+        extra_data->FishId = stream.GenericRead<uint32_t>();
+        extra_data->FishTotalExp = stream.GenericRead<uint32_t>();
+        stream.ReadBytesToBuffer(extra_data->Unk1, 8);
+        extra_data->FishLevel = stream.GenericRead<uint32_t>();
+        extra_data->Unk2 = stream.GenericRead<uint32_t>();
+        stream.ReadBytesToBuffer(extra_data->Unk3, 5);
 
-        *tile.ExtraTileData.TrainingPortExtra = std::move(extra_data);
         break;
     }
 
     case ItemSucker: {
-        WorldTileItemSuckerExtra extra_data{};
-        extra_data.ItemIdToSuck = stream.GenericRead<uint32_t>();
-        extra_data.ItemAmount = stream.GenericRead<uint32_t>();
-        extra_data.Flags = stream.GenericRead<uint16_t>();
-        extra_data.Limit = stream.GenericRead<uint32_t>();
+        WorldTileItemSuckerExtra* extra_data = tile.ExtraTileData.ItemSuckerExtra;
+        extra_data->ItemIdToSuck = stream.GenericRead<uint32_t>();
+        extra_data->ItemAmount = stream.GenericRead<uint32_t>();
+        extra_data->Flags = stream.GenericRead<uint16_t>();
+        extra_data->Limit = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.ItemSuckerExtra = std::move(extra_data);
         break;
     }
 
     case CyBot: {
-        WorldTileCyBotExtra extra_data{};
+        WorldTileCyBotExtra* extra_data = tile.ExtraTileData.CyBotExtra;
 
         uint32_t command_count = stream.GenericRead<uint32_t>();
 
@@ -758,123 +711,110 @@ bool WorldInfo::ParseExtraTileData(
             cmd_data.CommandID = stream.GenericRead<uint32_t>();
             cmd_data.IsCommandUsed = stream.GenericRead<uint32_t>();
             stream.ReadBytesToBuffer(cmd_data.Unk1, 7);
-            extra_data.CommandDatas.push_back(std::move(cmd_data));
+            extra_data->CommandDatas.push_back(std::move(cmd_data));
         }
 
-        extra_data.SyncTimer = stream.GenericRead<uint32_t>();
-        extra_data.Activated = stream.GenericRead<uint32_t>();
+        extra_data->SyncTimer = stream.GenericRead<uint32_t>();
+        extra_data->Activated = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.CyBotExtra = std::move(extra_data);
-        break; 
+        break;
     }
 
     case GuildItem: {
-        WorldTileGuildItemExtra extra_data {};
-        stream.ReadBytesToBuffer(extra_data.Unk1, 17);
+        WorldTileGuildItemExtra* extra_data = tile.ExtraTileData.GuildItemExtra;
+        stream.ReadBytesToBuffer(extra_data->Unk1, 17);
 
-        *tile.ExtraTileData.GuildItemExtra = std::move(extra_data);
         break;
     }
 
     case Growscan: {
-        WorldTileGrowscanExtra extra_data{};
-        extra_data.Unk1 = stream.GenericRead<uint8_t>();
+        WorldTileGrowscanExtra* extra_data = tile.ExtraTileData.GrowscanExtra;
+        extra_data->Unk1 = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.GrowscanExtra = std::move(extra_data);
         break;
     }
 
     case ContainmentFieldPowerNode: {
-        WorldTileContainmentFieldPowerNodeExtra extra_data{};
-        extra_data.GhostJarCount = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = std::move(stream.ReadList<uint32_t, uint32_t>());
+        WorldTileContainmentFieldPowerNodeExtra* extra_data = tile.ExtraTileData.ContainmentFieldPowerNodeExtra;
+        extra_data->GhostJarCount = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = std::move(stream.ReadList<uint32_t, uint32_t>());
 
-        *tile.ExtraTileData.ContainmentFieldPowerNodeExtra = std::move(extra_data);
         break;
     }
 
     case SpiritBoard: {
-        WorldTileSpiritBoardExtra extra_data{};
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
-        extra_data.Unk2 = stream.GenericRead<uint32_t>();
-        extra_data.Unk3 = stream.GenericRead<uint32_t>();
+        WorldTileSpiritBoardExtra* extra_data = tile.ExtraTileData.SpiritBoardExtra;
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
+        extra_data->Unk2 = stream.GenericRead<uint32_t>();
+        extra_data->Unk3 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.SpiritBoardExtra = std::move(extra_data);
-        break;  
+        break;
     }
 
     case StormyCloud: {
-        WorldTileStormyCloudExtra extra_data{};
-        extra_data.StingDuration = stream.GenericRead<uint32_t>();
-        extra_data.IsSolid = stream.GenericRead<uint32_t>();
-        extra_data.NonSolidDuration = stream.GenericRead<uint32_t>();
+        WorldTileStormyCloudExtra* extra_data = tile.ExtraTileData.StormyCloudExtra;
+        extra_data->StingDuration = stream.GenericRead<uint32_t>();
+        extra_data->IsSolid = stream.GenericRead<uint32_t>();
+        extra_data->NonSolidDuration = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.StormyCloudExtra = std::move(extra_data);
         break;
     }
 
     case TemporaryPlatform: {
-        WorldTileTemporaryPlatformExtra extra_data{};
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
+        WorldTileTemporaryPlatformExtra* extra_data = tile.ExtraTileData.TemporaryPlatformExtra;
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
 
-        *tile.ExtraTileData.TemporaryPlatformExtra = std::move(extra_data);
         break;
     }
- 
+
     case SafeVault: {
-        WorldTileSafeVaultExtra extra_data{};
-        *tile.ExtraTileData.SafeVaultExtra = std::move(extra_data);
+        WorldTileSafeVaultExtra* extra_data = tile.ExtraTileData.SafeVaultExtra;
         break;
     }
 
     case AngelicCountingCloud: {
-        WorldTileAngelicCountingCloudExtra extra_data{};
-        extra_data.IsRaffling = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = stream.GenericRead<uint16_t>();
-        extra_data.AsciiCode = stream.GenericRead<uint8_t>();
+        WorldTileAngelicCountingCloudExtra* extra_data = tile.ExtraTileData.AngelicCountingCloudExtra;
+        extra_data->IsRaffling = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint16_t>();
+        extra_data->AsciiCode = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.AngelicCountingCloudExtra = std::move(extra_data);
         break;
     }
 
     case InfinityWeatherMachine: {
-        WorldTileInfinityWeatherMachineExtra extra_data{};
-        extra_data.IntervalMinutes = stream.GenericRead<uint32_t>();
-        extra_data.WeatherMachineList = stream.ReadList<uint32_t, uint32_t>();
+        WorldTileInfinityWeatherMachineExtra* extra_data = tile.ExtraTileData.InfinityWeatherMachineExtra;
+        extra_data->IntervalMinutes = stream.GenericRead<uint32_t>();
+        extra_data->WeatherMachineList = stream.ReadList<uint32_t, uint32_t>();
 
-        *tile.ExtraTileData.InfinityWeatherMachineExtra = std::move(extra_data);
         break;
     }
 
     case PineappleGuzzler: {
-        WorldTilePineappleGuzzlerExtra extra_data{};
+        WorldTilePineappleGuzzlerExtra* extra_data = tile.ExtraTileData.PineappleGuzzlerExtra;
         stream.Advance(4);
 
-        *tile.ExtraTileData.PineappleGuzzlerExtra = std::move(extra_data);
         break;
     }
 
     case KrakenGalaticBlock: {
-        WorldTileKrakenBlockExtra extra_data {};
-        extra_data.PatternIndex = stream.GenericRead<uint8_t>();
-        extra_data.Unk1 = stream.GenericRead<uint32_t>();
+        WorldTileKrakenGalaticBlockExtra* extra_data = tile.ExtraTileData.KrakenGalaticBlockExtra;
+        extra_data->PatternIndex = stream.GenericRead<uint8_t>();
+        extra_data->Unk1 = stream.GenericRead<uint32_t>();
 
         // this should be in the right order.
-        extra_data.R = stream.GenericRead<uint8_t>();
-        extra_data.G = stream.GenericRead<uint8_t>();
-        extra_data.B = stream.GenericRead<uint8_t>();
+        extra_data->R = stream.GenericRead<uint8_t>();
+        extra_data->G = stream.GenericRead<uint8_t>();
+        extra_data->B = stream.GenericRead<uint8_t>();
 
-        *tile.ExtraTileData.KrakenBlockExtra = std::move(extra_data);
         break;
     }
 
     case FriendsEntrance: {
-        WorldTileFriendsEntranceExtra extra_data {};
-        extra_data.OwnerUserId = stream.GenericRead<uint32_t>();
-        extra_data.Unk1 = stream.GenericRead<uint16_t>();
-        extra_data.AllowedUserList = stream.ReadList<uint16_t, uint32_t>();
+        WorldTileFriendsEntranceExtra* extra_data = tile.ExtraTileData.FriendsEntranceExtra;
+        extra_data->OwnerUserId = stream.GenericRead<uint32_t>();
+        extra_data->Unk1 = stream.GenericRead<uint16_t>();
+        extra_data->AllowedUserList = stream.ReadList<uint16_t, uint32_t>();
 
-        *tile.ExtraTileData.FriendEntranceExtra = std::move(extra_data);
         break;
     }
 
