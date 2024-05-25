@@ -6,8 +6,8 @@ struct LoginData
 {
     std::string GrowID{};
     std::string GrowIDPass{};
-    std::string GameProtocol = "205";
-    std::string GameVersion = "4.55";
+    std::string GameProtocol = "208";
+    std::string GameVersion = "4.57";
     std::string Meta{};
     std::string Mac{};
     std::string Wk{};

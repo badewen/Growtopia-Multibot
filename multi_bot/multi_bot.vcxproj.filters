@@ -219,6 +219,15 @@
     <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Functions\GetObjects.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot\Lua\BotApi\Structs\WorldObjectLua.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaThreadManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Bot.cpp">
@@ -282,6 +291,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bot\World\WorldTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bot\Lua\BotApi\Structs\WorldObjectLua.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaThreadManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

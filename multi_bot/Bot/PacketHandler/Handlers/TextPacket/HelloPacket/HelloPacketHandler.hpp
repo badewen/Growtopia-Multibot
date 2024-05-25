@@ -23,11 +23,11 @@ public:
             login_data.Add("requestedName", "MouseGar");
         }
 
-        login_data.Add("f", "1");
+        login_data.Add("f", "0");
         login_data.Add("protocol", m_bot->GetLoginData().GameProtocol);
         login_data.Add("game_version", m_bot->GetLoginData().GameVersion);
         login_data.Add("fz", "37836328");
-        login_data.Add("cbits", "1056");
+        login_data.Add("cbits", "0");
         login_data.Add("player_age", "19");
         login_data.Add("GDPR", "1");
         login_data.Add("category", "_-5000");

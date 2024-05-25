@@ -205,12 +205,14 @@
     <ClInclude Include="Bot\Inventory\Inventory.h" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\AddHook.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\DebugGetFaultyTile.hpp" />
+    <ClInclude Include="Bot\Lua\BotApi\Functions\GetObjects.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\IsInGame.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\IsInWorld.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\TileUpdateDataMultipleHandler.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\VarlistPacket\OnSetBux.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Structs\NetAvatarLua.h" />
     <ClInclude Include="Bot\PacketHandler\PacketHandlerManager.h" />
+    <ClInclude Include="Lua\LuaThreadManager.h" />
     <ClInclude Include="Lua\BuiltinLibs\Functions\RunThread.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\SendRawPacket.hpp" />
     <ClInclude Include="Bot\PacketHandler\Handlers\TankPacket\ItemChangeObjectHandler.hpp" />
@@ -268,10 +270,12 @@
     <ClInclude Include="Bot\World\WorldInfo.h" />
     <ClInclude Include="Utils\Timer.h" />
     <ClInclude Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.h" />
+    <ClInclude Include="Bot\Lua\BotApi\Structs\WorldObjectLua.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bot\Inventory\Inventory.cpp" />
     <ClCompile Include="Bot\Lua\BotApi\Structs\VarlistPacketLua.cpp" />
+    <ClCompile Include="Bot\Lua\BotApi\Structs\WorldObjectLua.cpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\GetLocal.hpp" />
     <ClInclude Include="Bot\Lua\BotApi\Functions\SendTextPacket.hpp" />
     <ClCompile Include="Bot\PacketHandler\PacketHandlerManager.cpp" />
@@ -280,6 +284,7 @@
     <ClCompile Include="Bot\Lua\BotApi\LuaBotApiLib.cpp" />
     <ClCompile Include="Bot\Lua\BotApi\Structs\NetAvatarLua.cpp" />
     <ClCompile Include="Lua\BuiltinLibs\BuiltinLuaLib.cpp" />
+    <ClCompile Include="Lua\LuaThreadManager.cpp" />
     <ClCompile Include="Lua\LuaExecutor.cpp" />
     <ClCompile Include="Bot\Lua\BotApi\Structs\TankPacketLua.cpp" />
     <ClCompile Include="Utils\BinaryStreamReader.cpp" />
