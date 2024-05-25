@@ -5,6 +5,7 @@
 #include "../../Network/Http/HttpClient.h"
 
 #define LUABUILTINLIB_HTTPCLIENT_REG_UUID "24ff5a7d-4f0a"
+#define LUABUILTINLIB_LUATHREADMGR_REG_UUID "d4356871-ff78"
 
 class BuiltinLuaLib : public ILuaLibrary
 {

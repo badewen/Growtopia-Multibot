@@ -1,5 +1,7 @@
 #include "BuiltinLuaLib.h"
 
+#include "../LuaThreadManager.h"
+
 #include "Functions/Sleep.hpp"
 #include "Functions/RunThread.hpp"
 #include "Functions/SendWebhook.hpp"
@@ -7,6 +9,10 @@
 void BuiltinLuaLib::OnLoadLibrary(lua_State* L) {
     lua_pushstring(L, LUABUILTINLIB_HTTPCLIENT_REG_UUID);
     lua_pushlightuserdata(L, new HttpClient{""});
+    lua_settable(L, LUA_REGISTRYINDEX);
+
+    lua_pushstring(L, LUABUILTINLIB_LUATHREADMGR_REG_UUID);
+    lua_pushlightuserdata(L, new LuaThreadManager{});
     lua_settable(L, LUA_REGISTRYINDEX);
 
     LUAHELPER_ADD_GLOBAL_FUNC(L, l_sleep, "Sleep");
@@ -22,7 +28,15 @@ void BuiltinLuaLib::OnUnloadLibrary(lua_State* L) {
     LUAHELPER_GET_LIB_DATA(LUABUILTINLIB_HTTPCLIENT_REG_UUID, HttpClient*, http_cl);
     delete http_cl;
 
+    LUAHELPER_GET_LIB_DATA(LUABUILTINLIB_LUATHREADMGR_REG_UUID, LuaThreadManager*, th_list);
+    th_list->WaitAllThread();
+    delete th_list;
+
     lua_pushstring(L, LUABUILTINLIB_HTTPCLIENT_REG_UUID);
+    lua_pushnil(L);
+    lua_settable(L, LUA_REGISTRYINDEX);
+
+    lua_pushstring(L, LUABUILTINLIB_LUATHREADMGR_REG_UUID);
     lua_pushnil(L);
     lua_settable(L, LUA_REGISTRYINDEX);
 }
