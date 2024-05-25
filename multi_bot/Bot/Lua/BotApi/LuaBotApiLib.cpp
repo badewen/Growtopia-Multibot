@@ -6,6 +6,7 @@
 #include "Functions/IsInGame.hpp"
 #include "Functions/IsInWorld.hpp"
 #include "Functions/AddHook.hpp"
+#include "Functions/GetObjects.hpp"
 #include "Functions/DebugGetFaultyTile.hpp"
 
 #include "../../../Packet/Packet.h"
@@ -36,6 +37,7 @@ void LuaBotApiLib::OnLoadLibrary(lua_State* L) {
     LUAHELPER_ADD_GLOBAL_FUNC(L, l_is_in_game, "IsInGame");
     LUAHELPER_ADD_GLOBAL_FUNC(L, l_is_in_world, "IsInWorld");
     LUAHELPER_ADD_GLOBAL_FUNC(L, l_add_hook, "AddHook");
+    LUAHELPER_ADD_GLOBAL_FUNC(L, l_get_objects, "GetObjects");
 
 #ifdef _DEBUG
     LUAHELPER_ADD_GLOBAL_FUNC(L, l_debug_get_faulty_tile, "DebugGetFaultyTile");
@@ -81,6 +83,7 @@ void LuaBotApiLib::OnUnloadLibrary(lua_State* L) {
     LUAHELPER_RMOV_GLOBAL_FUNC(L, "IsInGame");
     LUAHELPER_RMOV_GLOBAL_FUNC(L, "IsInWorld");
     LUAHELPER_RMOV_GLOBAL_FUNC(L, "AddHook");
+    LUAHELPER_RMOV_GLOBAL_FUNC(L, "GetObjects");
 
 #ifdef _DEBUG
     LUAHELPER_RMOV_GLOBAL_FUNC(L, "DebugGetFaultyTile");

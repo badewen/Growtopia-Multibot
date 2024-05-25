@@ -65,6 +65,10 @@ public:
     // returns { int id, int extra_tile_type }
     static int l_debug_get_faulty_tile(lua_State* L);
 
+    // get all of the dropped object
+    // returns table of WorldObject
+    static int l_get_objects(lua_State* L);
+
 private:
     Bot* m_bot;
 
